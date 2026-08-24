@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Amana",
+    "slug": "amana",
+    "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2563EB"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.amana.app",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#2563EB"
+      },
+      "package": "com.amana.app",
+      "versionCode": 1,
+      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": { "projectId": "your-eas-project-id" }
+    },
+    "plugins": [
+      ["expo-notifications", { "color": "#2563EB" }],
+      ["expo-image-picker", { "photosPermission": "Allow Amana to access your photos for parcel pictures and ID verification." }],
+      ["expo-camera", { "cameraPermission": "Allow Amana to access your camera for delivery photo proof." }]
+    ]
+  }
+}

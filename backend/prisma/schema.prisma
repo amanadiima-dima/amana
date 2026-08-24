@@ -1,0 +1,223 @@
+// This is your Prisma schema file for Amana
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  TRAVELER
+  SENDER
+  ADMIN
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum TripStatus {
+  OPEN
+  FULL
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum TrackingStatus {
+  PENDING
+  ACCEPTED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  FAILED
+}
+
+enum PaymentStatus {
+  PENDING
+  HELD
+  RELEASED
+  REFUNDED
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id                String    @id @default(cuid())
+  phone             String    @unique
+  name              String
+  photoUrl          String?
+  bio               String?
+  isVerified        Boolean   @default(false) // ID verified
+  isActive          Boolean   @default(true)
+  role              UserRole  @default(SENDER)
+  fcmToken          String?   // Firebase push token
+  stripeAccountId   String?   // Stripe Connect account (for traveler payouts)
+  rating            Float     @default(0)
+  reviewCount       Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  idVerification    IdVerification?
+  tripsAsTraveler   Trip[]
+  parcelRequests    ParcelRequest[]
+  bookingsAsSender  Booking[]       @relation("SenderBookings")
+  reviewsGiven      Review[]        @relation("ReviewsGiven")
+  reviewsReceived   Review[]        @relation("ReviewsReceived")
+  notifications     Notification[]
+}
+
+model IdVerification {
+  id          String             @id @default(cuid())
+  userId      String             @unique
+  user        User               @relation(fields: [userId], references: [id])
+  frontPhoto  String             // Cloudinary URL
+  backPhoto   String             // Cloudinary URL
+  status      VerificationStatus @default(PENDING)
+  reviewNote  String?            // Admin note on rejection
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+}
+
+model Trip {
+  id             String     @id @default(cuid())
+  travelerId     String
+  traveler       User       @relation(fields: [travelerId], references: [id])
+  originCity     String
+  destinationCity String
+  originAddress  String?
+  departureAt    DateTime
+  maxWeightKg    Float      // max carry capacity in kg
+  pricePerKg     Float      // price set by traveler (in app currency)
+  notes          String?
+  status         TripStatus @default(OPEN)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  bookings       Booking[]
+
+  @@index([destinationCity, departureAt])
+}
+
+model ParcelRequest {
+  id               String   @id @default(cuid())
+  senderId         String
+  sender           User     @relation(fields: [senderId], references: [id])
+  pickupAddress    String
+  deliveryAddress  String
+  weightKg         Float
+  description      String
+  estimatedValue   Float?   // declared value in EUR (for insurance/disclaimer)
+  fragile          Boolean  @default(false)
+  photoUrls        String[] // Cloudinary URLs
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  booking          Booking?
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  tripId          String
+  trip            Trip          @relation(fields: [tripId], references: [id])
+  parcelRequestId String        @unique
+  parcelRequest   ParcelRequest @relation(fields: [parcelRequestId], references: [id])
+  senderId        String
+  sender          User          @relation("SenderBookings", fields: [senderId], references: [id])
+  status          BookingStatus @default(PENDING)
+  confirmedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  trackingEvents  TrackingEvent[]
+  payment         Payment?
+  reviews         Review[]
+}
+
+model TrackingEvent {
+  id         String         @id @default(cuid())
+  bookingId  String
+  booking    Booking        @relation(fields: [bookingId], references: [id])
+  status     TrackingStatus
+  note       String?
+  photoUrl   String?        // proof of delivery photo
+  createdAt  DateTime       @default(now())
+
+  @@index([bookingId])
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  bookingId             String        @unique
+  booking               Booking       @relation(fields: [bookingId], references: [id])
+  senderId              String
+  travelerId            String
+  grossAmount           Float         // total charged to sender (incl. fee)
+  platformFee           Float         // 10% of baseAmount
+  travelerAmount        Float         // amount to release to traveler
+  currency              String        @default("EUR")
+  stripePaymentIntentId String        @unique
+  stripeTransferId      String?       // set when funds released to traveler
+  status                PaymentStatus @default(PENDING)
+  paidAt                DateTime?
+  releasedAt            DateTime?
+  refundedAt            DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  bookingId   String
+  booking     Booking  @relation(fields: [bookingId], references: [id])
+  reviewerId  String
+  reviewer    User     @relation("ReviewsGiven", fields: [reviewerId], references: [id])
+  revieweeId  String
+  reviewee    User     @relation("ReviewsReceived", fields: [revieweeId], references: [id])
+  rating      Int      // 1-5
+  comment     String?
+  createdAt   DateTime @default(now())
+
+  // Each user can review each booking only once
+  @@unique([bookingId, reviewerId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  body      String
+  data      Json?    // extra payload
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+}
