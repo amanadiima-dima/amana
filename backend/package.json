@@ -12,7 +12,8 @@
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "make-admin": "node scripts/make-admin.js",
-    "start:prod": "DIRECT_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate deploy && node src/index.js"
+    "start:prod": "DIRECT_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate deploy && node src/index.js",
+    "test:e2e": "node tests/e2e/run-all.js"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",

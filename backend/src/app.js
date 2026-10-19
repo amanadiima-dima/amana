@@ -52,7 +52,7 @@ app.use(
 // normal browsing from one person/IP, while still capping abuse.
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
-  max: 600,
+  max: parseInt(process.env.RATE_LIMIT_MAX || '600', 10), // raise only in local dev (the e2e suite makes ~600 requests)
   standardHeaders: true,
   legacyHeaders: false,
 });
