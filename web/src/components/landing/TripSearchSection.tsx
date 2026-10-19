@@ -1,7 +1,10 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import Link from 'next/link';
-import { Search, MapPin, Calendar, ChevronRight, Shield, Package, Loader2, SlidersHorizontal, X } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
+import { formatMoney } from '@/lib/money';
+import { Link } from '@/i18n/navigation';
+import { Search, MapPin, Calendar, ChevronRight, Shield, Package, Loader2, SlidersHorizontal, X, Clock } from 'lucide-react';
+import { modeMeta, formatDuration } from '@/lib/trip';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
@@ -56,7 +59,7 @@ function CityInput({
         className="w-full bg-transparent text-gray-900 placeholder-gray-400 text-sm font-medium focus:outline-none py-1"
       />
       {open && suggestions.length > 0 && (
-        <ul className="absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-100 z-[100] overflow-hidden">
+        <ul className="absolute top-full start-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-100 z-[100] overflow-hidden">
           {suggestions.map((s) => {
             const city = s.address?.city || s.address?.town || s.address?.village || s.name;
             const country = s.address?.country || '';
@@ -77,8 +80,10 @@ function CityInput({
 
 // ── Trip card (anonymous — no traveler info shown before login) ───────────────
 function TripCard({ trip }: { trip: any }) {
+  const t = useTranslations('landing.search');
+  const locale = useLocale();
   const depDate = new Date(trip.departureAt);
-  const dateStr = depDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+  const dateStr = depDate.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
 
   return (
     <Link
@@ -89,7 +94,7 @@ function TripCard({ trip }: { trip: any }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-bold text-gray-900 text-lg">{trip.originCity}</span>
-          <ChevronRight className="w-5 h-5 text-brand-400 shrink-0" />
+          <ChevronRight className="w-5 h-5 text-brand-400 shrink-0 rtl:rotate-180" />
           <span className="font-bold text-brand-700 text-lg">{trip.destinationCity}</span>
         </div>
         <div className="flex items-center gap-4 mt-2 flex-wrap text-sm text-gray-500">
@@ -97,27 +102,35 @@ function TripCard({ trip }: { trip: any }) {
             <Calendar className="w-3.5 h-3.5" />{dateStr}
           </span>
           <span className="flex items-center gap-1.5">
-            <Package className="w-3.5 h-3.5" />{trip.maxWeightKg} kg available
+            {modeMeta(trip.mode).emoji} {modeMeta(trip.mode).label}
+          </span>
+          {formatDuration(trip.estimatedDurationMinutes) && (
+            <span className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />≈ {formatDuration(trip.estimatedDurationMinutes)}
+            </span>
+          )}
+          <span className="flex items-center gap-1.5">
+            <Package className="w-3.5 h-3.5" />{t('kgAvailable', { weight: trip.maxWeightKg })}
           </span>
           {trip.traveler?.isVerified && (
             <span className="flex items-center gap-1 text-green-600 font-medium text-xs">
-              <Shield className="w-3.5 h-3.5" /> Verified carrier
+              <Shield className="w-3.5 h-3.5" /> {t('verifiedCarrier')}
             </span>
           )}
         </div>
         {trip.notes && (
-          <p className="text-xs text-gray-400 mt-1.5 truncate max-w-sm italic">"{trip.notes}"</p>
+          <p className="text-xs text-gray-400 mt-1.5 truncate max-w-sm italic">&ldquo;{trip.notes}&rdquo;</p>
         )}
       </div>
 
       {/* Price + CTA */}
       <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 shrink-0">
-        <div className="text-right">
-          <p className="text-2xl font-extrabold text-gray-900">€{trip.pricePerKg?.toFixed(2)}</p>
-          <p className="text-xs text-gray-400">per kg</p>
+        <div className="text-end">
+          <p className="text-2xl font-extrabold text-gray-900">{formatMoney(trip.pricePerKg, trip.currency, locale)}</p>
+          <p className="text-xs text-gray-400">{t('perKg')}</p>
         </div>
         <span className="flex items-center gap-1.5 bg-brand-600 group-hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors whitespace-nowrap">
-          View trip <ChevronRight className="w-4 h-4" />
+          {t('viewTrip')} <ChevronRight className="w-4 h-4 rtl:rotate-180" />
         </span>
       </div>
     </Link>
@@ -126,6 +139,7 @@ function TripCard({ trip }: { trip: any }) {
 
 // ── Main section ──────────────────────────────────────────────────────────────
 export default function TripSearchSection() {
+  const t = useTranslations('landing.search');
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [date, setDate] = useState('');
@@ -184,9 +198,9 @@ export default function TripSearchSection() {
         {/* Header */}
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">
-            Find a traveler going your way
+            {t('heading')}
           </h2>
-          <p className="text-gray-500 text-lg">Browse active trips and send your parcel with a trusted carrier.</p>
+          <p className="text-gray-500 text-lg">{t('subheading')}</p>
         </div>
 
         {/* ── Search bar (BlaBlaCar style) ─────────────────────────────── */}
@@ -194,28 +208,28 @@ export default function TripSearchSection() {
           className="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row items-stretch md:items-center gap-0 mb-4">
 
           {/* From */}
-          <div className="flex items-center gap-2 px-5 py-4 flex-1 border-b md:border-b-0 md:border-r border-gray-100 relative">
+          <div className="flex items-center gap-2 px-5 py-4 flex-1 border-b md:border-b-0 md:border-e border-gray-100 relative">
             <MapPin className="w-4 h-4 text-brand-500 shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">From</p>
-              <CityInput value={origin} onChange={setOrigin} placeholder="Departure city" />
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">{t('from')}</p>
+              <CityInput value={origin} onChange={setOrigin} placeholder={t('fromPlaceholder')} />
             </div>
           </div>
 
           {/* To */}
-          <div className="flex items-center gap-2 px-5 py-4 flex-1 border-b md:border-b-0 md:border-r border-gray-100 relative">
+          <div className="flex items-center gap-2 px-5 py-4 flex-1 border-b md:border-b-0 md:border-e border-gray-100 relative">
             <MapPin className="w-4 h-4 text-gray-400 shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">To</p>
-              <CityInput value={destination} onChange={setDestination} placeholder="Destination city" />
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">{t('to')}</p>
+              <CityInput value={destination} onChange={setDestination} placeholder={t('toPlaceholder')} />
             </div>
           </div>
 
           {/* Date */}
-          <div className="flex items-center gap-2 px-5 py-4 flex-1 border-b md:border-b-0 md:border-r border-gray-100">
+          <div className="flex items-center gap-2 px-5 py-4 flex-1 border-b md:border-b-0 md:border-e border-gray-100">
             <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
             <div className="flex-1">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">Date</p>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">{t('date')}</p>
               <input
                 type="date"
                 value={date}
@@ -228,9 +242,9 @@ export default function TripSearchSection() {
 
           {/* Search button */}
           <button type="submit"
-            className="flex items-center justify-center gap-2 bg-brand-600 text-white font-bold px-8 py-5 hover:bg-brand-700 transition-colors text-sm rounded-b-2xl md:rounded-b-none md:rounded-r-2xl">
+            className="flex items-center justify-center gap-2 bg-brand-600 text-white font-bold px-8 py-5 hover:bg-brand-700 transition-colors text-sm rounded-b-2xl md:rounded-b-none md:rounded-e-2xl">
             <Search className="w-4 h-4" />
-            Search
+            {t('search')}
           </button>
         </form>
 
@@ -244,19 +258,19 @@ export default function TripSearchSection() {
                 ? 'bg-green-600 text-white border-green-600'
                 : 'bg-white text-gray-600 border-gray-200 hover:border-brand-300'
             }`}>
-            <Shield className="w-3.5 h-3.5" /> Verified only
+            <Shield className="w-3.5 h-3.5" /> {t('verifiedOnly')}
           </button>
 
           {searched && (
             <button onClick={clearSearch}
-              className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full border bg-white text-gray-500 border-gray-200 hover:bg-gray-50 transition-colors ml-auto">
-              <X className="w-3.5 h-3.5" /> Clear filters
+              className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full border bg-white text-gray-500 border-gray-200 hover:bg-gray-50 transition-colors ms-auto">
+              <X className="w-3.5 h-3.5" /> {t('clearFilters')}
             </button>
           )}
 
           {!loading && (
-            <span className="text-sm text-gray-400 ml-auto">
-              {displayed.length} trip{displayed.length !== 1 ? 's' : ''} found
+            <span className="text-sm text-gray-400 ms-auto">
+              {t('tripsFound', { count: displayed.length })}
             </span>
           )}
         </div>
@@ -269,8 +283,8 @@ export default function TripSearchSection() {
         ) : displayed.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
             <p className="text-4xl mb-3">✈️</p>
-            <p className="font-semibold text-gray-600">No trips found</p>
-            <p className="text-sm mt-1">Try a different destination or clear the date filter.</p>
+            <p className="font-semibold text-gray-600">{t('noTripsTitle')}</p>
+            <p className="text-sm mt-1">{t('noTripsSubtitle')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -281,9 +295,9 @@ export default function TripSearchSection() {
         {/* Sign-up nudge */}
         <div className="text-center mt-10">
           <p className="text-gray-500 text-sm">
-            Are you a traveler?{' '}
+            {t('areYouTraveler')}{' '}
             <Link href="/trips/new" className="text-brand-600 font-semibold hover:underline">
-              Post your trip →
+              {t('postYourTrip')}
             </Link>
           </p>
         </div>

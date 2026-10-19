@@ -12,6 +12,13 @@ const listNotifications = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+const unreadCount = async (req, res, next) => {
+  try {
+    const count = await prisma.notification.count({ where: { userId: req.user.id, read: false } });
+    res.json({ success: true, count });
+  } catch (err) { next(err); }
+};
+
 const markRead = async (req, res, next) => {
   try {
     const notification = await prisma.notification.findUnique({ where: { id: req.params.id } });
@@ -22,4 +29,4 @@ const markRead = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { listNotifications, markRead };
+module.exports = { listNotifications, unreadCount, markRead };

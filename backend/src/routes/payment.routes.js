@@ -1,6 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { createPaymentIntent, handleWebhook, getPayment } = require('../controllers/payment.controller');
+const { createPaymentIntent, confirmStubPayment, handleWebhook, getPayment } = require('../controllers/payment.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 const validate = require('../middlewares/validate.middleware');
 
@@ -17,6 +17,7 @@ router.post('/intent',
   createPaymentIntent
 );
 
+router.post('/:bookingId/confirm-stub', confirmStubPayment);
 router.get('/:bookingId', getPayment);
 
 module.exports = router;

@@ -11,7 +11,7 @@ router.use(authenticate);
 
 router.post('/:bookingId',
   upload.single('photo'),
-  [body('status').isIn(['PICKED_UP', 'IN_TRANSIT', 'DELIVERED', 'FAILED']), body('note').optional().isString()],
+  [body('status').isIn(['PICKED_UP', 'IN_TRANSIT', 'DELIVERED', 'FAILED']), body('note').optional().isString(), body('code').optional().isString()],
   validate,
   addTrackingEvent
 );

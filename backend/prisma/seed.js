@@ -36,6 +36,14 @@ function futureDate(daysFromNow) {
 async function main() {
   console.log('🌱 Seeding Amana database...\n');
 
+  // ── Admin ────────────────────────────────────────────────────────────────
+  const admin = await prisma.user.upsert({
+    where: { phone: '+10000000099' },
+    update: { role: 'ADMIN', isVerified: true },
+    create: { phone: '+10000000099', name: 'admin', role: 'ADMIN', isVerified: true },
+  });
+  console.log(`✅ Admin created: ${admin.name} (${admin.phone})`);
+
   // ── Senders ──────────────────────────────────────────────────────────────
   const senders = [];
   for (let i = 1; i <= 5; i++) {
@@ -75,6 +83,10 @@ async function main() {
   }
 
   // ── Trips (2 per traveler = 10 trips) ────────────────────────────────────
+  const existingTrips = await prisma.trip.count();
+  if (existingTrips > 0) {
+    console.log(`\n🗺  Skipping trip creation — ${existingTrips} trip(s) already exist.`);
+  } else {
   console.log('\n🗺  Creating trips...');
   for (let t = 0; t < travelers.length; t++) {
     const traveler = travelers[t];
@@ -95,8 +107,10 @@ async function main() {
       console.log(`  ✈  ${traveler.name}: ${trip.originCity} → ${trip.destinationCity} on ${trip.departureAt.toDateString()} (${trip.maxWeightKg}kg @ €${trip.pricePerKg}/kg)`);
     }
   }
+  }
 
   console.log('\n✨ Seed complete!');
+  console.log('   Admin    : admin                | phone  +10000000099');
   console.log('   Senders  : sender_1 … sender_5  | phones +10000000001–+10000000005');
   console.log('   Travelers: traveler_1 … traveler_5 | phones +10000000011–+10000000015');
   console.log('   All users have OTP bypass enabled — use code 123456 to log in.\n');

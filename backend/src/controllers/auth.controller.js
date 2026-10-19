@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const prisma = require('../utils/prisma');
 const { AppError } = require('../middlewares/error.middleware');
 const logger = require('../utils/logger');
+const { claimInvitedBookings } = require('../services/bookingFlow.service');
 
 const twilioClient = twilio(
   process.env.TWILIO_ACCOUNT_SID,
@@ -81,6 +82,8 @@ const verifyOtp = async (req, res, next) => {
       },
     });
 
+    await claimInvitedBookings(user).catch((e) => logger.warn('claimInvitedBookings failed', { error: e.message }));
+
     const { accessToken, refreshToken } = generateTokens(user.id);
 
     res.json({
@@ -93,6 +96,7 @@ const verifyOtp = async (req, res, next) => {
         name: user.name,
         isVerified: user.isVerified,
         rating: user.rating,
+        role: user.role,
       },
     });
   } catch (err) {

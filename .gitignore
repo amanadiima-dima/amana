@@ -35,3 +35,8 @@ stripe_1.40.9_windows_x86_64/
 .expo/
 android/
 ios/
+
+# Local offline dev stack (bundled Postgres + logs)
+.localdev/
+backend/.env
+backend/uploads/

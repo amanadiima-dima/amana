@@ -34,6 +34,14 @@ const requireAdmin = (req, _res, next) => {
   next();
 };
 
+// Admin or moderator (the helpers an admin can appoint): ID reviews + disputes.
+const requireStaff = (req, _res, next) => {
+  if (!['ADMIN', 'MODERATOR'].includes(req.user?.role)) {
+    return next(new AppError('Staff access required', 403));
+  }
+  next();
+};
+
 const requireVerified = (req, _res, next) => {
   if (!req.user?.isVerified) {
     return next(new AppError('ID verification required to perform this action', 403));
@@ -41,4 +49,4 @@ const requireVerified = (req, _res, next) => {
   next();
 };
 
-module.exports = { authenticate, requireAdmin, requireVerified };
+module.exports = { authenticate, requireAdmin, requireStaff, requireVerified };

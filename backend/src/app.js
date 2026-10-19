@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -13,9 +14,13 @@ const paymentRoutes = require('./routes/payment.routes');
 const reviewRoutes = require('./routes/review.routes');
 const notificationRoutes = require('./routes/notification.routes');
 const adminRoutes = require('./routes/admin.routes');
+const inviteRoutes = require('./routes/invite.routes');
 const { errorHandler } = require('./middlewares/error.middleware');
 
 const app = express();
+
+// Behind Railway's proxy: trust it so rate limits and logs see the real client IP.
+if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) app.set('trust proxy', 1);
 
 // ── Security & parsing ────────────────────────────────────────────────────────
 app.use(helmet());
@@ -31,10 +36,23 @@ app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Locally-stored uploads (dev fallback when Cloudinary isn't configured)
+app.use(
+  '/uploads',
+  express.static(path.join(__dirname, '..', 'uploads'), {
+    setHeaders: (res) => res.set('Cross-Origin-Resource-Policy', 'cross-origin'),
+  })
+);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
+// 100 req/15min per IP was too tight for real usage: the chat panel alone polls
+// GET /bookings/:id/messages every 8s (~112 requests/15min on its own), so anyone
+// with a chat open for ~13 minutes got locked out of the *entire* API, not just
+// chat. Raised to a level that comfortably covers a few concurrent chats plus
+// normal browsing from one person/IP, while still capping abuse.
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
-  max: 100,
+  max: 600,
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -51,6 +69,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/invites', inviteRoutes);
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));

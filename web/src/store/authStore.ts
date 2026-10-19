@@ -12,7 +12,7 @@ interface AuthState {
   logout: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isAuthenticated: false,
 
@@ -23,6 +23,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     Cookies.set('accessToken', data.accessToken, { expires: 7 });
     Cookies.set('refreshToken', data.refreshToken, { expires: 30 });
     set({ user: data.user, isAuthenticated: true });
+    // The login response is a lightweight snapshot; fetch the full profile
+    // (role, idVerification, etc.) so nav/UI that depend on it are correct
+    // right after signing in, not just after a later page reload.
+    await get().loadUser();
   },
 
   loadUser: async () => {

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Booking" ADD COLUMN     "priorityTip" DOUBLE PRECISION NOT NULL DEFAULT 0;

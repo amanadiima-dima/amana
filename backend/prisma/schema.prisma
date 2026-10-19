@@ -16,6 +16,7 @@ enum UserRole {
   TRAVELER
   SENDER
   ADMIN
+  MODERATOR // staff helper: can review ID verifications and disputes, nothing else
 }
 
 enum VerificationStatus {
@@ -32,12 +33,22 @@ enum TripStatus {
   CANCELLED
 }
 
+enum TransportMode {
+  PLANE
+  TRAIN
+  BUS
+  CAR
+  BOAT
+}
+
 enum BookingStatus {
+  PAYMENT_PENDING // waiting for the recipient (payer) to pay; traveler doesn't see it yet
   PENDING
   ACCEPTED
   REJECTED
   CANCELLED
   COMPLETED
+  DISPUTED
 }
 
 enum TrackingStatus {
@@ -78,17 +89,25 @@ model User {
   tripsAsTraveler   Trip[]
   parcelRequests    ParcelRequest[]
   bookingsAsSender  Booking[]       @relation("SenderBookings")
+  bookingsAsPayer   Booking[]       @relation("PayerBookings")
   reviewsGiven      Review[]        @relation("ReviewsGiven")
   reviewsReceived   Review[]        @relation("ReviewsReceived")
   notifications     Notification[]
+  messagesSent      Message[]       @relation("MessagesSent")
 }
 
 model IdVerification {
   id          String             @id @default(cuid())
   userId      String             @unique
   user        User               @relation(fields: [userId], references: [id])
-  frontPhoto  String             // Cloudinary URL
-  backPhoto   String             // Cloudinary URL
+  documentType String            @default("ID_CARD") // ID_CARD | PASSPORT
+  frontPhoto  String             // private upload reference (front, or the passport photo page)
+  backPhoto   String?            // not needed for passports
+  selfieVideo String?            // short video of the user holding the document next to their face
+  challengeCode String?          // random code the user had to say aloud in the video (checked by the reviewer)
+  consentAt   DateTime?          // explicit consent to process ID + biometric video
+  provider    String?            // external verification provider, if one handled it
+  providerRef String?            // provider's session/check id
   status      VerificationStatus @default(PENDING)
   reviewNote  String?            // Admin note on rejection
   createdAt   DateTime           @default(now())
@@ -112,10 +131,15 @@ model Trip {
   traveler       User       @relation(fields: [travelerId], references: [id])
   originCity     String
   destinationCity String
-  originAddress  String?
+  originAddress  String?       // pickup place — free-text address
+  originLat      Float?        // pickup place — map pin latitude
+  originLng      Float?        // pickup place — map pin longitude
+  mode           TransportMode @default(PLANE)
+  estimatedDurationMinutes Int?  // traveler's estimate of travel time
   departureAt    DateTime
   maxWeightKg    Float      // max carry capacity in kg
-  pricePerKg     Float      // price set by traveler (in app currency)
+  pricePerKg     Float      // price set by traveler, in `currency`
+  currency       String     @default("EUR") // ISO 4217; defaults from the departure country
   notes          String?
   status         TripStatus @default(OPEN)
   createdAt      DateTime   @default(now())
@@ -134,31 +158,63 @@ model ParcelRequest {
   deliveryAddress  String
   weightKg         Float
   description      String
-  estimatedValue   Float?   // declared value in EUR (for insurance/disclaimer)
+  estimatedValue   Float?   // declared value, in `valueCurrency`
+  valueCurrency    String   @default("EUR")
   fragile          Boolean  @default(false)
   photoUrls        String[] // Cloudinary URLs
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  booking          Booking?
+  // One parcel can accumulate several booking attempts over its life (e.g. a
+  // traveler rejects it, the sender tries a different trip) — only one may be
+  // active (PENDING/ACCEPTED/COMPLETED) at a time; enforced in the controller.
+  bookings         Booking[]
 }
 
 model Booking {
   id              String        @id @default(cuid())
   tripId          String
   trip            Trip          @relation(fields: [tripId], references: [id])
-  parcelRequestId String        @unique
+  parcelRequestId String
   parcelRequest   ParcelRequest @relation(fields: [parcelRequestId], references: [id])
   senderId        String
   sender          User          @relation("SenderBookings", fields: [senderId], references: [id])
+  // Who pays. Null = the sender. Set when the sender asks the recipient (an Amana user) to pay.
+  payerId         String?
+  payer           User?         @relation("PayerBookings", fields: [payerId], references: [id])
+  payerPhone      String?       // the invited payer's phone (may not have an account yet; linked on login)
+  inviteToken     String?       @unique // secret in the invitation link
+  payDeadline     DateTime?     // payer must pay before this
+  respondDeadline DateTime?     // traveler must answer before this (payment-first flow)
   status          BookingStatus @default(PENDING)
   confirmedAt     DateTime?
+  // 6-digit code the sender hands to the recipient; the traveler needs it to confirm delivery.
+  deliveryCode    String?
+  // Optional extra the sender offers for urgent delivery, in the trip's currency; added to the total.
+  priorityTip     Float         @default(0)
+  disputeReason   String?
+  disputedAt      DateTime?
+  disputeOutcome  String?       // 'REFUNDED' | 'RELEASED' once an admin resolves it
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
   trackingEvents  TrackingEvent[]
   payment         Payment?
   reviews         Review[]
+  messages        Message[]
+}
+
+model Message {
+  id         String    @id @default(cuid())
+  bookingId  String
+  booking    Booking   @relation(fields: [bookingId], references: [id])
+  senderId   String
+  sender     User      @relation("MessagesSent", fields: [senderId], references: [id])
+  body       String
+  readAt     DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([bookingId, createdAt])
 }
 
 model TrackingEvent {
@@ -220,4 +276,32 @@ model Notification {
   createdAt DateTime @default(now())
 
   @@index([userId, read])
+}
+
+// Audit trail of invitations / transactional messages sent through Twilio (or stubbed in dev).
+model OutboundMessage {
+  id        String   @id @default(cuid())
+  toPhone   String
+  channel   String   // WHATSAPP | SMS | STUB
+  kind      String   // e.g. PAYER_INVITE
+  body      String
+  status    String   // SENT | FAILED
+  error     String?
+  bookingId String?
+  createdAt DateTime @default(now())
+
+  @@index([bookingId])
+}
+
+// Who did what in the admin area (verifications, disputes, staff changes).
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  action     String   // VERIFICATION_APPROVED | VERIFICATION_REJECTED | DISPUTE_REFUND | DISPUTE_RELEASE | STAFF_ADDED | STAFF_REMOVED
+  targetType String
+  targetId   String
+  note       String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
 }

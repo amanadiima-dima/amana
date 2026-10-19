@@ -1,11 +1,21 @@
 const express = require('express');
 const { body } = require('express-validator');
 const multer = require('multer');
-const { getProfile, updateProfile, uploadIdVerification, getPublicProfile } = require('../controllers/user.controller');
+const { getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile } = require('../controllers/user.controller');
+const { AppError } = require('../middlewares/error.middleware');
 const { authenticate } = require('../middlewares/auth.middleware');
 const validate = require('../middlewares/validate.middleware');
 
 const upload = multer({ storage: multer.memoryStorage() });
+// ID documents + selfie video: size-capped and type-checked (photos must be images, the selfie a video).
+const idUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 30 * 1024 * 1024, files: 3 },
+  fileFilter: (_req, file, cb) => {
+    const ok = file.fieldname === 'video' ? file.mimetype.startsWith('video/') : file.mimetype.startsWith('image/');
+    cb(ok ? null : new AppError(file.fieldname === 'video' ? 'The selfie must be a video file' : 'ID photos must be image files', 400), ok);
+  },
+});
 const router = express.Router();
 
 router.use(authenticate);
@@ -27,8 +37,12 @@ router.post('/me/fcm-token',
     } catch (err) { next(err); }
   }
 );
+router.get('/me/id-verification/challenge', getIdChallenge);
 router.post('/me/id-verification',
-  upload.fields([{ name: 'front', maxCount: 1 }, { name: 'back', maxCount: 1 }]),
+  (req, res, next) => idUpload.fields([{ name: 'front', maxCount: 1 }, { name: 'back', maxCount: 1 }, { name: 'video', maxCount: 1 }])(req, res, (err) => {
+    if (err && err.code === 'LIMIT_FILE_SIZE') return next(new AppError('File too large (max 30 MB)', 413));
+    next(err);
+  }),
   uploadIdVerification
 );
 

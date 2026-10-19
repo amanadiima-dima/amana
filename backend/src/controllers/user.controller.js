@@ -1,12 +1,15 @@
 const cloudinary = require('../utils/cloudinary');
 const prisma = require('../utils/prisma');
 const { AppError } = require('../middlewares/error.middleware');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { uploadPrivate } = require('../utils/cloudinary');
 
 const getProfile = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
-      include: { idVerification: { select: { status: true } } },
+      include: { idVerification: { select: { status: true, reviewNote: true, documentType: true } } },
     });
     res.json({ success: true, user });
   } catch (err) { next(err); }
@@ -23,32 +26,55 @@ const updateProfile = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+// GET /api/users/me/id-verification/challenge — a random code the user must say aloud in the selfie video.
+// Signed (stateless) so it can't be forged or reused later; valid for 20 minutes.
+const getIdChallenge = (req, res) => {
+  const code = String(crypto.randomInt(1000, 10000));
+  const token = jwt.sign({ typ: 'idv-challenge', userId: req.user.id, code }, process.env.JWT_SECRET, { expiresIn: '20m' });
+  res.json({ success: true, code, token });
+};
+
+const DOC_TYPES = ['ID_CARD', 'PASSPORT'];
+
+// POST /api/users/me/id-verification  (multipart: front, back?, video; fields: documentType, challengeToken, consent)
 const uploadIdVerification = async (req, res, next) => {
   try {
-    if (!req.files?.front || !req.files?.back) {
-      throw new AppError('Both front and back ID photos are required', 400);
+    const { documentType = 'ID_CARD', challengeToken, consent } = req.body;
+    if (!DOC_TYPES.includes(documentType)) throw new AppError('Unknown document type', 400);
+    if (consent !== 'true') throw new AppError('You must consent to the identity check to continue', 400);
+
+    const front = req.files?.front?.[0];
+    const back = req.files?.back?.[0];
+    const video = req.files?.video?.[0];
+    if (!front) throw new AppError(documentType === 'PASSPORT' ? 'A photo of the passport photo page is required' : 'A photo of the front of the ID is required', 400);
+    if (documentType === 'ID_CARD' && !back) throw new AppError('A photo of the back of the ID is required', 400);
+    if (!video) throw new AppError('The selfie video is required', 400);
+
+    let challenge;
+    try {
+      challenge = jwt.verify(String(challengeToken || ''), process.env.JWT_SECRET);
+    } catch {
+      throw new AppError('The verification code expired — reload and record the video again', 400);
     }
+    if (challenge.typ !== 'idv-challenge' || challenge.userId !== req.user.id) throw new AppError('Invalid verification code', 400);
 
-    const upload = (buffer, folder) =>
-      new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream({ folder }, (err, result) => {
-          if (err) reject(err);
-          else resolve(result.secure_url);
-        }).end(buffer);
-      });
-
-    const [frontUrl, backUrl] = await Promise.all([
-      upload(req.files.front[0].buffer, 'amana/id-verifications'),
-      upload(req.files.back[0].buffer, 'amana/id-verifications'),
+    const [frontRef, backRef, videoRef] = await Promise.all([
+      uploadPrivate(front.buffer, 'amana/id-verifications', 'image'),
+      documentType === 'ID_CARD' ? uploadPrivate(back.buffer, 'amana/id-verifications', 'image') : Promise.resolve(null),
+      uploadPrivate(video.buffer, 'amana/id-verifications', 'video'),
     ]);
 
+    const data = {
+      documentType, frontPhoto: frontRef, backPhoto: backRef, selfieVideo: videoRef,
+      challengeCode: challenge.code, consentAt: new Date(), status: 'PENDING', reviewNote: null,
+    };
     const verification = await prisma.idVerification.upsert({
       where: { userId: req.user.id },
-      update: { frontPhoto: frontUrl, backPhoto: backUrl, status: 'PENDING' },
-      create: { userId: req.user.id, frontPhoto: frontUrl, backPhoto: backUrl },
+      update: data,
+      create: { userId: req.user.id, ...data },
     });
 
-    res.json({ success: true, verification });
+    res.json({ success: true, verification: { id: verification.id, status: verification.status, documentType } });
   } catch (err) { next(err); }
 };
 
@@ -79,4 +105,4 @@ const getPublicProfile = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { getProfile, updateProfile, uploadIdVerification, getPublicProfile };
+module.exports = { getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile };

@@ -1,9 +1,12 @@
 'use client';
 import { useState } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Menu, X, Package } from 'lucide-react';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 
 export default function Navbar() {
+  const t = useTranslations('landing.navbar');
   const [open, setOpen] = useState(false);
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur border-b border-gray-100">
@@ -14,11 +17,12 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-          <a href="#how-it-works" className="hover:text-brand-600 transition-colors">How it works</a>
-          <a href="#features" className="hover:text-brand-600 transition-colors">Features</a>
-          <a href="#testimonials" className="hover:text-brand-600 transition-colors">Reviews</a>
+          <a href="#how-it-works" className="hover:text-brand-600 transition-colors">{t('howItWorks')}</a>
+          <a href="#features" className="hover:text-brand-600 transition-colors">{t('features')}</a>
+          <a href="#testimonials" className="hover:text-brand-600 transition-colors">{t('reviews')}</a>
+          <LanguageSwitcher />
           <Link href="/auth" className="bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors">
-            Get Started
+            {t('getStarted')}
           </Link>
         </div>
 
@@ -29,10 +33,11 @@ export default function Navbar() {
 
       {open && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 flex flex-col gap-4 text-sm font-medium">
-          <a href="#how-it-works" onClick={() => setOpen(false)}>How it works</a>
-          <a href="#features" onClick={() => setOpen(false)}>Features</a>
-          <a href="#testimonials" onClick={() => setOpen(false)}>Reviews</a>
-          <Link href="/auth" className="bg-brand-600 text-white px-4 py-2 rounded-lg text-center">Get Started</Link>
+          <a href="#how-it-works" onClick={() => setOpen(false)}>{t('howItWorks')}</a>
+          <a href="#features" onClick={() => setOpen(false)}>{t('features')}</a>
+          <a href="#testimonials" onClick={() => setOpen(false)}>{t('reviews')}</a>
+          <LanguageSwitcher />
+          <Link href="/auth" className="bg-brand-600 text-white px-4 py-2 rounded-lg text-center">{t('getStarted')}</Link>
         </div>
       )}
     </nav>
