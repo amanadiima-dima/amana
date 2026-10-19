@@ -627,8 +627,21 @@
       "DISPUTE_REFUND": "A remboursé un expéditeur (litige)",
       "DISPUTE_RELEASE": "A payé un voyageur (litige)",
       "STAFF_ADDED": "A ajouté un modérateur",
-      "STAFF_REMOVED": "A retiré un modérateur"
-    }
+      "STAFF_REMOVED": "A retiré un modérateur",
+      "USER_DEACTIVATED": "A désactivé un compte",
+      "USER_REACTIVATED": "A réactivé un compte",
+      "USER_DELETED": "A supprimé un utilisateur"
+    },
+    "tableActions": "Actions",
+    "searchUsers": "Rechercher par nom ou téléphone…",
+    "inactiveBadge": "Désactivé",
+    "deactivate": "Désactiver le compte",
+    "reactivate": "Réactiver le compte",
+    "deleteUser": "Supprimer définitivement",
+    "confirmDeactivate": "Désactiver {name} ? Cette personne ne pourra plus se connecter tant que vous ne réactivez pas le compte.",
+    "deleteConfirmPrompt": "Cela supprime définitivement {name} ainsi que ses trajets, colis, réservations, messages et avis. Action irréversible.\n\nSaisissez son numéro de téléphone pour confirmer : {phone}",
+    "deleteDone": "{name} a été supprimé.",
+    "userActionError": "Impossible d'effectuer cette action."
   },
   "notifications": {
     "title": "Notifications",

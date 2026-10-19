@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useMoney } from '@/lib/money';
 import { adminApi } from '@/lib/api';
-import { CheckCircle, XCircle, Users, ShieldCheck, AlertTriangle, UserCog, Trash2 } from 'lucide-react';
+import { CheckCircle, XCircle, Users, ShieldCheck, AlertTriangle, UserCog, Trash2, Ban, RotateCcw, Search } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 
 export default function AdminPage() {
@@ -17,6 +17,8 @@ export default function AdminPage() {
   const [staff, setStaff] = useState<any[]>([]);
   const [activity, setActivity] = useState<any[]>([]);
   const [staffPhone, setStaffPhone] = useState('');
+  const [userSearch, setUserSearch] = useState('');
+  const [userMsg, setUserMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [teamMsg, setTeamMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [verifications, setVerifications] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -53,6 +55,25 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const refreshUsers = () => adminApi.getUsers().then(({ data }) => setUsers(data.users || [])).catch(() => {});
+  const toggleActive = async (u: any) => {
+    setUserMsg(null);
+    if (u.isActive !== false && !window.confirm(t('confirmDeactivate', { name: u.name }))) return;
+    try { await adminApi.setUserActive(u.id, u.isActive === false); await refreshUsers(); }
+    catch (err: any) { setUserMsg({ ok: false, text: err?.response?.data?.message || t('userActionError') }); }
+  };
+  const removeUser = async (u: any) => {
+    setUserMsg(null);
+    const typed = window.prompt(t('deleteConfirmPrompt', { name: u.name, phone: u.phone }));
+    if (typed === null) return;
+    try {
+      await adminApi.deleteUser(u.id, typed.trim());
+      setUserMsg({ ok: true, text: t('deleteDone', { name: u.name }) });
+      await refreshUsers();
+      refreshTeam();
+    } catch (err: any) { setUserMsg({ ok: false, text: err?.response?.data?.message || t('userActionError') }); }
   };
 
   const refreshTeam = () => {
@@ -265,19 +286,26 @@ export default function AdminPage() {
       )}
 
       {tab === 'users' && isAdmin && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div>
+        <div className="relative mb-3 max-w-sm">
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          <input value={userSearch} onChange={(e) => setUserSearch(e.target.value)} placeholder={t('searchUsers')}
+            className="w-full border border-gray-200 rounded-xl ps-9 pe-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        {userMsg && <p className={`text-sm px-3 py-2 rounded-lg mb-3 ${userMsg.ok ? 'text-green-700 bg-green-50' : 'text-red-600 bg-red-50'}`}>{userMsg.text}</p>}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                {[t('tableName'), t('tablePhone'), t('tableRole'), t('tableVerified'), t('tableRating'), t('tableJoined')].map((h) => (
+                {[t('tableName'), t('tablePhone'), t('tableRole'), t('tableVerified'), t('tableRating'), t('tableJoined'), t('tableActions')].map((h) => (
                   <th key={h} className="text-start px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {users.map((u) => (
-                <tr key={u.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-gray-900">{u.name}</td>
+              {users.filter((u) => `${u.name} ${u.phone}`.toLowerCase().includes(userSearch.trim().toLowerCase())).map((u) => (
+                <tr key={u.id} className={`hover:bg-gray-50 transition-colors ${u.isActive === false ? 'opacity-50' : ''}`}>
+                  <td className="px-4 py-3 font-medium text-gray-900">{u.name}{u.isActive === false && <span className="ms-2 text-[10px] font-semibold bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">{t('inactiveBadge')}</span>}</td>
                   <td className="px-4 py-3 text-gray-500">{u.phone}</td>
                   <td className="px-4 py-3">
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${u.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>{u.role}</span>
@@ -289,10 +317,20 @@ export default function AdminPage() {
                   </td>
                   <td className="px-4 py-3 text-gray-500">{u.rating > 0 ? `⭐ ${Number(u.rating).toFixed(1)}` : '—'}</td>
                   <td className="px-4 py-3 text-gray-400">{new Date(u.createdAt).toLocaleDateString(locale)}</td>
+                  <td className="px-4 py-3">
+                    {!['ADMIN', 'MODERATOR'].includes(u.role) && u.id !== user?.id ? (
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => toggleActive(u)} title={u.isActive === false ? t('reactivate') : t('deactivate')} aria-label={u.isActive === false ? t('reactivate') : t('deactivate')}
+                          className="text-gray-400 hover:text-amber-600 transition-colors">{u.isActive === false ? <RotateCcw className="w-4 h-4" /> : <Ban className="w-4 h-4" />}</button>
+                        <button onClick={() => removeUser(u)} title={t('deleteUser')} aria-label={t('deleteUser')} className="text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    ) : <span className="text-gray-300">—</span>}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
         </div>
       )}
     </div>

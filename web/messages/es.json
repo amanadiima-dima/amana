@@ -627,8 +627,21 @@
       "DISPUTE_REFUND": "Reembolsó a un remitente (disputa)",
       "DISPUTE_RELEASE": "Pagó a un viajero (disputa)",
       "STAFF_ADDED": "Añadió un moderador",
-      "STAFF_REMOVED": "Quitó a un moderador"
-    }
+      "STAFF_REMOVED": "Quitó a un moderador",
+      "USER_DEACTIVATED": "Desactivó una cuenta",
+      "USER_REACTIVATED": "Reactivó una cuenta",
+      "USER_DELETED": "Borró un usuario"
+    },
+    "tableActions": "Acciones",
+    "searchUsers": "Buscar por nombre o teléfono…",
+    "inactiveBadge": "Desactivado",
+    "deactivate": "Desactivar cuenta",
+    "reactivate": "Reactivar cuenta",
+    "deleteUser": "Borrar definitivamente",
+    "confirmDeactivate": "¿Desactivar a {name}? No podrá iniciar sesión hasta que reactives la cuenta.",
+    "deleteConfirmPrompt": "Esto borra definitivamente a {name} y sus viajes, paquetes, reservas, mensajes y reseñas. No se puede deshacer.\n\nEscribe su teléfono para confirmar: {phone}",
+    "deleteDone": "{name} fue borrado.",
+    "userActionError": "No se pudo completar la acción."
   },
   "notifications": {
     "title": "Notificaciones",

@@ -627,8 +627,21 @@
       "DISPUTE_REFUND": "أعاد المبلغ لمرسل (نزاع)",
       "DISPUTE_RELEASE": "دفع لمسافر (نزاع)",
       "STAFF_ADDED": "أضاف مشرفًا",
-      "STAFF_REMOVED": "أزال مشرفًا"
-    }
+      "STAFF_REMOVED": "أزال مشرفًا",
+      "USER_DEACTIVATED": "عطّل حسابًا",
+      "USER_REACTIVATED": "أعاد تفعيل حساب",
+      "USER_DELETED": "حذف مستخدمًا"
+    },
+    "tableActions": "الإجراءات",
+    "searchUsers": "ابحث بالاسم أو الهاتف…",
+    "inactiveBadge": "معطّل",
+    "deactivate": "تعطيل الحساب",
+    "reactivate": "إعادة تفعيل الحساب",
+    "deleteUser": "حذف نهائي",
+    "confirmDeactivate": "هل تريد تعطيل {name}؟ لن يستطيع تسجيل الدخول حتى تعيد تفعيل الحساب.",
+    "deleteConfirmPrompt": "سيؤدي هذا إلى حذف {name} نهائيًا مع رحلاته وطروده وحجوزاته ورسائله وتقييماته. لا يمكن التراجع.\n\nاكتب رقم هاتفه للتأكيد: {phone}",
+    "deleteDone": "تم حذف {name}.",
+    "userActionError": "تعذّر تنفيذ الإجراء."
   },
   "notifications": {
     "title": "الإشعارات",

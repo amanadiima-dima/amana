@@ -627,8 +627,21 @@
       "DISPUTE_REFUND": "Refunded a sender (dispute)",
       "DISPUTE_RELEASE": "Paid a traveler (dispute)",
       "STAFF_ADDED": "Added a moderator",
-      "STAFF_REMOVED": "Removed a moderator"
-    }
+      "STAFF_REMOVED": "Removed a moderator",
+      "USER_DEACTIVATED": "Disabled an account",
+      "USER_REACTIVATED": "Re-enabled an account",
+      "USER_DELETED": "Deleted a user"
+    },
+    "tableActions": "Actions",
+    "searchUsers": "Search by name or phone…",
+    "inactiveBadge": "Disabled",
+    "deactivate": "Disable account",
+    "reactivate": "Re-enable account",
+    "deleteUser": "Delete permanently",
+    "confirmDeactivate": "Disable {name}? They will not be able to sign in until you re-enable the account.",
+    "deleteConfirmPrompt": "This permanently deletes {name} and their trips, parcels, bookings, messages and reviews. It cannot be undone.\n\nType their phone number to confirm: {phone}",
+    "deleteDone": "{name} was deleted.",
+    "userActionError": "Could not complete that action."
   },
   "notifications": {
     "title": "Notifications",

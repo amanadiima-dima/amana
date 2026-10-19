@@ -1,5 +1,5 @@
 const express = require('express');
-const { listPendingVerifications, reviewVerification, listUsers, listDisputes, resolveDispute, listStaff, addStaff, removeStaff, listActivity } = require('../controllers/admin.controller');
+const { listPendingVerifications, reviewVerification, listUsers, listDisputes, resolveDispute, listStaff, addStaff, removeStaff, listActivity, setUserActive, deleteUser } = require('../controllers/admin.controller');
 const { authenticate, requireAdmin, requireStaff } = require('../middlewares/auth.middleware');
 
 const router = express.Router();
@@ -13,6 +13,8 @@ router.patch('/disputes/:id', requireStaff, resolveDispute);
 
 // Admin only: user list, team management, activity log
 router.get('/users', requireAdmin, listUsers);
+router.patch('/users/:id/active', requireAdmin, setUserActive);
+router.delete('/users/:id', requireAdmin, deleteUser);
 router.get('/staff', requireAdmin, listStaff);
 router.post('/staff', requireAdmin, addStaff);
 router.delete('/staff/:userId', requireAdmin, removeStaff);

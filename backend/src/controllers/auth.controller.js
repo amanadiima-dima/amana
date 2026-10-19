@@ -56,6 +56,7 @@ const sendOtp = async (req, res, next) => {
 
 // Issue tokens for a user and link any payment requests that were sent to this phone before it had an account.
 const sendSession = async (res, user) => {
+  if (user.isActive === false) throw new AppError('This account has been disabled. Contact support if you think this is a mistake.', 403);
   await claimInvitedBookings(user).catch((e) => logger.warn('claimInvitedBookings failed', { error: e.message }));
   const { accessToken, refreshToken } = generateTokens(user.id);
   res.json({
@@ -93,7 +94,7 @@ const verifyOtp = async (req, res, next) => {
 
     // The server decides whether this is a login or a sign-up: no "I'm new" checkbox needed.
     const existing = await prisma.user.findUnique({ where: { phone } });
-    if (existing) return sendSession(res, existing);
+    if (existing) return await sendSession(res, existing);
 
     const cleanName = String(name || '').trim();
     if (cleanName.length < 2) {
@@ -103,7 +104,7 @@ const verifyOtp = async (req, res, next) => {
       return res.json({ success: true, needsProfile: true, registrationToken });
     }
     const created = await prisma.user.create({ data: { phone, name: cleanName.slice(0, 60) } });
-    return sendSession(res, created);
+    return await sendSession(res, created);
   } catch (err) {
     next(err);
   }
@@ -123,7 +124,7 @@ const completeRegistration = async (req, res, next) => {
     const phone = decoded.phone;
     let user = await prisma.user.findUnique({ where: { phone } });
     if (!user) user = await prisma.user.create({ data: { phone, name: String(req.body.name).trim().slice(0, 60) } });
-    return sendSession(res, user);
+    return await sendSession(res, user);
   } catch (err) { next(err); }
 };
 

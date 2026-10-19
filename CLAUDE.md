@@ -25,7 +25,7 @@ export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use 20     # system no
   The CLI also reads `backend/.env` even when `DATABASE_URL` is set in the shell — to target another DB, run it from a folder with no `.env`.
 
 ## Testing
-- `cd backend && npm run test:e2e` runs `tests/e2e/*.e2e.js` against the local stack: **172 checks** (chat/privacy, money protection, currency, recipient-pays, invitations, KYC + staff roles, sign-up, nearby search, expiry). Keep it green; add a script per feature.
+- `cd backend && npm run test:e2e` runs `tests/e2e/*.e2e.js` against the local stack: **190 checks** (chat/privacy, money protection, currency, recipient-pays, invitations, KYC + staff roles, sign-up, nearby search, expiry, admin user management). Keep it green; add a script per feature.
 - Web: `cd web && npx tsc --noEmit && npm run build`. **i18n parity** (all 4 catalogs must have identical keys):
   `node -e "const fs=require('fs');const L=(o,p='')=>Object.entries(o).flatMap(([k,v])=>v&&typeof v==='object'&&!Array.isArray(v)?L(v,p+k+'.'):[p+k]);const s=['en','fr','es','ar'].map(l=>L(JSON.parse(fs.readFileSync('messages/'+l+'.json'))));console.log(s.map(x=>x.length))"` (run in `web/`).
 - The browser pane can't use the camera (selfie recording is untested on a real device).
@@ -63,7 +63,7 @@ export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use 20     # system no
 - Stripe real mode is **not production-ready**: `transfer_data` pays the traveler at charge time (no real escrow) and `releasePayment` passes `travelerId` as the Stripe account. Needs a redesign (separate charges & transfers / manual capture + Connect onboarding) before real money; MAD/DZD/TND support in Stripe unverified.
 
 ## Backlog (priority order)
-1. **Admin: delete/deactivate users** (owner request) + clean the 10 leftover seed users (`sender_1..5`, `traveler_1..5`) from the production DB.
+1. **Clean the 10 leftover seed users** (`sender_1..5`, `traveler_1..5`) from the production DB: after deploy, Admin → Users → search `_` → trash icon → type the phone to confirm. (Admin user management is built: disable/re-enable blocks sign-in; delete is cascading, refused for staff, self, active bookings or real-money payments — see `admin.controller.js` and `tests/e2e/admin-users.e2e.js`.)
 2. Beta feedback: the owner and their partner are testing the hosted app and will send a list of fixes.
 3. Server-side messages in 4 languages (notification texts, API errors e.g. "Wrong delivery code").
 4. Retention: purge ID media ~30 days after review; real Terms/Privacy pages (links are `#`).
