@@ -22,6 +22,16 @@ const checkEnv = () => {
     const v = process.env[k] || '';
     if (v && (v.length < 32 || /dummy|changeme|secret$/i.test(v))) problems.push(`${k} is too weak (use 32+ random characters)`);
   }
+  // Catch pasted-placeholder / wrong-field mistakes with a clear message (instead of a stack trace later).
+  const v = (k) => process.env[k] || '';
+  for (const k of need) if (/[<>"'\s]/.test(v(k))) problems.push(`${k} contains <, >, quotes or spaces — paste only the value`);
+  if (v('DATABASE_URL') && !/^postgres(ql)?:\/\//.test(v('DATABASE_URL'))) problems.push('DATABASE_URL must start with postgresql://');
+  if (v('TWILIO_ACCOUNT_SID') && !/^AC[0-9a-f]{32}$/i.test(v('TWILIO_ACCOUNT_SID'))) problems.push('TWILIO_ACCOUNT_SID must be the Account SID that starts with "AC" (34 characters)');
+  if (v('TWILIO_VERIFY_SERVICE_SID') && !/^VA[0-9a-f]{32}$/i.test(v('TWILIO_VERIFY_SERVICE_SID'))) problems.push('TWILIO_VERIFY_SERVICE_SID must be the Verify Service SID that starts with "VA" (34 characters)');
+  if (v('TWILIO_AUTH_TOKEN') && /^(AC|VA)[0-9a-f]{32}$/i.test(v('TWILIO_AUTH_TOKEN'))) problems.push('TWILIO_AUTH_TOKEN looks like a SID — use the Auth Token from the Twilio dashboard (32 characters, not starting with AC/VA)');
+  for (const k of ['CORS_ORIGIN', 'WEB_URL']) {
+    if (v(k) && !/^https:\/\/[^\s/]+$/.test(v(k).split(',')[0].trim())) problems.push(`${k} must look like https://your-web-domain (https, no trailing slash)`);
+  }
   if (process.env.PAYMENTS_MODE !== 'stripe') warnings.push('PAYMENTS_MODE is not "stripe": payments are SIMULATED (no real money moves).');
 
   warnings.forEach((w) => logger.warn(w));
