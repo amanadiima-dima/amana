@@ -235,7 +235,6 @@
     "codeSentTo": "We sent a 6-digit code to {phone}",
     "devModeNotice": "🛠️ Dev mode: use code 123456",
     "codeLabel": "Verification code",
-    "imNewUser": "I'm a new user",
     "yourName": "Your name",
     "namePlaceholder": "Ahmed Benali",
     "verifyContinue": "Verify & Continue",
@@ -249,7 +248,10 @@
       "invalidCode": "Invalid or expired code. Please try again.",
       "sendFailed": "Failed to send OTP. Try again.",
       "verifyFailed": "Verification failed. Try again."
-    }
+    },
+    "nameStepTitle": "Almost there!",
+    "nameStepSubtitle": "Tell us your name so senders and travelers know who they are dealing with.",
+    "createAccount": "Create my account"
   },
   "dashboard": {
     "welcome": "Welcome back, {name} 👋",

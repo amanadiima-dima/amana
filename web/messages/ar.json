@@ -235,7 +235,6 @@
     "codeSentTo": "أرسلنا رمزًا مكونًا من 6 أرقام إلى {phone}",
     "devModeNotice": "🛠️ وضع التطوير: استخدم الرمز 123456",
     "codeLabel": "رمز التحقق",
-    "imNewUser": "أنا مستخدم جديد",
     "yourName": "اسمك",
     "namePlaceholder": "أحمد بن علي",
     "verifyContinue": "تحقّق وتابع",
@@ -249,7 +248,10 @@
       "invalidCode": "الرمز غير صحيح أو منتهي الصلاحية. حاول مرة أخرى.",
       "sendFailed": "تعذّر إرسال الرمز. حاول مرة أخرى.",
       "verifyFailed": "فشل التحقق. حاول مرة أخرى."
-    }
+    },
+    "nameStepTitle": "تقريبًا انتهينا!",
+    "nameStepSubtitle": "أخبرنا باسمك ليعرف المرسلون والمسافرون مع من يتعاملون.",
+    "createAccount": "إنشاء حسابي"
   },
   "dashboard": {
     "welcome": "مرحبًا بعودتك، {name} 👋",

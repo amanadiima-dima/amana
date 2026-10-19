@@ -7,7 +7,10 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   sendOtp: (phone: string) => Promise<void>;
-  verifyOtp: (phone: string, code: string, name?: string) => Promise<void>;
+  // Resolves to a registration token when the phone is new and still needs a name; otherwise signs in.
+  verifyOtp: (phone: string, code: string) => Promise<{ registrationToken?: string }>;
+  completeRegistration: (registrationToken: string, name: string) => Promise<void>;
+  startSession: (data: any) => Promise<void>;
   loadUser: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -18,8 +21,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   sendOtp: async (phone) => { await authApi.sendOtp(phone); },
 
-  verifyOtp: async (phone, code, name) => {
-    const { data } = await authApi.verifyOtp(phone, code, name);
+  verifyOtp: async (phone, code) => {
+    const { data } = await authApi.verifyOtp(phone, code);
+    if (data.needsProfile) return { registrationToken: data.registrationToken };
+    await get().startSession(data);
+    return {};
+  },
+
+  completeRegistration: async (registrationToken, name) => {
+    const { data } = await authApi.completeRegistration(registrationToken, name);
+    await get().startSession(data);
+  },
+
+  startSession: async (data: any) => {
     Cookies.set('accessToken', data.accessToken, { expires: 7 });
     Cookies.set('refreshToken', data.refreshToken, { expires: 30 });
     set({ user: data.user, isAuthenticated: true });

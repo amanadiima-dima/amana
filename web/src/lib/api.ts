@@ -36,7 +36,8 @@ api.interceptors.response.use(
 
 export const authApi = {
   sendOtp: (phone: string) => api.post('/auth/send-otp', { phone }),
-  verifyOtp: (phone: string, code: string, name?: string) => api.post('/auth/verify-otp', { phone, code, name }),
+  verifyOtp: (phone: string, code: string) => api.post('/auth/verify-otp', { phone, code }),
+  completeRegistration: (registrationToken: string, name: string) => api.post('/auth/complete-registration', { registrationToken, name }),
   logout: () => api.post('/auth/logout'),
 };
 export const userApi = {

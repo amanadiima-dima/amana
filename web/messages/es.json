@@ -235,7 +235,6 @@
     "codeSentTo": "Enviamos un código de 6 dígitos al {phone}",
     "devModeNotice": "🛠️ Modo de desarrollo: usa el código 123456",
     "codeLabel": "Código de verificación",
-    "imNewUser": "Soy un usuario nuevo",
     "yourName": "Tu nombre",
     "namePlaceholder": "Ahmed Benali",
     "verifyContinue": "Verificar y continuar",
@@ -249,7 +248,10 @@
       "invalidCode": "Código incorrecto o caducado. Inténtalo de nuevo.",
       "sendFailed": "No se pudo enviar el código. Inténtalo de nuevo.",
       "verifyFailed": "No se pudo verificar. Inténtalo de nuevo."
-    }
+    },
+    "nameStepTitle": "¡Ya casi!",
+    "nameStepSubtitle": "Dinos tu nombre para que remitentes y viajeros sepan con quién tratan.",
+    "createAccount": "Crear mi cuenta"
   },
   "dashboard": {
     "welcome": "Hola de nuevo, {name} 👋",

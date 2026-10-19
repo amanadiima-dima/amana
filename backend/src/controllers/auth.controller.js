@@ -54,6 +54,25 @@ const sendOtp = async (req, res, next) => {
   }
 };
 
+// Issue tokens for a user and link any payment requests that were sent to this phone before it had an account.
+const sendSession = async (res, user) => {
+  await claimInvitedBookings(user).catch((e) => logger.warn('claimInvitedBookings failed', { error: e.message }));
+  const { accessToken, refreshToken } = generateTokens(user.id);
+  res.json({
+    success: true,
+    accessToken,
+    refreshToken,
+    user: {
+      id: user.id,
+      phone: user.phone,
+      name: user.name,
+      isVerified: user.isVerified,
+      rating: user.rating,
+      role: user.role,
+    },
+  });
+};
+
 // POST /api/auth/verify-otp
 const verifyOtp = async (req, res, next) => {
   try {
@@ -72,36 +91,40 @@ const verifyOtp = async (req, res, next) => {
       }
     }
 
-    // Upsert user (register on first login)
-    const user = await prisma.user.upsert({
-      where: { phone },
-      update: {},
-      create: {
-        phone,
-        name: name || phone,
-      },
-    });
+    // The server decides whether this is a login or a sign-up: no "I'm new" checkbox needed.
+    const existing = await prisma.user.findUnique({ where: { phone } });
+    if (existing) return sendSession(res, existing);
 
-    await claimInvitedBookings(user).catch((e) => logger.warn('claimInvitedBookings failed', { error: e.message }));
-
-    const { accessToken, refreshToken } = generateTokens(user.id);
-
-    res.json({
-      success: true,
-      accessToken,
-      refreshToken,
-      user: {
-        id: user.id,
-        phone: user.phone,
-        name: user.name,
-        isVerified: user.isVerified,
-        rating: user.rating,
-        role: user.role,
-      },
-    });
+    const cleanName = String(name || '').trim();
+    if (cleanName.length < 2) {
+      // New number: the code is verified, we only need a name. Short-lived token proves the phone
+      // was verified (a verified OTP can't be checked twice), so the name step can't be skipped or forged.
+      const registrationToken = jwt.sign({ typ: 'register', phone }, process.env.JWT_SECRET, { expiresIn: '15m' });
+      return res.json({ success: true, needsProfile: true, registrationToken });
+    }
+    const created = await prisma.user.create({ data: { phone, name: cleanName.slice(0, 60) } });
+    return sendSession(res, created);
   } catch (err) {
     next(err);
   }
+};
+
+// POST /api/auth/complete-registration  body: { registrationToken, name }
+const completeRegistration = async (req, res, next) => {
+  try {
+    let decoded;
+    try {
+      decoded = jwt.verify(String(req.body.registrationToken || ''), process.env.JWT_SECRET);
+    } catch {
+      throw new AppError('Your verification expired — please request a new code', 400);
+    }
+    if (decoded.typ !== 'register' || !decoded.phone) throw new AppError('Invalid registration token', 400);
+
+    const phone = decoded.phone;
+    let user = await prisma.user.findUnique({ where: { phone } });
+    if (!user) user = await prisma.user.create({ data: { phone, name: String(req.body.name).trim().slice(0, 60) } });
+    return sendSession(res, user);
+  } catch (err) { next(err); }
 };
 
 // POST /api/auth/refresh
@@ -138,4 +161,4 @@ const logout = async (req, res, next) => {
   }
 };
 
-module.exports = { sendOtp, verifyOtp, refreshToken, logout };
+module.exports = { sendOtp, verifyOtp, completeRegistration, refreshToken, logout };

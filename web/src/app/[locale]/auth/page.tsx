@@ -6,20 +6,20 @@ import { useRouter } from '@/i18n/navigation';
 import { Package, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 
-type Step = 'phone' | 'otp';
+type Step = 'phone' | 'otp' | 'name';
 
 function AuthForm() {
   const t = useTranslations('auth');
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/dashboard';
-  const { sendOtp, verifyOtp } = useAuthStore();
+  const { sendOtp, verifyOtp, completeRegistration } = useAuthStore();
 
   const [step, setStep] = useState<Step>('phone');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
-  const [isNewUser, setIsNewUser] = useState(false);
+  const [registrationToken, setRegistrationToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -46,11 +46,16 @@ function AuthForm() {
     e.preventDefault();
     setError('');
     if (code.length < 4) return setError(t('errors.codeLength'));
-    if (isNewUser && !name.trim()) return setError(t('errors.nameRequired'));
     setLoading(true);
     try {
-      await verifyOtp(phone.trim(), code.trim(), isNewUser ? name.trim() : undefined);
-      router.push(redirect);
+      const res = await verifyOtp(phone.trim(), code.trim());
+      if (res.registrationToken) {
+        // New phone number: the code is verified, we only need a name to create the account.
+        setRegistrationToken(res.registrationToken);
+        setStep('name');
+      } else {
+        router.push(redirect);
+      }
     } catch (err: any) {
       const msg = err?.response?.data?.message || '';
       if (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('expired')) {
@@ -58,6 +63,21 @@ function AuthForm() {
       } else {
         setError(msg || t('errors.verifyFailed'));
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFinish = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (name.trim().length < 2) return setError(t('errors.nameRequired'));
+    setLoading(true);
+    try {
+      await completeRegistration(registrationToken, name.trim());
+      router.push(redirect);
+    } catch (err: any) {
+      setError(err?.response?.data?.message || t('errors.verifyFailed'));
     } finally {
       setLoading(false);
     }
@@ -152,31 +172,6 @@ function AuthForm() {
                   />
                 </div>
 
-                {/* Ask name for new users */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="newUser"
-                    checked={isNewUser}
-                    onChange={(e) => setIsNewUser(e.target.checked)}
-                    className="w-4 h-4 accent-brand-600"
-                  />
-                  <label htmlFor="newUser" className="text-sm text-gray-600">{t('imNewUser')}</label>
-                </div>
-
-                {isNewUser && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('yourName')}</label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder={t('namePlaceholder')}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                    />
-                  </div>
-                )}
-
                 {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
 
                 <button
@@ -197,6 +192,38 @@ function AuthForm() {
                   {t('resend')}
                 </button>
               </p>
+            </>
+          )}
+
+          {step === 'name' && (
+            <>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">{t('nameStepTitle')}</h1>
+              <p className="text-gray-500 mb-8">{t('nameStepSubtitle')}</p>
+
+              <form onSubmit={handleFinish} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('yourName')}</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={t('namePlaceholder')}
+                    maxLength={60}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                    autoFocus
+                  />
+                </div>
+
+                {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2 bg-brand-600 text-white py-3 rounded-xl font-semibold text-base hover:bg-brand-700 transition-all disabled:opacity-60"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{t('createAccount')} <ArrowRight className="w-4 h-4 rtl:rotate-180" /></>}
+                </button>
+              </form>
             </>
           )}
         </div>

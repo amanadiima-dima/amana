@@ -235,7 +235,6 @@
     "codeSentTo": "Nous avons envoyé un code à 6 chiffres au {phone}",
     "devModeNotice": "🛠️ Mode développement : utilisez le code 123456",
     "codeLabel": "Code de vérification",
-    "imNewUser": "Je suis un nouvel utilisateur",
     "yourName": "Votre nom",
     "namePlaceholder": "Ahmed Benali",
     "verifyContinue": "Vérifier et continuer",
@@ -249,7 +248,10 @@
       "invalidCode": "Code invalide ou expiré. Veuillez réessayer.",
       "sendFailed": "Échec de l'envoi du code. Réessayez.",
       "verifyFailed": "Échec de la vérification. Réessayez."
-    }
+    },
+    "nameStepTitle": "Presque fini !",
+    "nameStepSubtitle": "Dites-nous votre nom pour que expéditeurs et voyageurs sachent à qui ils ont affaire.",
+    "createAccount": "Créer mon compte"
   },
   "dashboard": {
     "welcome": "Bon retour, {name} 👋",

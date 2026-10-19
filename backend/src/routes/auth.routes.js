@@ -1,7 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { body } = require('express-validator');
-const { sendOtp, verifyOtp, refreshToken, logout } = require('../controllers/auth.controller');
+const { sendOtp, verifyOtp, completeRegistration, refreshToken, logout } = require('../controllers/auth.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 const validate = require('../middlewares/validate.middleware');
 
@@ -51,6 +51,12 @@ router.post('/verify-otp',
   ],
   validate,
   verifyOtp
+);
+
+router.post('/complete-registration',
+  [body('registrationToken').isString(), body('name').isString().trim().isLength({ min: 2, max: 60 })],
+  validate,
+  completeRegistration
 );
 
 router.post('/refresh', refreshToken);
