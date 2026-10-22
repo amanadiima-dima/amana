@@ -73,8 +73,8 @@ const listDisputes = async (req, res, next) => {
       where: { status: 'DISPUTED' },
       orderBy: { disputedAt: 'asc' },
       include: {
-        trip: { include: { traveler: { select: { id: true, name: true, phone: true } } } },
-        parcelRequest: { select: { description: true, weightKg: true, estimatedValue: true, valueCurrency: true, sender: { select: { id: true, name: true, phone: true } } } },
+        trip: { include: { traveler: { select: { id: true, name: true, lastName: true, phone: true } } } },
+        parcelRequest: { select: { description: true, weightKg: true, estimatedValue: true, valueCurrency: true, sender: { select: { id: true, name: true, lastName: true, phone: true } } } },
         payment: { select: { status: true, grossAmount: true, travelerAmount: true, currency: true } },
         trackingEvents: { orderBy: { createdAt: 'asc' }, select: { status: true, note: true, photoUrl: true, createdAt: true } },
         messages: { orderBy: { createdAt: 'asc' }, take: 30, select: { body: true, createdAt: true, sender: { select: { name: true } } } },
@@ -120,7 +120,7 @@ const listStaff = async (_req, res, next) => {
   try {
     const staff = await prisma.user.findMany({
       where: { role: { in: ['ADMIN', 'MODERATOR'] } },
-      select: { id: true, name: true, phone: true, role: true },
+      select: { id: true, name: true, lastName: true, phone: true, role: true },
       orderBy: [{ role: 'asc' }, { name: 'asc' }],
     });
     res.json({ success: true, staff });
@@ -158,8 +158,8 @@ const removeStaff = async (req, res, next) => {
 const listActivity = async (_req, res, next) => {
   try {
     const rows = await prisma.auditLog.findMany({ orderBy: { createdAt: 'desc' }, take: 50 });
-    const actors = await prisma.user.findMany({ where: { id: { in: [...new Set(rows.map((r) => r.actorId))] } }, select: { id: true, name: true } });
-    const names = Object.fromEntries(actors.map((a) => [a.id, a.name]));
+    const actors = await prisma.user.findMany({ where: { id: { in: [...new Set(rows.map((r) => r.actorId))] } }, select: { id: true, name: true, lastName: true } });
+    const names = Object.fromEntries(actors.map((a) => [a.id, [a.name, a.lastName].filter(Boolean).join(' ')])); // staff see full names
     res.json({ success: true, activity: rows.map((r) => ({ ...r, actorName: names[r.actorId] || '—' })) });
   } catch (err) { next(err); }
 };

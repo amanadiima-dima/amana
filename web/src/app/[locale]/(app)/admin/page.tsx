@@ -6,6 +6,9 @@ import { adminApi } from '@/lib/api';
 import { CheckCircle, XCircle, Users, ShieldCheck, AlertTriangle, UserCog, Trash2, Ban, RotateCcw, Search, Gavel, FileSearch, X } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 
+// Staff see people's full names (members only see first names elsewhere).
+const fullName = (u?: { name?: string; lastName?: string | null } | null) => [u?.name, u?.lastName].filter(Boolean).join(' ');
+
 export default function AdminPage() {
   const t = useTranslations('admin');
   const tCommon = useTranslations('common');
@@ -111,7 +114,7 @@ export default function AdminPage() {
     }
   };
   const removeStaff = async (m: any) => {
-    if (!window.confirm(t('teamConfirmRemove', { name: m.name }))) return;
+    if (!window.confirm(t('teamConfirmRemove', { name: fullName(m) }))) return;
     try { await adminApi.removeStaff(m.id); refreshTeam(); }
     catch (err: any) { setTeamMsg({ ok: false, text: err?.response?.data?.message || t('teamErrorGeneric') }); }
   };
@@ -227,8 +230,8 @@ export default function AdminPage() {
                 <span className="font-semibold">{t('disputeReason')}:</span> {d.disputeReason}
               </div>
               <div className="grid sm:grid-cols-3 gap-3 text-sm mb-3">
-                <div><p className="text-xs text-gray-400">{t('disputeSender')}</p><p className="font-medium text-gray-900">{d.parcelRequest?.sender?.name}</p><p className="text-xs text-gray-500" dir="ltr">{d.parcelRequest?.sender?.phone}</p></div>
-                <div><p className="text-xs text-gray-400">{t('disputeTraveler')}</p><p className="font-medium text-gray-900">{d.trip?.traveler?.name}</p><p className="text-xs text-gray-500" dir="ltr">{d.trip?.traveler?.phone}</p></div>
+                <div><p className="text-xs text-gray-400">{t('disputeSender')}</p><p className="font-medium text-gray-900">{fullName(d.parcelRequest?.sender)}</p><p className="text-xs text-gray-500" dir="ltr">{d.parcelRequest?.sender?.phone}</p></div>
+                <div><p className="text-xs text-gray-400">{t('disputeTraveler')}</p><p className="font-medium text-gray-900">{fullName(d.trip?.traveler)}</p><p className="text-xs text-gray-500" dir="ltr">{d.trip?.traveler?.phone}</p></div>
                 <div><p className="text-xs text-gray-400">{t('disputePayment')}</p><p className="font-medium text-gray-900">{money(d.payment?.grossAmount, d.payment?.currency, true)} ({d.payment?.status})</p></div>
               </div>
               {d.trackingEvents?.length > 0 && (
@@ -276,7 +279,7 @@ export default function AdminPage() {
               <div key={m.id} className="flex items-center gap-3 px-4 py-3">
                 <div className="w-9 h-9 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">{m.name?.charAt(0)?.toUpperCase()}</div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm text-gray-900 truncate">{m.name}</p>
+                  <p className="font-medium text-sm text-gray-900 truncate">{fullName(m)}</p>
                   <p className="text-xs text-gray-400" dir="ltr">{m.phone}</p>
                 </div>
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${m.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>{m.role === 'ADMIN' ? t('teamRoleAdmin') : t('teamRoleMod')}</span>
