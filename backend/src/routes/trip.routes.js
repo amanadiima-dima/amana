@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, query } = require('express-validator');
 const {
-  createTrip, listMyTrips, searchTrips, publicSearchTrips, getTrip, updateTrip, cancelTrip, getTripBookings,
+  popularRoutes, createTrip, listMyTrips, searchTrips, publicSearchTrips, getTrip, updateTrip, cancelTrip, getTripBookings,
 } = require('../controllers/trip.controller');
 const { authenticate, requireVerified } = require('../middlewares/auth.middleware');
 const validate = require('../middlewares/validate.middleware');
@@ -10,6 +10,7 @@ const router = express.Router();
 
 // ── Public (no auth) ─────────────────────────────────────────────────────────
 router.get('/public', publicSearchTrips);
+router.get('/popular-routes', popularRoutes);
 
 // ── Protected ────────────────────────────────────────────────────────────────
 router.use(authenticate);

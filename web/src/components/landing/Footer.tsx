@@ -1,12 +1,13 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Package } from 'lucide-react';
+import FooterRoutes from './FooterRoutes';
 
 export default function Footer() {
   const t = useTranslations('landing.footer');
   return (
     <footer className="bg-gray-900 text-gray-400 py-16">
-      <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-4 gap-10">
+      <div className="max-w-6xl mx-auto px-4 grid sm:grid-cols-2 md:grid-cols-5 gap-10">
         <div>
           <Link href="/" className="flex items-center gap-2 text-white font-bold text-xl mb-4">
             <Package className="w-5 h-5 text-brand-500" /> Amana
@@ -33,6 +34,8 @@ export default function Footer() {
             <li><Link href="/dashboard" className="hover:text-white transition-colors">{t('dashboard')}</Link></li>
           </ul>
         </div>
+
+        <FooterRoutes />
 
         <div>
           <h4 className="text-white font-semibold mb-4">{t('legal')}</h4>

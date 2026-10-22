@@ -51,34 +51,19 @@
   "landing": {
     "navbar": {
       "howItWorks": "Cómo funciona",
-      "features": "Funciones",
-      "reviews": "Opiniones",
+      "features": "Ventajas",
       "getStarted": "Empezar",
       "becomeTraveler": "Hazte transportista"
     },
     "hero": {
-      "badge": "La confianza de miles de viajeros",
-      "titleLine1": "Envía paquetes con",
+      "titleLine1": "Envía tus paquetes con",
       "titleHighlight": "viajeros",
-      "titleLine2": "que van hacia donde tú vas",
-      "description": "Amana conecta a personas que necesitan enviar un paquete con viajeros que ya se dirigen a ese destino. Más barato, más rápido y más cercano que una mensajería tradicional.",
-      "startSending": "Empezar a enviar",
-      "becomeCarrier": "Conviértete en transportista",
-      "securePayments": "Pagos seguros",
-      "idVerified": "Usuarios verificados",
-      "escrowProtection": "Pago en custodia",
-      "mockupTraveler": "Ahmed K.",
-      "mockupVerified": "Verificado ✓",
-      "mockupTripLabel": "Viaje",
-      "mockupTrip": "París → Argel",
-      "mockupTripDetails": "25 dic. · Hasta 10 kg · 3 €/kg",
-      "mockupCta": "Enviar con Ahmed →",
-      "mockupDelivered": "📦 ¡Entregado!",
-      "mockupSaved": "💰 45 € ahorrados frente a mensajería"
+      "titleLine2": "que ya van a tu destino",
+      "description": "Encuentra a alguien que ya viaja a tu destino y envía tu paquete por menos. El pago queda protegido hasta la entrega.",
+      "chipPayment": "Pago retenido hasta la entrega",
+      "chipVerified": "Identidades verificadas"
     },
     "search": {
-      "heading": "Encuentra un viajero que vaya hacia donde tú necesitas",
-      "subheading": "Explora los viajes activos y envía tu paquete con un transportista de confianza.",
       "from": "Origen",
       "to": "Destino",
       "date": "Fecha",
@@ -94,8 +79,42 @@
       "verifiedCarrier": "Transportista verificado",
       "perKg": "por kg",
       "viewTrip": "Ver viaje",
-      "areYouTraveler": "¿Eres viajero?",
-      "postYourTrip": "Publica tu viaje →"
+      "upcomingHeading": "Próximos viajes",
+      "resultsHeading": "Resultados de la búsqueda",
+      "resultsFor": "Viajes de {from} a {to}",
+      "mobileSticky": "Buscar un viaje",
+      "showMore": "Ver {count} más"
+    },
+    "routes": {
+      "heading": "Rutas populares",
+      "subheading": "Precios reales de los viajes publicados ahora mismo.",
+      "from": "Desde",
+      "perKg": "/kg",
+      "trips": "{count, plural, one {# viaje} other {# viajes}}",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "travelerBand": {
+      "heading": "¿Viajas pronto? Publica tu viaje y gana dinero",
+      "description": "Convierte el espacio libre de tu maleta en un ingreso extra. Tú pones el precio por kilo, eliges los paquetes que aceptas y cobras cuando el paquete se entrega.",
+      "cta": "Publicar mi viaje",
+      "note": "Publicar es gratis. Amana solo se queda un 10 % cuando se completa una entrega."
+    },
+    "benefits": {
+      "items": [
+        {
+          "title": "Precios justos",
+          "desc": "Cada viajero pone su precio por kilo y lo ves antes de reservar. Suele salir mucho más barato que una mensajería para la misma ruta."
+        },
+        {
+          "title": "Pago protegido",
+          "desc": "Amana guarda tu dinero y solo lo paga al viajero cuando le das tu código de entrega. Si algo sale mal, nuestro equipo interviene."
+        },
+        {
+          "title": "Personas de confianza",
+          "desc": "Cada miembro verifica su identidad con su documento y un vídeo selfie, y después de cada entrega los miembros se valoran entre sí."
+        }
+      ]
     },
     "howItWorks": {
       "heading": "Cómo funciona Amana",
@@ -119,109 +138,11 @@
         }
       ]
     },
-    "becomeTraveler": {
-      "badge": "Para viajeros",
-      "heading": "¿Viajas pronto? Gana dinero con el espacio libre de tu maleta",
-      "description": "Publica tu viaje en dos minutos. Remitentes cerca de ti reservan los kilos que te sobran y cobras cuando el paquete se entrega.",
-      "cta": "Publicar mi viaje",
-      "note": "Publicar es gratis. Amana solo se queda un 10 % cuando se completa una entrega.",
-      "points": [
-        "Tú pones el precio por kilo y cuánto espacio ofreces",
-        "Ves cada paquete (contenido, fotos, valor declarado) y eliges cuáles aceptas",
-        "El pago queda asegurado antes de la recogida y se te paga al entregar",
-        "Todos los miembros verifican su identidad: sabes con quién tratas"
-      ]
-    },
-    "features": {
-      "heading": "Todo lo que necesitas",
-      "subheading": "Amana se basa en la confianza, la transparencia y la sencillez.",
-      "items": [
-        {
-          "title": "Usuarios verificados",
-          "desc": "Cada viajero y remitente presenta un documento de identidad oficial. Lo verificamos antes de que puedan operar."
-        },
-        {
-          "title": "Pagos seguros en custodia",
-          "desc": "Tu dinero se guarda de forma segura y solo se libera al viajero tras una entrega exitosa."
-        },
-        {
-          "title": "Seguimiento en tiempo real",
-          "desc": "Sigue tu paquete en cada etapa con actualizaciones en vivo y foto de prueba en la entrega."
-        },
-        {
-          "title": "Reseñas mutuas",
-          "desc": "Remitentes y viajeros se valoran mutuamente después de cada entrega. La confianza se construye con el tiempo."
-        },
-        {
-          "title": "Notificaciones instantáneas",
-          "desc": "Recibe un aviso en cuanto se acepte tu reserva, se recoja tu paquete o se entregue."
-        },
-        {
-          "title": "Hasta un 70 % más barato",
-          "desc": "Los viajeros fijan su propio precio. Tú consigues tarifas mucho más competitivas que una mensajería tradicional."
-        }
-      ]
-    },
-    "stats": {
-      "items": [
-        {
-          "value": "50K+",
-          "label": "Paquetes entregados"
-        },
-        {
-          "value": "12K+",
-          "label": "Viajeros verificados"
-        },
-        {
-          "value": "98%",
-          "label": "Tasa de éxito de entrega"
-        },
-        {
-          "value": "4,8★",
-          "label": "Valoración media"
-        }
-      ]
-    },
-    "testimonials": {
-      "heading": "Con el cariño de nuestra comunidad",
-      "subheading": "Historias reales de personas reales.",
-      "roleSender": "Remitente",
-      "roleTraveler": "Viajero",
-      "items": [
-        {
-          "name": "Yasmine B.",
-          "role": "Remitente",
-          "text": "Envié un paquete de 5 kg de París a Túnez por 18 € en lugar de 80 € con una mensajería tradicional. El viajero fue súper profesional y mi paquete llegó en perfecto estado."
-        },
-        {
-          "name": "Karim M.",
-          "role": "Viajero",
-          "text": "Viajo a Argelia cada dos meses. Con Amana cubro los gastos de equipaje e incluso gano algo extra. Se ha vuelto una rutina: siempre reviso si hay paquetes antes de volar."
-        },
-        {
-          "name": "Sarah L.",
-          "role": "Remitente",
-          "text": "El sistema de pago en custodia me dio total confianza. Sabía que mi dinero estaba seguro hasta que se confirmó la entrega. ¡Recomiendo Amana totalmente!"
-        },
-        {
-          "name": "Omar T.",
-          "role": "Viajero",
-          "text": "La aplicación es increíblemente fácil de usar. Publico mi viaje, acepto solicitudes y todo se gestiona solo: pagos, notificaciones, seguimiento."
-        }
-      ]
-    },
-    "downloadCTA": {
-      "heading": "¿Listo para enviar tu primer paquete?",
-      "description": "Únete a miles de usuarios que ya ahorran dinero y tiempo con Amana. Empieza en minutos, sin suscripción.",
-      "cta": "Usar la aplicación web",
-      "iosComingSoon": "📱 App para iOS — Próximamente",
-      "androidComingSoon": "🤖 App para Android — Próximamente"
-    },
     "footer": {
       "tagline": "Envío de paquetes de confianza entre particulares, conectando remitentes y viajeros en todo el mundo.",
       "product": "Producto",
       "howItWorks": "Cómo funciona",
-      "features": "Funciones",
+      "features": "Ventajas",
       "getStarted": "Empezar",
       "forUsers": "Para usuarios",
       "sendParcel": "Enviar un paquete",
@@ -232,7 +153,8 @@
       "termsOfService": "Términos del servicio",
       "cookiePolicy": "Política de cookies",
       "rights": "© {year} Amana. Todos los derechos reservados.",
-      "madeWith": "Hecho con ❤️ para viajeros y remitentes de todo el mundo."
+      "madeWith": "Hecho con ❤️ para viajeros y remitentes de todo el mundo.",
+      "popularRoutes": "Rutas populares"
     }
   },
   "auth": {

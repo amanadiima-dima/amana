@@ -19,7 +19,6 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
           <Link href="/#how-it-works" className="hover:text-brand-600 transition-colors">{t('howItWorks')}</Link>
           <Link href="/#features" className="hover:text-brand-600 transition-colors">{t('features')}</Link>
-          <Link href="/#testimonials" className="hover:text-brand-600 transition-colors">{t('reviews')}</Link>
           <Link href="/#become-traveler" className="flex items-center gap-1.5 bg-amber-100 text-amber-800 px-3 py-1.5 rounded-full hover:bg-amber-200 transition-colors">
             <Plane className="w-4 h-4 rtl:-scale-x-100" /> {t('becomeTraveler')}
           </Link>
@@ -38,7 +37,6 @@ export default function Navbar() {
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 flex flex-col gap-4 text-sm font-medium">
           <Link href="/#how-it-works" onClick={() => setOpen(false)}>{t('howItWorks')}</Link>
           <Link href="/#features" onClick={() => setOpen(false)}>{t('features')}</Link>
-          <Link href="/#testimonials" onClick={() => setOpen(false)}>{t('reviews')}</Link>
           <Link href="/#become-traveler" onClick={() => setOpen(false)} className="flex items-center gap-1.5 text-amber-800 font-semibold">
             <Plane className="w-4 h-4 rtl:-scale-x-100" /> {t('becomeTraveler')}
           </Link>

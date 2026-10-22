@@ -51,34 +51,19 @@
   "landing": {
     "navbar": {
       "howItWorks": "Comment ça marche",
-      "features": "Fonctionnalités",
-      "reviews": "Avis",
+      "features": "Avantages",
       "getStarted": "Commencer",
       "becomeTraveler": "Devenir voyageur"
     },
     "hero": {
-      "badge": "Adopté par des milliers de voyageurs",
       "titleLine1": "Envoyez vos colis avec des",
       "titleHighlight": "voyageurs",
-      "titleLine2": "qui vont dans votre direction",
-      "description": "Amana met en relation des personnes qui doivent envoyer un colis avec des voyageurs déjà en route vers la destination. Moins cher, plus rapide et plus humain qu'un transporteur classique.",
-      "startSending": "Envoyer un colis",
-      "becomeCarrier": "Devenir transporteur",
-      "securePayments": "Paiements sécurisés",
-      "idVerified": "Utilisateurs vérifiés",
-      "escrowProtection": "Paiement sous séquestre",
-      "mockupTraveler": "Ahmed K.",
-      "mockupVerified": "Vérifié ✓",
-      "mockupTripLabel": "Trajet",
-      "mockupTrip": "Paris → Alger",
-      "mockupTripDetails": "25 déc. · Jusqu'à 10 kg · 3 €/kg",
-      "mockupCta": "Envoyer avec Ahmed →",
-      "mockupDelivered": "📦 Livré !",
-      "mockupSaved": "💰 45 € économisés vs transporteur"
+      "titleLine2": "qui y vont déjà",
+      "description": "Trouvez quelqu'un qui part déjà vers votre destination et envoyez votre colis pour moins cher. Le paiement reste protégé jusqu'à la livraison.",
+      "chipPayment": "Paiement bloqué jusqu'à la livraison",
+      "chipVerified": "Identités vérifiées"
     },
     "search": {
-      "heading": "Trouvez un voyageur qui va dans votre direction",
-      "subheading": "Parcourez les trajets actifs et envoyez votre colis avec un transporteur de confiance.",
       "from": "Départ",
       "to": "Arrivée",
       "date": "Date",
@@ -94,8 +79,42 @@
       "verifiedCarrier": "Transporteur vérifié",
       "perKg": "par kg",
       "viewTrip": "Voir le trajet",
-      "areYouTraveler": "Vous êtes voyageur ?",
-      "postYourTrip": "Publiez votre trajet →"
+      "upcomingHeading": "Prochains trajets",
+      "resultsHeading": "Résultats de recherche",
+      "resultsFor": "Trajets de {from} à {to}",
+      "mobileSticky": "Rechercher un trajet",
+      "showMore": "Voir {count} de plus"
+    },
+    "routes": {
+      "heading": "Trajets populaires",
+      "subheading": "Des prix réels, tirés des trajets publiés en ce moment.",
+      "from": "À partir de",
+      "perKg": "/kg",
+      "trips": "{count, plural, one {# trajet} other {# trajets}}",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "travelerBand": {
+      "heading": "Vous partez bientôt ? Publiez votre trajet et gagnez de l'argent",
+      "description": "Transformez la place libre dans vos bagages en revenu. Vous fixez le prix au kilo, choisissez les colis que vous acceptez et êtes payé une fois le colis livré.",
+      "cta": "Publier mon trajet",
+      "note": "Publication gratuite. Amana prend 10 % uniquement quand une livraison est terminée."
+    },
+    "benefits": {
+      "items": [
+        {
+          "title": "Des prix justes",
+          "desc": "Les voyageurs fixent leur propre prix au kilo, et vous le voyez avant de réserver. Souvent bien moins cher qu'un transporteur sur le même trajet."
+        },
+        {
+          "title": "Paiement protégé",
+          "desc": "Votre argent est conservé par Amana et n'est versé au voyageur que lorsque vous lui donnez votre code de livraison. En cas de problème, notre équipe intervient."
+        },
+        {
+          "title": "Des personnes de confiance",
+          "desc": "Chaque membre vérifie son identité avec une pièce d'identité et une vidéo selfie, et les membres s'évaluent après chaque livraison."
+        }
+      ]
     },
     "howItWorks": {
       "heading": "Comment fonctionne Amana",
@@ -119,109 +138,11 @@
         }
       ]
     },
-    "becomeTraveler": {
-      "badge": "Pour les voyageurs",
-      "heading": "Vous partez bientôt ? Gagnez de l'argent avec la place libre dans vos bagages",
-      "description": "Publiez votre trajet en deux minutes. Des expéditeurs près de chez vous réservent les kilos qu'il vous reste, et vous êtes payé une fois le colis livré.",
-      "cta": "Publier mon trajet",
-      "note": "Publication gratuite. Amana prend 10 % uniquement quand une livraison est terminée.",
-      "points": [
-        "Vous fixez votre prix au kilo et la place que vous proposez",
-        "Vous voyez chaque colis (contenu, photos, valeur déclarée) et choisissez ceux que vous acceptez",
-        "Le paiement est sécurisé avant la prise en charge et vous est versé à la livraison",
-        "Chaque membre vérifie son identité : vous savez avec qui vous traitez"
-      ]
-    },
-    "features": {
-      "heading": "Tout ce dont vous avez besoin",
-      "subheading": "Amana repose sur la confiance, la transparence et la simplicité.",
-      "items": [
-        {
-          "title": "Utilisateurs vérifiés",
-          "desc": "Chaque voyageur et expéditeur fournit une pièce d'identité officielle. Nous vérifions avant toute transaction."
-        },
-        {
-          "title": "Paiements sous séquestre sécurisés",
-          "desc": "Votre argent est conservé en sécurité et n'est versé au voyageur qu'après la livraison."
-        },
-        {
-          "title": "Suivi en temps réel",
-          "desc": "Suivez votre colis à chaque étape grâce aux mises à jour en direct et à la photo de preuve à la livraison."
-        },
-        {
-          "title": "Avis croisés",
-          "desc": "Expéditeurs et voyageurs s'évaluent mutuellement après chaque livraison. La confiance se construit avec le temps."
-        },
-        {
-          "title": "Notifications instantanées",
-          "desc": "Soyez averti dès qu'une réservation est acceptée, qu'un colis est récupéré ou livré."
-        },
-        {
-          "title": "Jusqu'à 70 % moins cher",
-          "desc": "Les voyageurs fixent leur propre prix. Profitez de tarifs bien plus compétitifs qu'un transporteur classique."
-        }
-      ]
-    },
-    "stats": {
-      "items": [
-        {
-          "value": "50K+",
-          "label": "Colis livrés"
-        },
-        {
-          "value": "12K+",
-          "label": "Voyageurs vérifiés"
-        },
-        {
-          "value": "98%",
-          "label": "Taux de réussite des livraisons"
-        },
-        {
-          "value": "4,8★",
-          "label": "Note moyenne"
-        }
-      ]
-    },
-    "testimonials": {
-      "heading": "Plébiscité par notre communauté",
-      "subheading": "De vraies histoires de vraies personnes.",
-      "roleSender": "Expéditrice",
-      "roleTraveler": "Voyageur",
-      "items": [
-        {
-          "name": "Yasmine B.",
-          "role": "Expéditrice",
-          "text": "J'ai envoyé un colis de 5 kg de Paris à Tunis pour 18 € au lieu de 80 € avec un transporteur classique. Le voyageur était très professionnel et mon colis est arrivé en parfait état !"
-        },
-        {
-          "name": "Karim M.",
-          "role": "Voyageur",
-          "text": "Je voyage en Algérie tous les deux mois. Avec Amana, je couvre mes frais de bagages et je gagne même un petit extra. C'est devenu une habitude — je vérifie toujours s'il y a des colis avant de m'envoler."
-        },
-        {
-          "name": "Sarah L.",
-          "role": "Expéditrice",
-          "text": "Le système de paiement sous séquestre m'a donné une confiance totale. Je savais que mon argent était en sécurité jusqu'à la confirmation de la livraison. Je recommande vivement Amana !"
-        },
-        {
-          "name": "Omar T.",
-          "role": "Voyageur",
-          "text": "L'application est incroyablement simple à utiliser. Je publie mon trajet, j'accepte les demandes, et tout est géré — paiements, notifications, suivi. Ça marche tout simplement."
-        }
-      ]
-    },
-    "downloadCTA": {
-      "heading": "Prêt à envoyer votre premier colis ?",
-      "description": "Rejoignez des milliers d'utilisateurs qui économisent déjà de l'argent et du temps avec Amana. Démarrez en quelques minutes — sans abonnement.",
-      "cta": "Utiliser l'application web",
-      "iosComingSoon": "📱 App iOS — Bientôt disponible",
-      "androidComingSoon": "🤖 App Android — Bientôt disponible"
-    },
     "footer": {
       "tagline": "Livraison de colis fiable entre particuliers, reliant expéditeurs et voyageurs dans le monde entier.",
       "product": "Produit",
       "howItWorks": "Comment ça marche",
-      "features": "Fonctionnalités",
+      "features": "Avantages",
       "getStarted": "Commencer",
       "forUsers": "Pour les utilisateurs",
       "sendParcel": "Envoyer un colis",
@@ -232,7 +153,8 @@
       "termsOfService": "Conditions d'utilisation",
       "cookiePolicy": "Politique des cookies",
       "rights": "© {year} Amana. Tous droits réservés.",
-      "madeWith": "Conçu avec ❤️ pour les voyageurs et les expéditeurs du monde entier."
+      "madeWith": "Conçu avec ❤️ pour les voyageurs et les expéditeurs du monde entier.",
+      "popularRoutes": "Trajets populaires"
     }
   },
   "auth": {

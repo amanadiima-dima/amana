@@ -269,4 +269,30 @@ const publicSearchTrips = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { createTrip, listMyTrips, searchTrips, publicSearchTrips, getTrip, updateTrip, cancelTrip, getTripBookings };
+// GET /api/trips/popular-routes — public: routes with upcoming open trips, the cheapest price per kg
+// in each currency and the next departure. Feeds the landing page cards and footer links.
+// Optional ?destination= keeps only routes to that city.
+const popularRoutes = async (req, res, next) => {
+  try {
+    const destination = String(req.query.destination || '').trim();
+    const groups = await prisma.trip.groupBy({
+      by: ['originCity', 'destinationCity', 'currency'],
+      where: {
+        status: 'OPEN', departureAt: { gte: new Date() },
+        ...(destination && { destinationCity: { equals: destination, mode: 'insensitive' } }),
+      },
+      _count: { _all: true },
+      _min: { pricePerKg: true, departureAt: true },
+    });
+    const routes = groups
+      .map((g) => ({
+        originCity: g.originCity, destinationCity: g.destinationCity, currency: g.currency,
+        trips: g._count._all, minPricePerKg: g._min.pricePerKg, nextDepartureAt: g._min.departureAt,
+      }))
+      .sort((a, b) => b.trips - a.trips || a.nextDepartureAt - b.nextDepartureAt)
+      .slice(0, 12);
+    res.json({ success: true, routes });
+  } catch (err) { next(err); }
+};
+
+module.exports = { popularRoutes, createTrip, listMyTrips, searchTrips, publicSearchTrips, getTrip, updateTrip, cancelTrip, getTripBookings };

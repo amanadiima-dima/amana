@@ -51,34 +51,19 @@
   "landing": {
     "navbar": {
       "howItWorks": "How it works",
-      "features": "Features",
-      "reviews": "Reviews",
+      "features": "Why Amana",
       "getStarted": "Get Started",
       "becomeTraveler": "Become a traveller"
     },
     "hero": {
-      "badge": "Trusted by thousands of travelers",
-      "titleLine1": "Send parcels with",
-      "titleHighlight": "travelers",
-      "titleLine2": "going your way",
-      "description": "Amana connects people who need to send parcels with travelers already heading to the destination. Cheaper, faster, and more personal than traditional couriers.",
-      "startSending": "Start Sending",
-      "becomeCarrier": "Become a Carrier",
-      "securePayments": "Secure payments",
-      "idVerified": "ID verified users",
-      "escrowProtection": "Escrow protection",
-      "mockupTraveler": "Ahmed K.",
-      "mockupVerified": "Verified ✓",
-      "mockupTripLabel": "Trip",
-      "mockupTrip": "Paris → Algiers",
-      "mockupTripDetails": "Dec 25 · Up to 10kg · €3/kg",
-      "mockupCta": "Send with Ahmed →",
-      "mockupDelivered": "📦 Delivered!",
-      "mockupSaved": "💰 Saved €45 vs courier"
+      "titleLine1": "Send your parcels with",
+      "titleHighlight": "travellers",
+      "titleLine2": "already heading there",
+      "description": "Find someone who is already travelling to your destination and send your parcel for less. The payment stays protected until delivery.",
+      "chipPayment": "Payment held until delivery",
+      "chipVerified": "Verified identities"
     },
     "search": {
-      "heading": "Find a traveler going your way",
-      "subheading": "Browse active trips and send your parcel with a trusted carrier.",
       "from": "From",
       "to": "To",
       "date": "Date",
@@ -94,8 +79,42 @@
       "verifiedCarrier": "Verified carrier",
       "perKg": "per kg",
       "viewTrip": "View trip",
-      "areYouTraveler": "Are you a traveler?",
-      "postYourTrip": "Post your trip →"
+      "upcomingHeading": "Upcoming trips",
+      "resultsHeading": "Search results",
+      "resultsFor": "Trips from {from} to {to}",
+      "mobileSticky": "Search a trip",
+      "showMore": "Show {count} more"
+    },
+    "routes": {
+      "heading": "Popular routes",
+      "subheading": "Real prices from the trips published right now.",
+      "from": "From",
+      "perKg": "/kg",
+      "trips": "{count, plural, one {# trip} other {# trips}}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "travelerBand": {
+      "heading": "Travelling soon? Publish your trip and earn money",
+      "description": "Turn the free space in your luggage into extra income. You set the price per kilo, choose the parcels you accept and get paid once the parcel is delivered.",
+      "cta": "Publish my trip",
+      "note": "Free to publish. Amana keeps 10% only when a delivery is completed."
+    },
+    "benefits": {
+      "items": [
+        {
+          "title": "Fair prices",
+          "desc": "Travellers set their own price per kilo, and you see it before booking. Often far cheaper than a courier for the same route."
+        },
+        {
+          "title": "Protected payment",
+          "desc": "Your money is held by Amana and only released to the traveller when you give them your delivery code. If something goes wrong, our team steps in."
+        },
+        {
+          "title": "People you can trust",
+          "desc": "Every member verifies their identity with an ID document and a selfie video, and members rate each other after every delivery."
+        }
+      ]
     },
     "howItWorks": {
       "heading": "How Amana works",
@@ -119,109 +138,11 @@
         }
       ]
     },
-    "becomeTraveler": {
-      "badge": "For travellers",
-      "heading": "Travelling soon? Earn money with the free space in your luggage",
-      "description": "Publish your trip in two minutes. Senders near you book the kilos you have left, and you get paid once the parcel is delivered.",
-      "cta": "Publish my trip",
-      "note": "Free to publish. Amana keeps 10% only when a delivery is completed.",
-      "points": [
-        "You set your price per kilo and how much space you offer",
-        "You see every parcel (content, photos, declared value) and choose which ones to accept",
-        "The payment is secured before pickup and released to you on delivery",
-        "Every member verifies their identity, so you know who you deal with"
-      ]
-    },
-    "features": {
-      "heading": "Everything you need",
-      "subheading": "Amana is built around trust, transparency, and simplicity.",
-      "items": [
-        {
-          "title": "ID Verified Users",
-          "desc": "Every traveler and sender submits a government-issued ID. We verify before they can transact."
-        },
-        {
-          "title": "Secure Escrow Payments",
-          "desc": "Your money is held safely and only released to the traveler after successful delivery."
-        },
-        {
-          "title": "Real-Time Tracking",
-          "desc": "Track your parcel every step of the way with live status updates and photo proof on delivery."
-        },
-        {
-          "title": "Two-Way Reviews",
-          "desc": "Both senders and travelers rate each other after every delivery. Trust is built over time."
-        },
-        {
-          "title": "Instant Notifications",
-          "desc": "Get notified the moment your booking is accepted, your parcel is picked up, or delivered."
-        },
-        {
-          "title": "Up to 70% Cheaper",
-          "desc": "Travelers set their own price. You get competitive rates far below traditional courier services."
-        }
-      ]
-    },
-    "stats": {
-      "items": [
-        {
-          "value": "50K+",
-          "label": "Parcels Delivered"
-        },
-        {
-          "value": "12K+",
-          "label": "Verified Travelers"
-        },
-        {
-          "value": "98%",
-          "label": "Delivery Success Rate"
-        },
-        {
-          "value": "4.8★",
-          "label": "Average Rating"
-        }
-      ]
-    },
-    "testimonials": {
-      "heading": "Loved by our community",
-      "subheading": "Real stories from real people.",
-      "roleSender": "Sender",
-      "roleTraveler": "Traveler",
-      "items": [
-        {
-          "name": "Yasmine B.",
-          "role": "Sender",
-          "text": "I sent a 5kg package from Paris to Tunis for €18 instead of €80 with a traditional courier. The traveler was super professional and my parcel arrived in perfect condition!"
-        },
-        {
-          "name": "Karim M.",
-          "role": "Traveler",
-          "text": "I travel to Algeria every 2 months. With Amana I cover my luggage fees and even make a little extra. It's become a routine — I always check for parcels before flying."
-        },
-        {
-          "name": "Sarah L.",
-          "role": "Sender",
-          "text": "The escrow payment system gave me full confidence. I knew my money was safe until the delivery was confirmed. Highly recommend Amana!"
-        },
-        {
-          "name": "Omar T.",
-          "role": "Traveler",
-          "text": "The app is incredibly easy to use. I post my trip, accept requests, and everything is handled — payments, notifications, tracking. It just works."
-        }
-      ]
-    },
-    "downloadCTA": {
-      "heading": "Ready to send your first parcel?",
-      "description": "Join thousands of users already saving money and time with Amana. Start in minutes — no subscription needed.",
-      "cta": "Use the Web App",
-      "iosComingSoon": "📱 iOS App — Coming Soon",
-      "androidComingSoon": "🤖 Android App — Coming Soon"
-    },
     "footer": {
       "tagline": "Trusted peer-to-peer parcel delivery connecting senders with travelers worldwide.",
       "product": "Product",
       "howItWorks": "How it works",
-      "features": "Features",
+      "features": "Why Amana",
       "getStarted": "Get Started",
       "forUsers": "For Users",
       "sendParcel": "Send a Parcel",
@@ -232,7 +153,8 @@
       "termsOfService": "Terms of Service",
       "cookiePolicy": "Cookie Policy",
       "rights": "© {year} Amana. All rights reserved.",
-      "madeWith": "Made with ❤️ for travelers and senders everywhere."
+      "madeWith": "Made with ❤️ for travelers and senders everywhere.",
+      "popularRoutes": "Popular routes"
     }
   },
   "auth": {
