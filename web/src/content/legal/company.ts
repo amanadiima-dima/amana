@@ -6,5 +6,5 @@ export const COMPANY = {
   privacyEmail: '[privacy@your-domain]',
   // GDPR art. 27: a controller outside the EU that serves EU users needs a representative in the EU.
   euRepresentative: '[EU representative — name and address]',
-  lastUpdated: '2026-10-20',
+  lastUpdated: '2026-10-22',
 };

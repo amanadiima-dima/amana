@@ -11,7 +11,7 @@ const signIn = async (phone, name = 'Test User') => {
   let r = await post('/auth/login', { identifier: phone, password: PASSWORD });
   if (r.status === 200) return post('/auth/login/verify', { loginToken: r.data.loginToken, code: '123456' });
   if (r.status !== 401) return r; // e.g. 403 disabled account
-  const details = { name, phone, password: PASSWORD, acceptTerms: true };
+  const details = { name, phone, birthDate: '1990-05-15', password: PASSWORD, acceptTerms: true };
   r = await post('/auth/register', details);
   if (r.status === 200) return post('/auth/register/verify', { ...details, code: '123456' });
   await post('/auth/password/forgot', { identifier: phone }); // existing account without this password

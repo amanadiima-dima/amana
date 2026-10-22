@@ -7,28 +7,38 @@ const call = async (m, p, t, b) => { const h = { 'Content-Type': 'application/js
 const post = (p, b) => call('POST', p, null, b);
 let pass = 0, fail = 0; const T = (n, c, x = '') => { c ? pass++ : fail++; console.log(c ? 'PASS' : 'FAIL', n, x); };
 const rnd = () => String(Date.now()).slice(-7);
+// Date `years` years before today, as YYYY-MM-DD (UTC), shifted by `days`.
+const yearsAgo = (years, days = 0) => { const d = new Date(); d.setUTCFullYear(d.getUTCFullYear() - years); d.setUTCDate(d.getUTCDate() + days); return d.toISOString().slice(0, 10); };
 
 (async () => {
   const phone = '+4179' + rnd();
   const email = `maria.${rnd()}@example.com`;
-  const base = { name: 'Maria Lopez', phone, email: email.toUpperCase(), password: 'secret-pass-1', acceptTerms: true };
+  const base = { name: 'Maria Lopez', phone, email: email.toUpperCase(), birthDate: '1992-03-08', password: 'secret-pass-1', acceptTerms: true };
 
   // ── Sign-up ──
   let r = await post('/auth/register', { ...base, acceptTerms: false }); T('sign-up without the 18+/Terms box is refused', r.status === 400);
   r = await post('/auth/register', { ...base, password: 'short' }); T('password under 8 characters refused', r.status === 400);
   r = await post('/auth/register', { ...base, email: 'not-an-email' }); T('invalid email refused', r.status === 400);
   r = await post('/auth/register', { ...base, name: 'A' }); T('1-letter name refused', r.status === 400);
+  r = await post('/auth/register', { ...base, birthDate: undefined }); T('date of birth is required', r.status === 400);
+  r = await post('/auth/register', { ...base, birthDate: '1992-02-30' }); T('impossible date refused', r.status === 400);
+  r = await post('/auth/register', { ...base, birthDate: '08/03/1992' }); T('date must be YYYY-MM-DD', r.status === 400);
+  r = await post('/auth/register', { ...base, birthDate: yearsAgo(18, 1) }); T('under 18 (birthday tomorrow) refused', r.status === 400 && /18/.test(r.data.message));
+  r = await post('/auth/register', { ...base, birthDate: yearsAgo(130) }); T('implausible age refused', r.status === 400);
+  r = await post('/auth/register', { ...base, phone: '+4176' + rnd(), email: '', birthDate: yearsAgo(18) }); T('18th birthday today is accepted', r.status === 200);
   r = await post('/auth/register', { ...base, phone: '+10000000001' }); T('a phone that already has an account is refused (409)', r.status === 409);
   r = await post('/auth/register', base); T('valid details: code sent, no session yet', r.status === 200 && !r.data.accessToken);
   r = await post('/auth/register/verify', { ...base, code: '000000' }); T('wrong code refused', r.status === 400);
   T('…and no account was created', !(await prisma.user.findUnique({ where: { phone } })));
   r = await post('/auth/register/verify', { ...base, acceptTerms: false, code: '123456' }); T('verify step also requires the Terms box', r.status === 400);
+  r = await post('/auth/register/verify', { ...base, birthDate: yearsAgo(16), code: '123456' }); T('verify step also checks the age (no bypass of step 1)', r.status === 400);
   r = await post('/auth/register/verify', { ...base, code: '123456' });
   T('right code creates the account and signs in', r.status === 200 && !!r.data.accessToken && r.data.user.name === 'Maria Lopez' && r.data.user.phone === phone);
   T('email stored lower-case', r.data.user?.email === email);
   const userId = r.data.user?.id;
   const stored = await prisma.user.findUnique({ where: { phone } });
   T('password is stored hashed, terms acceptance recorded', !!stored.passwordHash && stored.passwordHash !== base.password && !!stored.termsAcceptedAt);
+  T('date of birth stored', stored.birthDate?.toISOString().slice(0, 10) === '1992-03-08');
   r = await post('/auth/register/verify', { ...base, code: '123456' }); T('registering the same phone twice is refused', r.status === 409);
   r = await post('/auth/register', { ...base, phone: '+4178' + rnd() }); T('an email already used is refused', r.status === 409);
 

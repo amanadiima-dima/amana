@@ -73,6 +73,20 @@ const recordFail = (key) => {
   passwordFails.set(key, { count: f && Date.now() - f.at < LOCK_MS ? f.count + 1 : 1, at: Date.now() });
 };
 
+// "YYYY-MM-DD" → Date (UTC midnight). Amana is 18+ only: the age is counted in calendar years.
+const MIN_AGE = 18;
+const parseBirthDate = (value) => {
+  const m = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const d = m && new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+  if (!d || d.getUTCMonth() !== +m[2] - 1 || d.getUTCDate() !== +m[3]) throw new AppError('Enter a valid date of birth', 400);
+  const now = new Date();
+  let age = now.getUTCFullYear() - d.getUTCFullYear();
+  if (now.getUTCMonth() < d.getUTCMonth() || (now.getUTCMonth() === d.getUTCMonth() && now.getUTCDate() < d.getUTCDate())) age--;
+  if (age > 120) throw new AppError('Enter a valid date of birth', 400);
+  if (age < MIN_AGE) throw new AppError('You must be 18 or older to use Amana', 400);
+  return d;
+};
+
 const assertNewAccount = async ({ phone, email }) => {
   if (await prisma.user.findUnique({ where: { phone } })) throw new AppError('This phone number already has an account — sign in instead', 409);
   if (email && (await prisma.user.findUnique({ where: { email } }))) throw new AppError('This email is already used by another account', 409);
@@ -99,11 +113,12 @@ const sendSession = async (res, user) => {
   });
 };
 
-// POST /api/auth/register  body: { name, phone, email?, password, acceptTerms: true }
+// POST /api/auth/register  body: { name, phone, email?, birthDate (YYYY-MM-DD), password, acceptTerms: true }
 // Checks the details and texts a code to the phone; the account is created by /register/verify.
 const register = async (req, res, next) => {
   try {
     if (req.body.acceptTerms !== true) throw new AppError('You must be 18 or older and accept the Terms and Privacy Policy', 400);
+    parseBirthDate(req.body.birthDate);
     const phone = req.body.phone;
     await assertNewAccount({ phone, email: normEmail(req.body.email) });
     const channel = await sendCode(phone);
@@ -117,10 +132,11 @@ const registerVerify = async (req, res, next) => {
     if (req.body.acceptTerms !== true) throw new AppError('You must be 18 or older and accept the Terms and Privacy Policy', 400);
     const { phone, code, password } = req.body;
     const email = normEmail(req.body.email);
+    const birthDate = parseBirthDate(req.body.birthDate);
     await assertNewAccount({ phone, email });
     await checkCode(phone, code);
     const user = await prisma.user.create({
-      data: { phone, email, name: String(req.body.name).trim().slice(0, 60), passwordHash: await bcrypt.hash(password, 10), termsAcceptedAt: new Date() },
+      data: { phone, email, birthDate, name: String(req.body.name).trim().slice(0, 60), passwordHash: await bcrypt.hash(password, 10), termsAcceptedAt: new Date() },
     }).catch((e) => { throw e.code === 'P2002' ? new AppError('This phone number or email already has an account', 409) : e; });
     return await sendSession(res, user);
   } catch (err) { next(err); }

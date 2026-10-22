@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useAuthStore } from '@/store/authStore';
 import { userApi } from '@/lib/api';
 import { Link, useRouter } from '@/i18n/navigation';
@@ -280,6 +280,7 @@ function IdVerificationSection() {
 
 export default function ProfilePage() {
   const t = useTranslations('profile');
+  const locale = useLocale();
   const { user, loadUser } = useAuthStore();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -340,6 +341,14 @@ export default function ProfilePage() {
           <input value={user?.phone || ''} disabled
             className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed" dir="ltr" />
         </div>
+
+        {user?.birthDate && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('birthDate')}</label>
+            <input value={new Date(user.birthDate).toLocaleDateString(locale, { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' })} disabled
+              className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed" />
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">{t('email')}</label>

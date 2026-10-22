@@ -178,6 +178,11 @@
     "emailLabel": "E-mail (facultatif)",
     "emailPlaceholder": "vous@exemple.com",
     "emailHint": "Pour pouvoir aussi vous connecter avec votre e-mail.",
+    "birthDateLabel": "Date de naissance",
+    "birthDay": "Jour",
+    "birthMonth": "Mois",
+    "birthYear": "Année",
+    "birthDateHint": "Vous devez avoir 18 ans ou plus. Elle n'est pas visible par les autres membres.",
     "newPasswordLabel": "Mot de passe",
     "passwordPlaceholder": "Au moins 8 caractères",
     "acceptTerms": "J'ai 18 ans ou plus et j'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>.",
@@ -212,7 +217,9 @@
       "phoneTaken": "Ce numéro a déjà un compte. Connectez-vous plutôt.",
       "emailTaken": "Cet e-mail est déjà utilisé par un autre compte.",
       "termsRequired": "Confirmez que vous avez 18 ans ou plus et acceptez les Conditions et la Politique de confidentialité.",
-      "generic": "Une erreur est survenue. Réessayez."
+      "generic": "Une erreur est survenue. Réessayez.",
+      "birthDateRequired": "Saisissez votre date de naissance complète.",
+      "tooYoung": "Vous devez avoir 18 ans ou plus pour utiliser Amana."
     }
   },
   "verificationNotice": {
@@ -566,7 +573,8 @@
       "wrongCurrent": "Votre mot de passe actuel est incorrect.",
       "tooShort": "Le nouveau mot de passe doit contenir au moins 8 caractères.",
       "failed": "Impossible de changer le mot de passe. Réessayez."
-    }
+    },
+    "birthDate": "Date de naissance"
   },
   "travelerProfile": {
     "verified": "Vérifié",

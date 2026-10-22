@@ -17,7 +17,7 @@ const en: LegalDoc = {
       id: 'data', title: '2. What data we collect',
       blocks: [
         { list: [
-          'Account: phone number, name, and optionally a photo and a short bio. We do not ask for your email or home address.',
+          'Account: phone number, name, date of birth (to check you are 18 or older; not shown to other members), a password (stored only in encrypted form), and optionally your email, a photo and a short bio. We do not ask for your home address.',
           'Identity verification: type of document, photos of your ID card (front and back) or passport, a short selfie video in which you say a code we give you, the date of your consent and the result of the review.',
           'Trips you publish: cities, pickup address and map pin, dates, transport mode, capacity and price.',
           'Parcels you send: pickup and delivery addresses, description, weight, declared value and photos.',
@@ -128,7 +128,7 @@ const fr: LegalDoc = {
       id: 'data', title: '2. Les données que nous collectons',
       blocks: [
         { list: [
-          "Compte : numéro de téléphone, nom et, si vous le souhaitez, une photo et une courte présentation. Nous ne demandons ni e-mail ni adresse de domicile.",
+          "Compte : numéro de téléphone, nom, date de naissance (pour vérifier que vous avez 18 ans ou plus ; elle n'est pas visible par les autres membres), un mot de passe (conservé uniquement sous forme chiffrée) et, si vous le souhaitez, votre e-mail, une photo et une courte présentation. Nous ne demandons pas votre adresse de domicile.",
           "Vérification d'identité : type de document, photos de votre carte d'identité (recto et verso) ou de votre passeport, une courte vidéo selfie dans laquelle vous dites un code que nous vous donnons, la date de votre consentement et le résultat de la vérification.",
           'Trajets publiés : villes, adresse et point de prise en charge sur la carte, dates, mode de transport, capacité et prix.',
           'Colis envoyés : adresses de prise en charge et de livraison, description, poids, valeur déclarée et photos.',
@@ -239,7 +239,7 @@ const es: LegalDoc = {
       id: 'data', title: '2. Qué datos recogemos',
       blocks: [
         { list: [
-          'Cuenta: número de teléfono, nombre y, si quieres, una foto y una breve presentación. No pedimos email ni dirección de casa.',
+          'Cuenta: número de teléfono, nombre, fecha de nacimiento (para comprobar que tienes 18 años o más; no se muestra a otros usuarios), una contraseña (guardada solo de forma cifrada) y, si quieres, tu correo, una foto y una breve presentación. No pedimos tu dirección de casa.',
           'Verificación de identidad: tipo de documento, fotos de tu DNI (anverso y reverso) o pasaporte, un vídeo selfie corto en el que dices un código que te damos, la fecha de tu consentimiento y el resultado de la revisión.',
           'Viajes que publicas: ciudades, dirección y punto de recogida en el mapa, fechas, medio de transporte, capacidad y precio.',
           'Paquetes que envías: direcciones de recogida y entrega, descripción, peso, valor declarado y fotos.',
@@ -350,7 +350,7 @@ const ar: LegalDoc = {
       id: 'data', title: '2. البيانات التي نجمعها',
       blocks: [
         { list: [
-          'الحساب: رقم الهاتف، الاسم، واختياريًا صورة ونبذة قصيرة. لا نطلب بريدًا إلكترونيًا ولا عنوان سكن.',
+          'الحساب: رقم الهاتف، الاسم، تاريخ الميلاد (للتحقق من أن عمرك 18 عامًا أو أكثر؛ لا يظهر للأعضاء الآخرين)، كلمة مرور (تُحفظ بشكل مشفّر فقط)، واختياريًا بريدك الإلكتروني وصورة ونبذة قصيرة. لا نطلب عنوان سكنك.',
           'التحقق من الهوية: نوع الوثيقة، صور بطاقة الهوية (الوجه والظهر) أو جواز السفر، فيديو سيلفي قصير تقول فيه رمزًا نعطيك إياه، تاريخ موافقتك ونتيجة المراجعة.',
           'الرحلات التي تنشرها: المدن، عنوان ونقطة الاستلام على الخريطة، التواريخ، وسيلة النقل، السعة والسعر.',
           'الطرود التي ترسلها: عنوانا الاستلام والتسليم، الوصف، الوزن، القيمة المصرّح بها والصور.',

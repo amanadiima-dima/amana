@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import Cookies from 'js-cookie';
 import { authApi, userApi } from '@/lib/api';
 
-interface User { id: string; phone: string; email?: string | null; name: string; photoUrl?: string; isVerified: boolean; rating: number; role?: string; idVerification?: { status: 'PENDING' | 'APPROVED' | 'REJECTED' } | null; }
+interface User { id: string; phone: string; email?: string | null; birthDate?: string | null; name: string; photoUrl?: string; isVerified: boolean; rating: number; role?: string; idVerification?: { status: 'PENDING' | 'APPROVED' | 'REJECTED' } | null; }
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;

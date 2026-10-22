@@ -178,6 +178,11 @@
     "emailLabel": "Correo electrónico (opcional)",
     "emailPlaceholder": "tu@correo.com",
     "emailHint": "Para que también puedas entrar con tu correo.",
+    "birthDateLabel": "Fecha de nacimiento",
+    "birthDay": "Día",
+    "birthMonth": "Mes",
+    "birthYear": "Año",
+    "birthDateHint": "Debes tener 18 años o más. No se muestra a otros usuarios.",
     "newPasswordLabel": "Contraseña",
     "passwordPlaceholder": "Al menos 8 caracteres",
     "acceptTerms": "Tengo 18 años o más y acepto los <terms>Términos de uso</terms> y la <privacy>Política de privacidad</privacy>.",
@@ -212,7 +217,9 @@
       "phoneTaken": "Este número ya tiene una cuenta. Entra con él.",
       "emailTaken": "Este correo ya lo usa otra cuenta.",
       "termsRequired": "Confirma que tienes 18 años o más y aceptas los Términos y la Política de privacidad.",
-      "generic": "Algo ha fallado. Inténtalo de nuevo."
+      "generic": "Algo ha fallado. Inténtalo de nuevo.",
+      "birthDateRequired": "Indica tu fecha de nacimiento completa.",
+      "tooYoung": "Debes tener 18 años o más para usar Amana."
     }
   },
   "verificationNotice": {
@@ -566,7 +573,8 @@
       "wrongCurrent": "Tu contraseña actual no es correcta.",
       "tooShort": "La contraseña nueva debe tener al menos 8 caracteres.",
       "failed": "No se pudo cambiar la contraseña. Inténtalo de nuevo."
-    }
+    },
+    "birthDate": "Fecha de nacimiento"
   },
   "travelerProfile": {
     "verified": "Verificado",

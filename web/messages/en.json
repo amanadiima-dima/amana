@@ -178,6 +178,11 @@
     "emailLabel": "Email (optional)",
     "emailPlaceholder": "you@example.com",
     "emailHint": "So you can also sign in with your email.",
+    "birthDateLabel": "Date of birth",
+    "birthDay": "Day",
+    "birthMonth": "Month",
+    "birthYear": "Year",
+    "birthDateHint": "You must be 18 or older. It is not shown to other members.",
     "newPasswordLabel": "Password",
     "passwordPlaceholder": "At least 8 characters",
     "acceptTerms": "I am 18 or older and I accept the <terms>Terms of Use</terms> and the <privacy>Privacy Policy</privacy>.",
@@ -212,7 +217,9 @@
       "phoneTaken": "This phone number already has an account. Sign in instead.",
       "emailTaken": "This email is already used by another account.",
       "termsRequired": "Confirm you are 18 or older and accept the Terms and Privacy Policy.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "birthDateRequired": "Enter your full date of birth.",
+      "tooYoung": "You must be 18 or older to use Amana."
     }
   },
   "verificationNotice": {
@@ -566,7 +573,8 @@
       "wrongCurrent": "Your current password is wrong.",
       "tooShort": "The new password must have at least 8 characters.",
       "failed": "Could not change the password. Try again."
-    }
+    },
+    "birthDate": "Date of birth"
   },
   "travelerProfile": {
     "verified": "Verified",

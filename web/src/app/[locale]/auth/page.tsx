@@ -32,6 +32,51 @@ function PasswordInput({ value, onChange, placeholder, autoComplete }: { value: 
   );
 }
 
+// Day / month / year selects (friendlier than a calendar for a birth date). Value is "YYYY-MM-DD" or "".
+function BirthDateInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const t = useTranslations('auth');
+  const locale = useLocale();
+  const [y, m, d] = value ? value.split('-') : ['', '', ''];
+  const [parts, setParts] = useState({ d, m, y });
+  const set = (k: 'd' | 'm' | 'y', v: string) => {
+    const next = { ...parts, [k]: v };
+    setParts(next);
+    onChange(next.d && next.m && next.y ? `${next.y}-${next.m}-${next.d}` : '');
+  };
+  const thisYear = new Date().getFullYear();
+  const years = Array.from({ length: 83 }, (_, i) => String(thisYear - 18 - i));
+  const months = Array.from({ length: 12 }, (_, i) => ({
+    v: String(i + 1).padStart(2, '0'),
+    label: new Date(2000, i, 1).toLocaleDateString(locale, { month: 'long' }),
+  }));
+  const sel = `${inputCls} px-3 appearance-none bg-white`;
+  return (
+    <div className="grid grid-cols-[1fr_1.6fr_1.2fr] gap-2">
+      <select aria-label={t('birthDay')} value={parts.d} onChange={(e) => set('d', e.target.value)} className={sel}>
+        <option value="">{t('birthDay')}</option>
+        {Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0')).map((v) => <option key={v} value={v}>{Number(v)}</option>)}
+      </select>
+      <select aria-label={t('birthMonth')} value={parts.m} onChange={(e) => set('m', e.target.value)} className={sel}>
+        <option value="">{t('birthMonth')}</option>
+        {months.map(({ v, label }) => <option key={v} value={v}>{label}</option>)}
+      </select>
+      <select aria-label={t('birthYear')} value={parts.y} onChange={(e) => set('y', e.target.value)} className={sel}>
+        <option value="">{t('birthYear')}</option>
+        {years.map((v) => <option key={v} value={v}>{v}</option>)}
+      </select>
+    </div>
+  );
+}
+
+// Same rule as the API: a real date and 18 full years.
+const ageOk = (iso: string) => {
+  const [y, m, d] = iso.split('-').map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  if (date.getUTCMonth() !== m - 1) return 'invalid';
+  const adult = new Date(Date.UTC(y + 18, m - 1, d));
+  return adult.getTime() <= Date.now() ? 'ok' : 'young';
+};
+
 function AuthForm() {
   const t = useTranslations('auth');
   const locale = useLocale();
@@ -46,6 +91,7 @@ function AuthForm() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [birthDate, setBirthDate] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [code, setCode] = useState('');
   const [loginToken, setLoginToken] = useState('');
@@ -61,6 +107,8 @@ function AuthForm() {
     const msg: string = err?.response?.data?.message || '';
     if (status === 401) return t('errors.wrongPassword');
     if (status === 429) return t('errors.tooMany');
+    if (/18 or older to use/i.test(msg)) return t('errors.tooYoung');
+    if (/date of birth/i.test(msg)) return t('errors.birthDateRequired');
     if (status === 409) return msg.toLowerCase().includes('email') ? t('errors.emailTaken') : t('errors.phoneTaken');
     if (/invalid( or expired)? code|expired/i.test(msg)) return t('errors.invalidCode');
     if (status === 403) return msg;
@@ -73,7 +121,7 @@ function AuthForm() {
     try { await fn(); } catch (err) { setError(apiError(err)); } finally { setLoading(false); }
   };
 
-  const registerDetails = () => ({ name: name.trim(), phone: phone.replace(/[\s().-]/g, ''), email: email.trim() || undefined, password, acceptTerms });
+  const registerDetails = () => ({ name: name.trim(), phone: phone.replace(/[\s().-]/g, ''), email: email.trim() || undefined, birthDate, password, acceptTerms });
 
   // ── Step 1 ──
   const submitForm = (e: React.FormEvent) => {
@@ -91,6 +139,8 @@ function AuthForm() {
       if (d.name.length < 2) return setError(t('errors.nameRequired'));
       if (!/^\+[1-9]\d{7,14}$/.test(d.phone)) return setError(t('errors.phoneFormat'));
       if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) return setError(t('errors.emailFormat'));
+      if (!birthDate || ageOk(birthDate) === 'invalid') return setError(t('errors.birthDateRequired'));
+      if (ageOk(birthDate) === 'young') return setError(t('errors.tooYoung'));
       if (password.length < 8) return setError(t('errors.passwordLength'));
       if (!acceptTerms) return setError(t('errors.termsRequired'));
       return run(async () => { await authApi.register(d); setPhoneHint(d.phone); setStep('code'); });
@@ -196,6 +246,11 @@ function AuthForm() {
                   <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('emailPlaceholder')}
                     autoComplete="email" className={inputCls} dir="ltr" />
                   <p className="text-xs text-gray-400 mt-1">{t('emailHint')}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('birthDateLabel')}</label>
+                  <BirthDateInput value={birthDate} onChange={setBirthDate} />
+                  <p className="text-xs text-gray-400 mt-1">{t('birthDateHint')}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">{t('newPasswordLabel')}</label>
