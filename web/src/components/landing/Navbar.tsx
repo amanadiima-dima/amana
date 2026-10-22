@@ -1,8 +1,9 @@
 'use client';
 import { useState } from 'react';
+import Logo from '@/components/ui/Logo';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Menu, X, Package, Plane } from 'lucide-react';
+import { Menu, X, Plane } from 'lucide-react';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 
 export default function Navbar() {
@@ -11,9 +12,8 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-brand-600">
-          <Package className="w-6 h-6" />
-          Amana
+        <Link href="/" aria-label="Amana">
+          <Logo className="h-9" priority />
         </Link>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">

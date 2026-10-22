@@ -1,9 +1,10 @@
 'use client';
 import { useState, Suspense } from 'react';
+import Logo from '@/components/ui/Logo';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, getPathname } from '@/i18n/navigation';
-import { Package, ArrowRight, Loader2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { ArrowRight, Loader2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { authApi } from '@/lib/api';
 
@@ -184,8 +185,8 @@ function AuthForm() {
     <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-blue-50 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
-          <Link href="/" className="flex items-center gap-2 text-brand-600 font-bold text-2xl">
-            <Package className="w-8 h-8" /> Amana
+          <Link href="/" aria-label="Amana">
+            <Logo className="h-11" priority />
           </Link>
         </div>
 

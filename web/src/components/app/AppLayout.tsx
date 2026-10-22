@@ -1,5 +1,6 @@
 'use client';
 import { useEffect } from 'react';
+import Logo from '@/components/ui/Logo';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { Package, Plane, Bell, User, LayoutDashboard, LogOut, ShieldCheck } from 'lucide-react';
@@ -49,8 +50,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-e border-gray-100 fixed h-full">
         <div className="p-6 border-b border-gray-100">
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl text-brand-600">
-            <Package className="w-5 h-5" /> Amana
+          <Link href="/" aria-label="Amana">
+            <Logo className="h-8" priority />
           </Link>
         </div>
         <nav className="flex-1 p-4 space-y-1">
@@ -96,7 +97,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 md:ms-64 min-h-screen">
         {/* Mobile top bar */}
         <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-100">
-          <Link href="/" className="flex items-center gap-2 font-bold text-brand-600"><Package className="w-5 h-5" /> Amana</Link>
+          <Link href="/" aria-label="Amana"><Logo className="h-7" /></Link>
           <div className="flex items-center gap-3">
             <LanguageSwitcher triggerClassName="text-gray-600" />
             <Link href="/profile"><User className="w-5 h-5 text-gray-600" /></Link>

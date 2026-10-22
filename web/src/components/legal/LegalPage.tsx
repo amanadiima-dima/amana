@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
+import Logo from '@/components/ui/Logo';
 import { Link } from '@/i18n/navigation';
-import { ArrowLeft, Package } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 import Footer from '@/components/landing/Footer';
 import { COMPANY } from '@/content/legal/company';
@@ -43,7 +44,7 @@ export default async function LegalPage({ locale, title, doc }: { locale: string
     <main className="bg-white text-gray-900 min-h-screen">
       <header className="border-b border-gray-100">
         <div className="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl text-brand-600"><Package className="w-6 h-6" /> Amana</Link>
+          <Link href="/" aria-label="Amana"><Logo className="h-8" /></Link>
           <LanguageSwitcher />
         </div>
       </header>

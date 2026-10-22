@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Logo from '@/components/ui/Logo';
 import { useParams } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useTranslations, useLocale } from 'next-intl';
@@ -7,7 +8,7 @@ import { Link, useRouter } from '@/i18n/navigation';
 import { inviteApi } from '@/lib/api';
 import { formatMoney } from '@/lib/money';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
-import { Package, Loader2, ShieldCheck, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Loader2, ShieldCheck, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 export default function InvitePage() {
   const { token } = useParams<{ token: string }>();
@@ -52,7 +53,7 @@ export default function InvitePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-brand-50 to-white flex flex-col">
       <div className="flex items-center justify-between p-4 max-w-md w-full mx-auto">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-brand-600"><Package className="w-5 h-5" /> Amana</Link>
+        <Link href="/" aria-label="Amana"><Logo className="h-8" priority /></Link>
         <LanguageSwitcher triggerClassName="flex items-center gap-2 text-sm text-gray-500" />
       </div>
 

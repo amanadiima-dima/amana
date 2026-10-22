@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
+import Logo from '@/components/ui/Logo';
 import { Link } from '@/i18n/navigation';
-import { Package } from 'lucide-react';
 import FooterRoutes from './FooterRoutes';
 
 export default function Footer() {
@@ -9,8 +9,8 @@ export default function Footer() {
     <footer className="bg-gray-900 text-gray-400 py-16">
       <div className="max-w-6xl mx-auto px-4 grid sm:grid-cols-2 md:grid-cols-5 gap-10">
         <div>
-          <Link href="/" className="flex items-center gap-2 text-white font-bold text-xl mb-4">
-            <Package className="w-5 h-5 text-brand-500" /> Amana
+          <Link href="/" aria-label="Amana" className="inline-block mb-4">
+            <Logo className="h-8" white />
           </Link>
           <p className="text-sm leading-relaxed">
             {t('tagline')}
