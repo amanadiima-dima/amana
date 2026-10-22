@@ -67,7 +67,7 @@
       "from": "From",
       "to": "To",
       "date": "Date",
-      "fromPlaceholder": "Departure city",
+      "fromPlaceholder": "Any city",
       "toPlaceholder": "Destination city",
       "search": "Search",
       "verifiedOnly": "Verified only",
@@ -83,7 +83,13 @@
       "resultsHeading": "Search results",
       "resultsFor": "Trips from {from} to {to}",
       "mobileSticky": "Search a trip",
-      "showMore": "Show {count} more"
+      "showMore": "Show {count} more",
+      "optional": "optional",
+      "dayHeading": "Trips on {date}",
+      "noTripsThatDay": "No trips on that day.",
+      "seeOtherDates": "The same route is available on other dates — see below.",
+      "similarHeading": "Same route on other dates",
+      "similarSub": "Upcoming trips close to the date you chose."
     },
     "routes": {
       "heading": "Popular routes",

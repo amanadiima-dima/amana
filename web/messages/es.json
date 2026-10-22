@@ -67,7 +67,7 @@
       "from": "Origen",
       "to": "Destino",
       "date": "Fecha",
-      "fromPlaceholder": "Ciudad de origen",
+      "fromPlaceholder": "Cualquier ciudad",
       "toPlaceholder": "Ciudad de destino",
       "search": "Buscar",
       "verifiedOnly": "Solo verificados",
@@ -83,7 +83,13 @@
       "resultsHeading": "Resultados de la búsqueda",
       "resultsFor": "Viajes de {from} a {to}",
       "mobileSticky": "Buscar un viaje",
-      "showMore": "Ver {count} más"
+      "showMore": "Ver {count} más",
+      "optional": "opcional",
+      "dayHeading": "Viajes del {date}",
+      "noTripsThatDay": "No hay viajes ese día.",
+      "seeOtherDates": "Hay viajes para el mismo trayecto en otras fechas: míralos abajo.",
+      "similarHeading": "Mismo trayecto en otras fechas",
+      "similarSub": "Próximos viajes cercanos a la fecha que has elegido."
     },
     "routes": {
       "heading": "Rutas populares",

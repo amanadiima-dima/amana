@@ -234,38 +234,42 @@ const cancelTrip = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+// GET /api/trips/public?origin=&destination=&date=YYYY-MM-DD — public search for the landing page.
+// Everything is optional. With a date, `trips` holds that day's trips and `similar` the same route on
+// other upcoming dates, closest to the requested day first (shown in date order).
+const PUBLIC_TRIP_INCLUDE = {
+  traveler: { select: { isVerified: true } }, // no name/rating/photo on public endpoint
+  _count: { select: { bookings: true } },
+};
 const publicSearchTrips = async (req, res, next) => {
   try {
     const { destination, origin, date } = req.query;
+    const now = new Date();
+    const route = { status: 'OPEN' };
+    if (destination) route.destinationCity = { contains: String(destination).trim(), mode: 'insensitive' };
+    if (origin) route.originCity = { contains: String(origin).trim(), mode: 'insensitive' };
 
-    const where = {
-      status: 'OPEN',
-      departureAt: { gte: new Date() },
-    };
-
-    if (destination) where.destinationCity = { contains: destination, mode: 'insensitive' };
-    if (origin) where.originCity = { contains: origin, mode: 'insensitive' };
-
-    if (date) {
-      const from = new Date(date);
-      const to = new Date(date);
-      to.setDate(to.getDate() + 1);
-      where.departureAt = { gte: from, lt: to };
-    } else {
-      where.departureAt = { gte: new Date() };
+    const day = /^\d{4}-\d{2}-\d{2}$/.test(String(date || '')) ? new Date(`${date}T00:00:00Z`) : null;
+    if (!day || Number.isNaN(day.getTime())) {
+      const trips = await prisma.trip.findMany({ where: { ...route, departureAt: { gte: now } }, include: PUBLIC_TRIP_INCLUDE, orderBy: { departureAt: 'asc' }, take: 20 });
+      return res.json({ success: true, trips, similar: [] });
     }
 
-    const trips = await prisma.trip.findMany({
-      where,
-      include: {
-        traveler: { select: { isVerified: true } }, // no name/rating/photo on public endpoint
-        _count: { select: { bookings: true } },
-      },
-      orderBy: { departureAt: 'asc' },
-      take: 20,
-    });
-
-    res.json({ success: true, trips });
+    const dayEnd = new Date(day.getTime() + 24 * 60 * 60 * 1000);
+    const from = day > now ? day : now; // today: only trips that haven't left yet
+    const [trips, others] = await Promise.all([
+      prisma.trip.findMany({ where: { ...route, departureAt: { gte: from, lt: dayEnd } }, include: PUBLIC_TRIP_INCLUDE, orderBy: { departureAt: 'asc' }, take: 20 }),
+      prisma.trip.findMany({
+        where: { ...route, departureAt: { gte: now }, NOT: { departureAt: { gte: day, lt: dayEnd } } },
+        include: PUBLIC_TRIP_INCLUDE, orderBy: { departureAt: 'asc' }, take: 100,
+      }),
+    ]);
+    const mid = day.getTime() + 12 * 60 * 60 * 1000;
+    const similar = others
+      .sort((a, b) => Math.abs(a.departureAt - mid) - Math.abs(b.departureAt - mid))
+      .slice(0, 10)
+      .sort((a, b) => a.departureAt - b.departureAt);
+    res.json({ success: true, trips, similar });
   } catch (err) { next(err); }
 };
 

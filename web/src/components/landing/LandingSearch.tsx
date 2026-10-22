@@ -78,7 +78,7 @@ function SearchBar({ q, setQ, onSubmit, compact = false }: { q: Query; setQ: (q:
       <div className={`flex items-center gap-2 ${cell} flex-1 border-b md:border-b-0 md:border-e border-gray-100`}>
         <MapPin className="w-4 h-4 text-brand-500 shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t('from')}</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t('from')} <span className="normal-case font-normal">· {t('optional')}</span></p>
           <CityInput value={q.origin} onChange={(origin) => setQ({ ...q, origin })} placeholder={t('fromPlaceholder')} />
         </div>
       </div>
@@ -92,7 +92,7 @@ function SearchBar({ q, setQ, onSubmit, compact = false }: { q: Query; setQ: (q:
       <div className={`flex items-center gap-2 ${cell} md:w-44 border-b md:border-b-0 md:border-e border-gray-100`}>
         <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
         <div className="flex-1">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t('date')}</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t('date')} <span className="normal-case font-normal">· {t('optional')}</span></p>
           <input type="date" value={q.date} min={new Date().toISOString().split('T')[0]} onChange={(e) => setQ({ ...q, date: e.target.value })}
             className="w-full bg-transparent text-gray-900 text-sm font-medium focus:outline-none py-1" />
         </div>
@@ -241,10 +241,12 @@ function PopularRoutes({ routes, onPick }: { routes: Route[]; onPick: (r: Route)
 // ── Main: hero + sticky search + popular routes + results ─────────────────────
 export default function LandingSearch() {
   const t = useTranslations('landing');
+  const locale = useLocale();
   const params = useSearchParams();
   const [q, setQ] = useState<Query>({ origin: params.get('from') || '', destination: params.get('to') || '', date: '' });
   const [active, setActive] = useState<Query | null>(null); // the search shown in the results
   const [trips, setTrips] = useState<any[]>([]);
+  const [similar, setSimilar] = useState<any[]>([]); // same route on other dates (only when a date is searched)
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
@@ -263,8 +265,8 @@ export default function LandingSearch() {
     if (query?.date) p.set('date', query.date);
     fetch(`${BASE_URL}/trips/public?${p}`)
       .then((r) => r.json())
-      .then((d) => setTrips(d.trips || []))
-      .catch(() => setTrips([]))
+      .then((d) => { setTrips(d.trips || []); setSimilar(d.similar || []); })
+      .catch(() => { setTrips([]); setSimilar([]); })
       .finally(() => setLoading(false));
     if (scroll) resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
@@ -292,7 +294,12 @@ export default function LandingSearch() {
   };
   const clear = () => { setQ({ origin: '', destination: '', date: '' }); load(null, false); };
 
-  const displayed = verifiedOnly ? trips.filter((x) => x.traveler?.isVerified) : trips;
+  const onlyVerified = (list: any[]) => (verifiedOnly ? list.filter((x) => x.traveler?.isVerified) : list);
+  const displayed = onlyVerified(trips);
+  const similarShown = onlyVerified(similar);
+  const dateLabel = active?.date
+    ? new Date(`${active.date}T00:00:00Z`).toLocaleDateString(locale, { timeZone: 'UTC', weekday: 'long', day: 'numeric', month: 'long' })
+    : '';
   const searched = !!(active && (active.origin || active.destination || active.date));
 
   return (
@@ -346,8 +353,14 @@ export default function LandingSearch() {
             )}
             {!loading && <span className="text-sm text-gray-400 ms-auto">{t('search.tripsFound', { count: displayed.length })}</span>}
           </div>
+          {dateLabel && !loading && <h3 className="font-bold text-gray-900 text-lg mb-3 first-letter:uppercase">{t('search.dayHeading', { date: dateLabel })}</h3>}
           {loading ? (
             <div className="flex justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-brand-500" /></div>
+          ) : displayed.length === 0 && dateLabel ? (
+            <div className="bg-white rounded-2xl border border-gray-100 px-5 py-6 text-center">
+              <p className="font-semibold text-gray-700">{t('search.noTripsThatDay')}</p>
+              <p className="text-sm text-gray-400 mt-1">{similarShown.length ? t('search.seeOtherDates') : t('search.noTripsSubtitle')}</p>
+            </div>
           ) : displayed.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
               <p className="text-4xl mb-3">✈️</p>
@@ -365,6 +378,14 @@ export default function LandingSearch() {
                 </div>
               )}
             </>
+          )}
+
+          {!loading && similarShown.length > 0 && (
+            <div className="mt-12">
+              <h3 className="font-bold text-gray-900 text-lg">{t('search.similarHeading')}</h3>
+              <p className="text-sm text-gray-500 mb-4">{t('search.similarSub')}</p>
+              <div className="space-y-3">{similarShown.map((trip) => <TripCard key={trip.id} trip={trip} />)}</div>
+            </div>
           )}
         </div>
       </section>

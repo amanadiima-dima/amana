@@ -67,7 +67,7 @@
       "from": "من",
       "to": "إلى",
       "date": "التاريخ",
-      "fromPlaceholder": "مدينة الانطلاق",
+      "fromPlaceholder": "أي مدينة",
       "toPlaceholder": "مدينة الوجهة",
       "search": "بحث",
       "verifiedOnly": "الموثّقون فقط",
@@ -83,7 +83,13 @@
       "resultsHeading": "نتائج البحث",
       "resultsFor": "رحلات من {from} إلى {to}",
       "mobileSticky": "ابحث عن رحلة",
-      "showMore": "عرض {count} أخرى"
+      "showMore": "عرض {count} أخرى",
+      "optional": "اختياري",
+      "dayHeading": "رحلات يوم {date}",
+      "noTripsThatDay": "لا توجد رحلات في ذلك اليوم.",
+      "seeOtherDates": "يتوفر نفس المسار في تواريخ أخرى — انظر أدناه.",
+      "similarHeading": "نفس المسار في تواريخ أخرى",
+      "similarSub": "رحلات قادمة قريبة من التاريخ الذي اخترته."
     },
     "routes": {
       "heading": "المسارات الشائعة",

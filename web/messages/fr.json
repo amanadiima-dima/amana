@@ -67,7 +67,7 @@
       "from": "Départ",
       "to": "Arrivée",
       "date": "Date",
-      "fromPlaceholder": "Ville de départ",
+      "fromPlaceholder": "N'importe quelle ville",
       "toPlaceholder": "Ville d'arrivée",
       "search": "Rechercher",
       "verifiedOnly": "Vérifiés uniquement",
@@ -83,7 +83,13 @@
       "resultsHeading": "Résultats de recherche",
       "resultsFor": "Trajets de {from} à {to}",
       "mobileSticky": "Rechercher un trajet",
-      "showMore": "Voir {count} de plus"
+      "showMore": "Voir {count} de plus",
+      "optional": "facultatif",
+      "dayHeading": "Trajets du {date}",
+      "noTripsThatDay": "Aucun trajet ce jour-là.",
+      "seeOtherDates": "Le même trajet existe à d'autres dates — voir ci-dessous.",
+      "similarHeading": "Même trajet à d'autres dates",
+      "similarSub": "Prochains trajets proches de la date choisie."
     },
     "routes": {
       "heading": "Trajets populaires",
