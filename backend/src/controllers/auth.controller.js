@@ -150,7 +150,12 @@ const login = async (req, res, next) => {
     const key = String(req.body.identifier).trim().toLowerCase();
     checkLock(key);
     const user = await findByIdentifier(req.body.identifier);
-    const ok = user?.passwordHash && !user.deletedAt && (await bcrypt.compare(String(req.body.password), user.passwordHash));
+    // Owner's choice (2026-10-22): say plainly that there is no account, so the page can offer sign-up.
+    if (!user || user.deletedAt) {
+      recordFail(key);
+      throw new AppError('No account with this email or phone number', 404);
+    }
+    const ok = user.passwordHash && !user.deletedAt && (await bcrypt.compare(String(req.body.password), user.passwordHash));
     if (!ok) {
       recordFail(key);
       throw new AppError('Wrong email/phone or password', 401);

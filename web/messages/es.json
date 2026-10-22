@@ -212,6 +212,7 @@
     "resetButton": "Guardar contraseña y entrar",
     "showPassword": "Mostrar contraseña",
     "hidePassword": "Ocultar contraseña",
+    "noAccountNotice": "No existe ninguna cuenta con ese teléfono o correo. Crea una aquí abajo: ya lo hemos rellenado por ti.",
     "errors": {
       "identifierRequired": "Escribe tu correo o tu número de teléfono.",
       "passwordRequired": "Escribe tu contraseña.",

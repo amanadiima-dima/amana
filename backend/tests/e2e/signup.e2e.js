@@ -46,7 +46,8 @@ const yearsAgo = (years, days = 0) => { const d = new Date(); d.setUTCFullYear(d
 
   // ── Sign-in: password, then SMS code ──
   r = await post('/auth/login', { identifier: phone, password: 'wrong-pass' }); T('wrong password refused, nothing sent', r.status === 401 && !r.data.loginToken);
-  r = await post('/auth/login', { identifier: '+4170' + rnd(), password: 'whatever1' }); T('unknown phone gets the same answer as a wrong password', r.status === 401 && r.data.message === 'Wrong email/phone or password');
+  r = await post('/auth/login', { identifier: '+4170' + rnd(), password: 'whatever1' }); T('unknown phone is told there is no account (404), nothing sent', r.status === 404 && !r.data.loginToken);
+  r = await post('/auth/login', { identifier: 'nobody-' + rnd() + '@example.com', password: 'whatever1' }); T('unknown email is told there is no account (404)', r.status === 404);
   r = await post('/auth/login', { identifier: phone, password: base.password });
   T('right password: code sent to the phone, no session yet', r.status === 200 && !!r.data.loginToken && !r.data.accessToken && r.data.phoneHint.endsWith(phone.slice(-4)));
   const loginToken = r.data.loginToken;

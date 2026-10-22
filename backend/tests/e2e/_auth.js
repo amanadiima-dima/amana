@@ -11,7 +11,7 @@ const post = async (p, b) => {
 const signIn = async (phone, name = 'Test User') => {
   let r = await post('/auth/login', { identifier: phone, password: PASSWORD });
   if (r.status === 200) return post('/auth/login/verify', { loginToken: r.data.loginToken, code: '123456' });
-  if (r.status !== 401) return r; // e.g. 403 disabled account
+  if (r.status !== 401 && r.status !== 404) return r; // e.g. 403 disabled account
   const [first, ...rest] = name.split(' ');
   const details = { name: first, lastName: rest.join(' ') || 'Tester', phone, birthDate: '1990-05-15', password: PASSWORD, acceptTerms: true };
   r = await post('/auth/register', details);

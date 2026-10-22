@@ -15,7 +15,8 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && !original._retry) {
+    // A 401 from the sign-in endpoints means a wrong password, not an expired session: let the page show it.
+    if (error.response?.status === 401 && !original._retry && !original.url?.startsWith('/auth/')) {
       original._retry = true;
       const refreshToken = Cookies.get('refreshToken');
       if (!refreshToken) { window.location.href = '/auth'; return Promise.reject(error); }

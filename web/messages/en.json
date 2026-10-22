@@ -212,6 +212,7 @@
     "resetButton": "Save password and sign in",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
+    "noAccountNotice": "There is no account with this phone number or email. Create one below — we've filled it in for you.",
     "errors": {
       "identifierRequired": "Enter your email or phone number.",
       "passwordRequired": "Enter your password.",

@@ -100,8 +100,9 @@ function AuthForm() {
   const [phoneHint, setPhoneHint] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
 
-  const switchMode = (m: Mode) => { setMode(m); setStep('form'); setCode(''); setPassword(''); setError(''); };
+  const switchMode = (m: Mode) => { setMode(m); setStep('form'); setCode(''); setPassword(''); setError(''); setNotice(''); };
 
   // API messages are English: map the ones users can hit to translated text.
   const apiError = (err: any) => {
@@ -132,8 +133,17 @@ function AuthForm() {
       if (!identifier.trim()) return setError(t('errors.identifierRequired'));
       if (!password) return setError(t('errors.passwordRequired'));
       return run(async () => {
-        const { data } = await authApi.login(identifier.trim(), password);
-        setLoginToken(data.loginToken); setPhoneHint(data.phoneHint); setStep('code');
+        try {
+          const { data } = await authApi.login(identifier.trim(), password);
+          setLoginToken(data.loginToken); setPhoneHint(data.phoneHint); setStep('code');
+        } catch (err: any) {
+          if (err?.response?.status !== 404) throw err;
+          // No account yet: go to "Create account" with what they typed already filled in.
+          const id = identifier.trim();
+          switchMode('register');
+          if (id.includes('@')) setEmail(id); else setPhone(id);
+          setNotice(t('noAccountNotice'));
+        }
       });
     }
     if (mode === 'register') {
@@ -180,6 +190,7 @@ function AuthForm() {
     privacy: (chunks: React.ReactNode) => <Link href="/privacy" target="_blank" className="text-brand-600 hover:underline">{chunks}</Link>,
   };
   const errorBox = error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>;
+  const noticeBox = notice && <p role="alert" className="text-sm text-amber-800 bg-amber-50 border border-amber-200 px-3 py-2 rounded-lg mb-4">{notice}</p>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-blue-50 flex items-center justify-center px-4 py-10">
@@ -232,6 +243,7 @@ function AuthForm() {
             <>
               <h1 className="text-2xl font-bold text-gray-900 mb-1">{t('registerTitle')}</h1>
               <p className="text-gray-500 mb-6">{t('registerSubtitle')}</p>
+              {noticeBox}
               <form onSubmit={submitForm} className="space-y-4">
                 <div>
                   <div className="grid grid-cols-2 gap-3">

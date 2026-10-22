@@ -212,6 +212,7 @@
     "resetButton": "Enregistrer et se connecter",
     "showPassword": "Afficher le mot de passe",
     "hidePassword": "Masquer le mot de passe",
+    "noAccountNotice": "Aucun compte n'existe avec ce numéro ou cet e-mail. Créez-en un ci-dessous : nous l'avons déjà rempli pour vous.",
     "errors": {
       "identifierRequired": "Saisissez votre e-mail ou numéro de téléphone.",
       "passwordRequired": "Saisissez votre mot de passe.",
