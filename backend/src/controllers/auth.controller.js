@@ -106,6 +106,7 @@ const sendSession = async (res, user) => {
       phone: user.phone,
       email: user.email,
       name: user.name,
+      lastName: user.lastName,
       isVerified: user.isVerified,
       rating: user.rating,
       role: user.role,
@@ -113,7 +114,7 @@ const sendSession = async (res, user) => {
   });
 };
 
-// POST /api/auth/register  body: { name, phone, email?, birthDate (YYYY-MM-DD), password, acceptTerms: true }
+// POST /api/auth/register  body: { name, lastName, phone, email?, birthDate (YYYY-MM-DD), password, acceptTerms: true }
 // Checks the details and texts a code to the phone; the account is created by /register/verify.
 const register = async (req, res, next) => {
   try {
@@ -136,7 +137,7 @@ const registerVerify = async (req, res, next) => {
     await assertNewAccount({ phone, email });
     await checkCode(phone, code);
     const user = await prisma.user.create({
-      data: { phone, email, birthDate, name: String(req.body.name).trim().slice(0, 60), passwordHash: await bcrypt.hash(password, 10), termsAcceptedAt: new Date() },
+      data: { phone, email, birthDate, name: String(req.body.name).trim().slice(0, 60), lastName: String(req.body.lastName).trim().slice(0, 60), passwordHash: await bcrypt.hash(password, 10), termsAcceptedAt: new Date() },
     }).catch((e) => { throw e.code === 'P2002' ? new AppError('This phone number or email already has an account', 409) : e; });
     return await sendSession(res, user);
   } catch (err) { next(err); }

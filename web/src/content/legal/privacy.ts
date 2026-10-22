@@ -17,7 +17,7 @@ const en: LegalDoc = {
       id: 'data', title: '2. What data we collect',
       blocks: [
         { list: [
-          'Account: phone number, name, date of birth (to check you are 18 or older; not shown to other members), a password (stored only in encrypted form), and optionally your email, a photo and a short bio. We do not ask for your home address.',
+          'Account: phone number, first and last name (other members only see your first name), date of birth (to check you are 18 or older; not shown to other members), a password (stored only in encrypted form), and optionally your email, a photo and a short bio. We do not ask for your home address.',
           'Identity verification: type of document, photos of your ID card (front and back) or passport, a short selfie video in which you say a code we give you, the date of your consent and the result of the review.',
           'Trips you publish: cities, pickup address and map pin, dates, transport mode, capacity and price.',
           'Parcels you send: pickup and delivery addresses, description, weight, declared value and photos.',
@@ -48,7 +48,7 @@ const en: LegalDoc = {
       id: 'recipients', title: '4. Who can see your data',
       blocks: [
         { list: [
-          'Other members see your name, photo, bio, rating, reviews, "verified" badge and the trips you publish. Once a booking exists, the sender and the traveller see what they need to carry out the delivery (addresses, parcel details, chat). Your phone number is never shown to other members.',
+          'Other members see your first name (not your last name), photo, bio, rating, reviews, "verified" badge and the trips you publish. Once a booking exists, the sender and the traveller see what they need to carry out the delivery (addresses, parcel details, chat). Your phone number is never shown to other members.',
           'Amana staff (administrators and moderators) see identity documents to review them and booking details to resolve disputes. Access to identity files is restricted and recorded.',
           'Service providers who process data on our behalf, under a data-processing agreement: Railway (application hosting), Neon (database), Cloudinary (storage of photos, documents and videos), Twilio (sign-in codes, SMS and WhatsApp messages), OpenStreetMap / Nominatim (address search and maps: the addresses you type are sent to it) and, when card payments are enabled, Stripe.',
           'Public authorities, when the law requires it or to report an offence (for example a parcel that is not delivered or a dangerous item).',
@@ -128,7 +128,7 @@ const fr: LegalDoc = {
       id: 'data', title: '2. Les données que nous collectons',
       blocks: [
         { list: [
-          "Compte : numéro de téléphone, nom, date de naissance (pour vérifier que vous avez 18 ans ou plus ; elle n'est pas visible par les autres membres), un mot de passe (conservé uniquement sous forme chiffrée) et, si vous le souhaitez, votre e-mail, une photo et une courte présentation. Nous ne demandons pas votre adresse de domicile.",
+          "Compte : numéro de téléphone, prénom et nom (les autres membres ne voient que votre prénom), date de naissance (pour vérifier que vous avez 18 ans ou plus ; elle n'est pas visible par les autres membres), un mot de passe (conservé uniquement sous forme chiffrée) et, si vous le souhaitez, votre e-mail, une photo et une courte présentation. Nous ne demandons pas votre adresse de domicile.",
           "Vérification d'identité : type de document, photos de votre carte d'identité (recto et verso) ou de votre passeport, une courte vidéo selfie dans laquelle vous dites un code que nous vous donnons, la date de votre consentement et le résultat de la vérification.",
           'Trajets publiés : villes, adresse et point de prise en charge sur la carte, dates, mode de transport, capacité et prix.',
           'Colis envoyés : adresses de prise en charge et de livraison, description, poids, valeur déclarée et photos.',
@@ -159,7 +159,7 @@ const fr: LegalDoc = {
       id: 'recipients', title: '4. Qui peut voir vos données',
       blocks: [
         { list: [
-          "Les autres membres voient votre nom, photo, présentation, note, avis, badge « vérifié » et les trajets que vous publiez. Une fois une réservation créée, l'expéditeur et le voyageur voient ce qui est nécessaire à la livraison (adresses, détails du colis, chat). Votre numéro de téléphone n'est jamais montré aux autres membres.",
+          "Les autres membres voient votre prénom (pas votre nom de famille), photo, présentation, note, avis, badge « vérifié » et les trajets que vous publiez. Une fois une réservation créée, l'expéditeur et le voyageur voient ce qui est nécessaire à la livraison (adresses, détails du colis, chat). Votre numéro de téléphone n'est jamais montré aux autres membres.",
           "L'équipe Amana (administrateurs et modérateurs) voit les pièces d'identité pour les vérifier et les détails des réservations pour résoudre les litiges. L'accès aux dossiers d'identité est restreint et enregistré.",
           "Les prestataires qui traitent des données pour notre compte, sous contrat de sous-traitance : Railway (hébergement), Neon (base de données), Cloudinary (stockage des photos, documents et vidéos), Twilio (codes de connexion, SMS et WhatsApp), OpenStreetMap / Nominatim (recherche d'adresses et cartes : les adresses saisies lui sont envoyées) et, lorsque le paiement par carte sera activé, Stripe.",
           "Les autorités publiques, lorsque la loi l'exige ou pour signaler une infraction (par exemple un colis non livré ou un objet dangereux).",
@@ -239,7 +239,7 @@ const es: LegalDoc = {
       id: 'data', title: '2. Qué datos recogemos',
       blocks: [
         { list: [
-          'Cuenta: número de teléfono, nombre, fecha de nacimiento (para comprobar que tienes 18 años o más; no se muestra a otros usuarios), una contraseña (guardada solo de forma cifrada) y, si quieres, tu correo, una foto y una breve presentación. No pedimos tu dirección de casa.',
+          'Cuenta: número de teléfono, nombre y apellidos (los demás usuarios solo ven tu nombre), fecha de nacimiento (para comprobar que tienes 18 años o más; no se muestra a otros usuarios), una contraseña (guardada solo de forma cifrada) y, si quieres, tu correo, una foto y una breve presentación. No pedimos tu dirección de casa.',
           'Verificación de identidad: tipo de documento, fotos de tu DNI (anverso y reverso) o pasaporte, un vídeo selfie corto en el que dices un código que te damos, la fecha de tu consentimiento y el resultado de la revisión.',
           'Viajes que publicas: ciudades, dirección y punto de recogida en el mapa, fechas, medio de transporte, capacidad y precio.',
           'Paquetes que envías: direcciones de recogida y entrega, descripción, peso, valor declarado y fotos.',
@@ -270,7 +270,7 @@ const es: LegalDoc = {
       id: 'recipients', title: '4. Quién puede ver tus datos',
       blocks: [
         { list: [
-          'Los demás miembros ven tu nombre, foto, presentación, valoración, opiniones, insignia de «verificado» y los viajes que publicas. Cuando hay una reserva, el remitente y el viajero ven lo necesario para la entrega (direcciones, detalles del paquete, chat). Tu número de teléfono nunca se muestra a otros miembros.',
+          'Los demás miembros ven tu nombre (no tus apellidos), foto, presentación, valoración, opiniones, insignia de «verificado» y los viajes que publicas. Cuando hay una reserva, el remitente y el viajero ven lo necesario para la entrega (direcciones, detalles del paquete, chat). Tu número de teléfono nunca se muestra a otros miembros.',
           'El equipo de Amana (administradores y moderadores) ve los documentos de identidad para revisarlos y los detalles de las reservas para resolver disputas. El acceso a las fichas de identidad está restringido y queda registrado.',
           'Proveedores que tratan datos por cuenta nuestra, con contrato de encargo de tratamiento: Railway (alojamiento), Neon (base de datos), Cloudinary (almacenamiento de fotos, documentos y vídeos), Twilio (códigos de acceso, SMS y WhatsApp), OpenStreetMap / Nominatim (búsqueda de direcciones y mapas: las direcciones que escribes se le envían) y, cuando se active el pago con tarjeta, Stripe.',
           'Autoridades públicas, cuando la ley lo exige o para denunciar un delito (por ejemplo un paquete no entregado o un objeto peligroso).',
@@ -350,7 +350,7 @@ const ar: LegalDoc = {
       id: 'data', title: '2. البيانات التي نجمعها',
       blocks: [
         { list: [
-          'الحساب: رقم الهاتف، الاسم، تاريخ الميلاد (للتحقق من أن عمرك 18 عامًا أو أكثر؛ لا يظهر للأعضاء الآخرين)، كلمة مرور (تُحفظ بشكل مشفّر فقط)، واختياريًا بريدك الإلكتروني وصورة ونبذة قصيرة. لا نطلب عنوان سكنك.',
+          'الحساب: رقم الهاتف، الاسم واسم العائلة (لا يرى الأعضاء الآخرون إلا اسمك الأول)، تاريخ الميلاد (للتحقق من أن عمرك 18 عامًا أو أكثر؛ لا يظهر للأعضاء الآخرين)، كلمة مرور (تُحفظ بشكل مشفّر فقط)، واختياريًا بريدك الإلكتروني وصورة ونبذة قصيرة. لا نطلب عنوان سكنك.',
           'التحقق من الهوية: نوع الوثيقة، صور بطاقة الهوية (الوجه والظهر) أو جواز السفر، فيديو سيلفي قصير تقول فيه رمزًا نعطيك إياه، تاريخ موافقتك ونتيجة المراجعة.',
           'الرحلات التي تنشرها: المدن، عنوان ونقطة الاستلام على الخريطة، التواريخ، وسيلة النقل، السعة والسعر.',
           'الطرود التي ترسلها: عنوانا الاستلام والتسليم، الوصف، الوزن، القيمة المصرّح بها والصور.',
@@ -381,7 +381,7 @@ const ar: LegalDoc = {
       id: 'recipients', title: '4. من يمكنه رؤية بياناتك',
       blocks: [
         { list: [
-          'يرى الأعضاء الآخرون اسمك وصورتك ونبذتك وتقييمك وآراءك وشارة «موثّق» والرحلات التي تنشرها. بعد إنشاء حجز، يرى المرسل والمسافر ما يلزم لإتمام التوصيل (العناوين، تفاصيل الطرد، المحادثة). لا يُعرض رقم هاتفك أبدًا على الأعضاء الآخرين.',
+          'يرى الأعضاء الآخرون اسمك الأول (وليس اسم عائلتك) وصورتك ونبذتك وتقييمك وآراءك وشارة «موثّق» والرحلات التي تنشرها. بعد إنشاء حجز، يرى المرسل والمسافر ما يلزم لإتمام التوصيل (العناوين، تفاصيل الطرد، المحادثة). لا يُعرض رقم هاتفك أبدًا على الأعضاء الآخرين.',
           'يرى فريق أمانة (المسؤولون والمشرفون) وثائق الهوية لمراجعتها وتفاصيل الحجوزات لحل النزاعات. الوصول إلى ملفات الهوية مقيّد ومسجَّل.',
           'مزوّدو الخدمات الذين يعالجون البيانات نيابةً عنا بموجب اتفاقية معالجة بيانات: Railway (الاستضافة)، Neon (قاعدة البيانات)، Cloudinary (تخزين الصور والوثائق والفيديوهات)، Twilio (رموز الدخول والرسائل القصيرة وواتساب)، OpenStreetMap / Nominatim (البحث عن العناوين والخرائط: تُرسل إليه العناوين التي تكتبها)، وStripe عند تفعيل الدفع بالبطاقة.',
           'السلطات العامة عندما يفرض القانون ذلك أو للإبلاغ عن جريمة (مثل طرد لم يُسلَّم أو غرض خطير).',

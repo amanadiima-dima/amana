@@ -170,8 +170,11 @@
     "firstTimeHint": "¿Tenías cuenta antes de que hubiera contraseñas? Usa «¿Olvidaste tu contraseña?» para crear una.",
     "registerTitle": "Crea tu cuenta",
     "registerSubtitle": "Envía paquetes o gana dinero llevándolos.",
-    "yourName": "Tu nombre",
-    "namePlaceholder": "Ahmed Benali",
+    "yourName": "Nombre",
+    "namePlaceholder": "Ahmed",
+    "lastNameLabel": "Apellidos",
+    "lastNamePlaceholder": "Benali",
+    "nameHint": "Los demás usuarios solo ven tu nombre. Usa los de tu documento de identidad: los comparamos en la verificación.",
     "phoneLabel": "Número de teléfono",
     "phonePlaceholder": "+34 612 34 56 78",
     "phoneHint": "Con el prefijo del país. Te enviaremos un código por SMS a este número cada vez que entres.",
@@ -219,7 +222,8 @@
       "termsRequired": "Confirma que tienes 18 años o más y aceptas los Términos y la Política de privacidad.",
       "generic": "Algo ha fallado. Inténtalo de nuevo.",
       "birthDateRequired": "Indica tu fecha de nacimiento completa.",
-      "tooYoung": "Debes tener 18 años o más para usar Amana."
+      "tooYoung": "Debes tener 18 años o más para usar Amana.",
+      "lastNameRequired": "Escribe tus apellidos."
     }
   },
   "verificationNotice": {
@@ -504,7 +508,6 @@
     "notVerified": "⚠ No verificado",
     "ratingSuffix": "valoración",
     "editProfile": "Editar perfil",
-    "fullName": "Nombre completo",
     "phone": "Teléfono",
     "saveChanges": "Guardar cambios",
     "savedNotice": "✓ ¡Perfil guardado!",
@@ -574,7 +577,10 @@
       "tooShort": "La contraseña nueva debe tener al menos 8 caracteres.",
       "failed": "No se pudo cambiar la contraseña. Inténtalo de nuevo."
     },
-    "birthDate": "Fecha de nacimiento"
+    "birthDate": "Fecha de nacimiento",
+    "firstName": "Nombre",
+    "lastName": "Apellidos",
+    "nameHint": "Los demás usuarios solo ven tu nombre."
   },
   "travelerProfile": {
     "verified": "Verificado",

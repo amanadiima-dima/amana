@@ -153,7 +153,7 @@ export default function AdminPage() {
             <div key={v.id} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="font-bold text-gray-900">{v.user?.name}</p>
+                  <p className="font-bold text-gray-900">{[v.user?.name, v.user?.lastName].filter(Boolean).join(' ')}</p>
                   <p className="text-sm text-gray-500">{v.user?.phone}</p>
                   <p className="text-xs text-gray-400 mt-1">{t('submitted', { date: new Date(v.createdAt).toLocaleString(locale) })}</p>
                 </div>
@@ -324,7 +324,7 @@ export default function AdminPage() {
               {users.filter((u) => `${u.name} ${u.phone} ${u.archivedName || ''} ${u.archivedPhone || ''}`.toLowerCase().includes(userSearch.trim().toLowerCase())).map((u) => (
                 <tr key={u.id} className={`hover:bg-gray-50 transition-colors ${u.isActive === false && !u.legalHoldAt ? 'opacity-50' : ''}`}>
                   <td className="px-4 py-3 font-medium text-gray-900">
-                    {u.archivedName || u.name}
+                    {u.archivedName || [u.name, u.lastName].filter(Boolean).join(' ')}
                     {u.deletedAt
                       ? <span className="ms-2 text-[10px] font-semibold bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full" title={u.retainUntil ? t('closedUntil', { date: new Date(u.retainUntil).toLocaleDateString(locale) }) : undefined}>{t('closedBadge')}</span>
                       : u.isActive === false && <span className="ms-2 text-[10px] font-semibold bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">{t('inactiveBadge')}</span>}

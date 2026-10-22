@@ -34,7 +34,7 @@ api.interceptors.response.use(
   }
 );
 
-export type RegisterDetails = { name: string; phone: string; email?: string; birthDate: string; password: string; acceptTerms: boolean };
+export type RegisterDetails = { name: string; lastName: string; phone: string; email?: string; birthDate: string; password: string; acceptTerms: boolean };
 export const authApi = {
   register: (d: RegisterDetails) => api.post('/auth/register', d),
   registerVerify: (d: RegisterDetails & { code: string }) => api.post('/auth/register/verify', d),

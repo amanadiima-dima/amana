@@ -39,11 +39,12 @@ const password = body('password').isString().isLength({ min: 8, max: 128 }).with
 const email = body('email').optional({ values: 'falsy' }).isEmail().withMessage('Enter a valid email address');
 const code = body('code').isString().isLength({ min: 6, max: 6 });
 const identifier = body('identifier').isString().trim().isLength({ min: 3, max: 120 });
-const name = body('name').isString().trim().isLength({ min: 2, max: 60 }).withMessage('Enter your name');
+const name = body('name').isString().trim().isLength({ min: 2, max: 60 }).withMessage('Enter your first name');
+const lastName = body('lastName').isString().trim().isLength({ min: 1, max: 60 }).withMessage('Enter your last name');
 
 // Sign-up: details → code to the phone → account.
-router.post('/register', sendOtpLimiter, [name, phoneValidator, email, password], validate, register);
-router.post('/register/verify', verifyOtpLimiter, [name, phoneValidator, email, password, code], validate, registerVerify);
+router.post('/register', sendOtpLimiter, [name, lastName, phoneValidator, email, password], validate, register);
+router.post('/register/verify', verifyOtpLimiter, [name, lastName, phoneValidator, email, password, code], validate, registerVerify);
 // Sign-in: email or phone + password → code to the account's phone → session.
 router.post('/login', verifyOtpLimiter, [identifier, body('password').isString().isLength({ min: 1, max: 128 })], validate, login);
 router.post('/login/verify', verifyOtpLimiter, [body('loginToken').isString(), code], validate, loginVerify);

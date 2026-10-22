@@ -74,7 +74,8 @@ model User {
   phone             String    @unique
   email             String?   @unique // optional second sign-in identifier (stored lower-case)
   passwordHash      String?   // bcrypt; null for accounts created before passwords existed (they set one via "forgot password")
-  name              String
+  name              String    // first name — the only part other members see
+  lastName          String?   // asked at sign-up; private (owner + staff, e.g. to match the ID document)
   birthDate         DateTime? @db.Date // asked at sign-up (must be 18+); null for accounts created before 2026-10-22
   photoUrl          String?
   bio               String?

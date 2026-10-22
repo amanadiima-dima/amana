@@ -170,8 +170,11 @@
     "firstTimeHint": "Had an account before passwords were introduced? Use \"Forgot password?\" to create one.",
     "registerTitle": "Create your account",
     "registerSubtitle": "Send parcels or earn money carrying them.",
-    "yourName": "Your name",
-    "namePlaceholder": "Ahmed Benali",
+    "yourName": "First name",
+    "namePlaceholder": "Ahmed",
+    "lastNameLabel": "Last name",
+    "lastNamePlaceholder": "Benali",
+    "nameHint": "Other members only see your first name. Use the names on your ID: we compare them during verification.",
     "phoneLabel": "Phone number",
     "phonePlaceholder": "+41 79 123 45 67",
     "phoneHint": "With the country code. We text a code to this number each time you sign in.",
@@ -219,7 +222,8 @@
       "termsRequired": "Confirm you are 18 or older and accept the Terms and Privacy Policy.",
       "generic": "Something went wrong. Please try again.",
       "birthDateRequired": "Enter your full date of birth.",
-      "tooYoung": "You must be 18 or older to use Amana."
+      "tooYoung": "You must be 18 or older to use Amana.",
+      "lastNameRequired": "Enter your last name."
     }
   },
   "verificationNotice": {
@@ -504,7 +508,6 @@
     "notVerified": "⚠ Not Verified",
     "ratingSuffix": "rating",
     "editProfile": "Edit Profile",
-    "fullName": "Full name",
     "phone": "Phone",
     "saveChanges": "Save changes",
     "savedNotice": "✓ Profile saved!",
@@ -574,7 +577,10 @@
       "tooShort": "The new password must have at least 8 characters.",
       "failed": "Could not change the password. Try again."
     },
-    "birthDate": "Date of birth"
+    "birthDate": "Date of birth",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "nameHint": "Other members only see your first name."
   },
   "travelerProfile": {
     "verified": "Verified",

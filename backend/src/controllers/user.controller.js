@@ -20,6 +20,8 @@ const getProfile = async (req, res, next) => {
 const updateProfile = async (req, res, next) => {
   try {
     const { name, bio } = req.body;
+    const lastName = req.body.lastName === undefined ? undefined : String(req.body.lastName).trim().slice(0, 60);
+    if (lastName === '') throw new AppError('Enter your last name', 400);
     // Email is an optional sign-in identifier: "" removes it.
     const email = req.body.email === undefined ? undefined : String(req.body.email).trim().toLowerCase() || null;
     if (email) {
@@ -28,7 +30,7 @@ const updateProfile = async (req, res, next) => {
     }
     const user = await prisma.user.update({
       where: { id: req.user.id },
-      data: { ...(name && { name }), ...(bio !== undefined && { bio }), ...(email !== undefined && { email }) },
+      data: { ...(name && { name }), ...(lastName !== undefined && { lastName }), ...(bio !== undefined && { bio }), ...(email !== undefined && { email }) },
     });
     res.json({ success: true, user });
   } catch (err) { next(err); }

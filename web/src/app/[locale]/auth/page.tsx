@@ -89,6 +89,7 @@ function AuthForm() {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [birthDate, setBirthDate] = useState('');
@@ -121,7 +122,7 @@ function AuthForm() {
     try { await fn(); } catch (err) { setError(apiError(err)); } finally { setLoading(false); }
   };
 
-  const registerDetails = () => ({ name: name.trim(), phone: phone.replace(/[\s().-]/g, ''), email: email.trim() || undefined, birthDate, password, acceptTerms });
+  const registerDetails = () => ({ name: name.trim(), lastName: lastName.trim(), phone: phone.replace(/[\s().-]/g, ''), email: email.trim() || undefined, birthDate, password, acceptTerms });
 
   // ── Step 1 ──
   const submitForm = (e: React.FormEvent) => {
@@ -137,6 +138,7 @@ function AuthForm() {
     if (mode === 'register') {
       const d = registerDetails();
       if (d.name.length < 2) return setError(t('errors.nameRequired'));
+      if (!d.lastName) return setError(t('errors.lastNameRequired'));
       if (!/^\+[1-9]\d{7,14}$/.test(d.phone)) return setError(t('errors.phoneFormat'));
       if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) return setError(t('errors.emailFormat'));
       if (!birthDate || ageOk(birthDate) === 'invalid') return setError(t('errors.birthDateRequired'));
@@ -231,9 +233,19 @@ function AuthForm() {
               <p className="text-gray-500 mb-6">{t('registerSubtitle')}</p>
               <form onSubmit={submitForm} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('yourName')}</label>
-                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('namePlaceholder')} maxLength={60}
-                    autoComplete="name" className={inputCls} autoFocus />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('yourName')}</label>
+                      <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('namePlaceholder')} maxLength={60}
+                        autoComplete="given-name" className={inputCls} autoFocus />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('lastNameLabel')}</label>
+                      <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder={t('lastNamePlaceholder')} maxLength={60}
+                        autoComplete="family-name" className={inputCls} />
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">{t('nameHint')}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">{t('phoneLabel')}</label>

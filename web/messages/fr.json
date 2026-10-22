@@ -170,8 +170,11 @@
     "firstTimeHint": "Vous aviez un compte avant l'arrivée des mots de passe ? Utilisez « Mot de passe oublié ? » pour en créer un.",
     "registerTitle": "Créez votre compte",
     "registerSubtitle": "Envoyez des colis ou gagnez de l'argent en les transportant.",
-    "yourName": "Votre nom",
-    "namePlaceholder": "Ahmed Benali",
+    "yourName": "Prénom",
+    "namePlaceholder": "Ahmed",
+    "lastNameLabel": "Nom",
+    "lastNamePlaceholder": "Benali",
+    "nameHint": "Les autres membres ne voient que votre prénom. Indiquez les noms de votre pièce d'identité : nous les comparons lors de la vérification.",
     "phoneLabel": "Numéro de téléphone",
     "phonePlaceholder": "+33 6 12 34 56 78",
     "phoneHint": "Avec l'indicatif du pays. Nous envoyons un code par SMS à ce numéro à chaque connexion.",
@@ -219,7 +222,8 @@
       "termsRequired": "Confirmez que vous avez 18 ans ou plus et acceptez les Conditions et la Politique de confidentialité.",
       "generic": "Une erreur est survenue. Réessayez.",
       "birthDateRequired": "Saisissez votre date de naissance complète.",
-      "tooYoung": "Vous devez avoir 18 ans ou plus pour utiliser Amana."
+      "tooYoung": "Vous devez avoir 18 ans ou plus pour utiliser Amana.",
+      "lastNameRequired": "Saisissez votre nom de famille."
     }
   },
   "verificationNotice": {
@@ -504,7 +508,6 @@
     "notVerified": "⚠ Non vérifié",
     "ratingSuffix": "note",
     "editProfile": "Modifier le profil",
-    "fullName": "Nom complet",
     "phone": "Téléphone",
     "saveChanges": "Enregistrer",
     "savedNotice": "✓ Profil enregistré !",
@@ -574,7 +577,10 @@
       "tooShort": "Le nouveau mot de passe doit contenir au moins 8 caractères.",
       "failed": "Impossible de changer le mot de passe. Réessayez."
     },
-    "birthDate": "Date de naissance"
+    "birthDate": "Date de naissance",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "nameHint": "Les autres membres ne voient que votre prénom."
   },
   "travelerProfile": {
     "verified": "Vérifié",

@@ -13,13 +13,15 @@ const yearsAgo = (years, days = 0) => { const d = new Date(); d.setUTCFullYear(d
 (async () => {
   const phone = '+4179' + rnd();
   const email = `maria.${rnd()}@example.com`;
-  const base = { name: 'Maria Lopez', phone, email: email.toUpperCase(), birthDate: '1992-03-08', password: 'secret-pass-1', acceptTerms: true };
+  const base = { name: 'Maria', lastName: 'López García', phone, email: email.toUpperCase(), birthDate: '1992-03-08', password: 'secret-pass-1', acceptTerms: true };
 
   // ── Sign-up ──
   let r = await post('/auth/register', { ...base, acceptTerms: false }); T('sign-up without the 18+/Terms box is refused', r.status === 400);
   r = await post('/auth/register', { ...base, password: 'short' }); T('password under 8 characters refused', r.status === 400);
   r = await post('/auth/register', { ...base, email: 'not-an-email' }); T('invalid email refused', r.status === 400);
   r = await post('/auth/register', { ...base, name: 'A' }); T('1-letter name refused', r.status === 400);
+  r = await post('/auth/register', { ...base, lastName: undefined }); T('last name is required', r.status === 400);
+  r = await post('/auth/register', { ...base, lastName: '   ' }); T('blank last name refused', r.status === 400);
   r = await post('/auth/register', { ...base, birthDate: undefined }); T('date of birth is required', r.status === 400);
   r = await post('/auth/register', { ...base, birthDate: '1992-02-30' }); T('impossible date refused', r.status === 400);
   r = await post('/auth/register', { ...base, birthDate: '08/03/1992' }); T('date must be YYYY-MM-DD', r.status === 400);
@@ -33,7 +35,7 @@ const yearsAgo = (years, days = 0) => { const d = new Date(); d.setUTCFullYear(d
   r = await post('/auth/register/verify', { ...base, acceptTerms: false, code: '123456' }); T('verify step also requires the Terms box', r.status === 400);
   r = await post('/auth/register/verify', { ...base, birthDate: yearsAgo(16), code: '123456' }); T('verify step also checks the age (no bypass of step 1)', r.status === 400);
   r = await post('/auth/register/verify', { ...base, code: '123456' });
-  T('right code creates the account and signs in', r.status === 200 && !!r.data.accessToken && r.data.user.name === 'Maria Lopez' && r.data.user.phone === phone);
+  T('right code creates the account and signs in', r.status === 200 && !!r.data.accessToken && r.data.user.name === 'Maria' && r.data.user.lastName === 'López García' && r.data.user.phone === phone);
   T('email stored lower-case', r.data.user?.email === email);
   const userId = r.data.user?.id;
   const stored = await prisma.user.findUnique({ where: { phone } });
@@ -62,6 +64,9 @@ const yearsAgo = (years, days = 0) => { const d = new Date(); d.setUTCFullYear(d
   r = await call('POST', '/users/me/password', access, { currentPassword: 'nope-nope', newPassword: 'another-pass-2' }); T('changing the password needs the current one', r.status === 400);
   r = await call('POST', '/users/me/password', access, { currentPassword: base.password, newPassword: 'another-pass-2' }); T('password changed', r.status === 200);
   r = await post('/auth/login', { identifier: phone, password: 'another-pass-2' }); T('new password works', r.status === 200);
+  r = await call('PATCH', '/users/me', access, { lastName: 'López Ruiz' }); T('last name can be corrected in the profile', r.status === 200 && r.data.user.lastName === 'López Ruiz');
+  r = await call('PATCH', '/users/me', access, { lastName: '' }); T('…but not emptied', r.status === 400);
+  r = await call('GET', `/users/${userId}`, access); T('other members only see the first name (no last name)', r.status === 200 && r.data.user.name === 'Maria' && !('lastName' in r.data.user));
   r = await call('PATCH', '/users/me', access, { email: 'admin-taken-' + rnd() + '@example.com' }); T('email can be changed', r.status === 200);
   const other = await prisma.user.update({ where: { phone: '+10000000001' }, data: { email: `seed1.${rnd()}@example.com` } });
   r = await call('PATCH', '/users/me', access, { email: other.email }); T("someone else's email is refused", r.status === 409);

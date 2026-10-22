@@ -17,7 +17,7 @@ const listUsers = async (req, res, next) => {
       take: parseInt(limit),
       orderBy: { createdAt: 'desc' },
       select: {
-        id: true, phone: true, email: true, name: true, role: true, isVerified: true, isActive: true, rating: true, createdAt: true,
+        id: true, phone: true, email: true, name: true, lastName: true, role: true, isVerified: true, isActive: true, rating: true, createdAt: true,
         deletedAt: true, retainUntil: true, archivedName: true, archivedPhone: true, legalHoldAt: true, legalHoldNote: true,
       },
     });
@@ -29,7 +29,7 @@ const listPendingVerifications = async (req, res, next) => {
   try {
     const verifications = await prisma.idVerification.findMany({
       where: { status: 'PENDING' },
-      include: { user: { select: { id: true, name: true, phone: true } } },
+      include: { user: { select: { id: true, name: true, lastName: true, phone: true } } },
       orderBy: { createdAt: 'asc' },
     });
     // Sensitive media is private: hand the reviewer signed links (or the dev-local URL).
@@ -230,7 +230,7 @@ const getUserIdentity = async (req, res, next) => {
     res.json({
       success: true,
       identity: {
-        name: user.archivedName || user.name, phone: user.archivedPhone || user.phone, closedAt: user.deletedAt, retainUntil: user.retainUntil,
+        name: user.archivedName || [user.name, user.lastName].filter(Boolean).join(' '), phone: user.archivedPhone || user.phone, closedAt: user.deletedAt, retainUntil: user.retainUntil,
         legalHoldAt: user.legalHoldAt, legalHoldNote: user.legalHoldNote, onHold: await isOnHold(user),
         verification: v && { documentType: v.documentType, status: v.status, reviewedAt: v.reviewedAt, frontPhoto: signedUrl(v.frontPhoto), backPhoto: signedUrl(v.backPhoto), selfieVideo: signedUrl(v.selfieVideo) },
       },

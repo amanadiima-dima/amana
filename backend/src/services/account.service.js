@@ -95,8 +95,8 @@ const closeAccount = async (userId) => {
     prisma.user.update({
       where: { id: user.id },
       data: {
-        name: 'Deleted user', phone: `deleted:${user.id}`, email: null, passwordHash: null, birthDate: null, photoUrl: null, bio: null, fcmToken: null,
-        isActive: false, deletedAt: new Date(), archivedName: user.name, archivedPhone: user.phone,
+        name: 'Deleted user', phone: `deleted:${user.id}`, lastName: null, email: null, passwordHash: null, birthDate: null, photoUrl: null, bio: null, fcmToken: null,
+        isActive: false, deletedAt: new Date(), archivedName: [user.name, user.lastName].filter(Boolean).join(' '), archivedPhone: user.phone,
         retainUntil: new Date(last + years(RETENTION.legalClaimsYears)),
       },
     }),
@@ -127,7 +127,7 @@ const exportUserData = async (userId) => {
   return {
     exportedAt: new Date(),
     profile: {
-      id: u.id, phone: u.phone, email: u.email, name: u.name, birthDate: u.birthDate, bio: u.bio, photoUrl: u.photoUrl, role: u.role, isVerified: u.isVerified,
+      id: u.id, phone: u.phone, email: u.email, name: u.name, lastName: u.lastName, birthDate: u.birthDate, bio: u.bio, photoUrl: u.photoUrl, role: u.role, isVerified: u.isVerified,
       rating: u.rating, reviewCount: u.reviewCount, createdAt: u.createdAt, termsAcceptedAt: u.termsAcceptedAt,
     },
     idVerification: v && {
