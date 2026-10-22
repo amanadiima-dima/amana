@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/authStore';
 import { userApi } from '@/lib/api';
 import { Link, useRouter } from '@/i18n/navigation';
 import SelfieVideoRecorder from '@/components/ui/SelfieVideoRecorder';
-import { Loader2, Save, ShieldCheck, ShieldAlert, Upload, CheckCircle2, Clock, Download, Trash2, Lock } from 'lucide-react';
+import { Loader2, Save, ShieldCheck, ShieldAlert, Upload, CheckCircle2, Clock, Download, Trash2, Lock, KeyRound } from 'lucide-react';
 
 function PrivacySection() {
   const t = useTranslations('profile.privacy');
@@ -85,6 +85,51 @@ function PrivacySection() {
 
       {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
     </div>
+  );
+}
+
+function PasswordSection() {
+  const t = useTranslations('profile.password');
+  const [current, setCurrent] = useState('');
+  const [next, setNext] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMsg(null);
+    if (next.length < 8) return setMsg({ ok: false, text: t('tooShort') });
+    setBusy(true);
+    try {
+      await userApi.changePassword(current, next);
+      setCurrent(''); setNext('');
+      setMsg({ ok: true, text: t('changed') });
+    } catch (err: any) {
+      setMsg({ ok: false, text: err?.response?.status === 400 ? t('wrongCurrent') : t('failed') });
+    } finally { setBusy(false); }
+  };
+
+  const inputCls = 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500';
+  return (
+    <form onSubmit={save} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
+      <div className="flex items-center gap-2">
+        <KeyRound className="w-5 h-5 text-brand-600" />
+        <h2 className="font-semibold text-gray-900">{t('title')}</h2>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('current')}</label>
+        <input type="password" value={current} onChange={(e) => setCurrent(e.target.value)} autoComplete="current-password" className={inputCls} dir="ltr" />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('new')}</label>
+        <input type="password" value={next} onChange={(e) => setNext(e.target.value)} autoComplete="new-password" className={inputCls} dir="ltr" />
+      </div>
+      {msg && <p className={`text-sm px-3 py-2 rounded-lg ${msg.ok ? 'text-green-600 bg-green-50' : 'text-red-500 bg-red-50'}`}>{msg.text}</p>}
+      <button type="submit" disabled={busy}
+        className="flex items-center justify-center gap-2 border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50 transition-colors disabled:opacity-60">
+        {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : t('save')}
+      </button>
+    </form>
   );
 }
 
@@ -235,23 +280,25 @@ function IdVerificationSection() {
 
 export default function ProfilePage() {
   const t = useTranslations('profile');
-  const { user } = useAuthStore();
+  const { user, loadUser } = useAuthStore();
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => { if (user?.name) setName(user.name); }, [user]);
+  useEffect(() => { if (user?.name) setName(user.name); setEmail(user?.email || ''); }, [user]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true); setError(''); setSaved(false);
     try {
-      await userApi.updateMe({ name });
+      await userApi.updateMe({ name, email: email.trim() });
+      await loadUser();
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err: any) {
-      setError(err?.response?.data?.message || t('saveErrorGeneric'));
+      setError(err?.response?.status === 409 ? t('emailTaken') : err?.response?.data?.message || t('saveErrorGeneric'));
     } finally {
       setLoading(false);
     }
@@ -291,7 +338,14 @@ export default function ProfilePage() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">{t('phone')}</label>
           <input value={user?.phone || ''} disabled
-            className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed" />
+            className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed" dir="ltr" />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('email')}</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" dir="ltr"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          <p className="text-xs text-gray-400 mt-1">{t('emailHint')}</p>
         </div>
 
         {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
@@ -303,8 +357,12 @@ export default function ProfilePage() {
         </button>
       </form>
 
+      <PasswordSection />
+
       {/* ID Verification */}
-      <IdVerificationSection />
+      <div id="verification" className="scroll-mt-20">
+        <IdVerificationSection />
+      </div>
 
       <PrivacySection />
     </div>

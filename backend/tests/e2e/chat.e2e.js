@@ -13,10 +13,10 @@ async function call(method, path, token, body, form) {
   let j = {}; try { j = await r.json(); } catch {}
   return { status: r.status, data: j };
 }
+const { signIn } = require('./_auth');
 async function login(phone) {
-  await call('POST', '/auth/send-otp', null, { phone });
-  const r = await call('POST', '/auth/verify-otp', null, { phone, code: '123456' });
-  return { token: r.data.accessToken || r.data.data?.accessToken, user: r.data.user || r.data.data?.user };
+  const r = await signIn(phone);
+  return { token: r.data.accessToken, user: r.data.user };
 }
 const wait = (ms) => new Promise(r => setTimeout(r, ms));
 

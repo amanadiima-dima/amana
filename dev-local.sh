@@ -38,6 +38,6 @@ echo "   Web      http://localhost:3001"
 echo "   API      http://localhost:3000/health"
 echo "   Logs     .localdev/{backend,web,pg}.log"
 echo
-echo "   Log in with any seeded phone + OTP code 123456:"
+echo "   Log in with any seeded phone + password amana1234, then SMS code 123456:"
 echo "     sender_1 … sender_5     +10000000001 … +10000000005"
 echo "     traveler_1 … traveler_5 +10000000011 … +10000000015"

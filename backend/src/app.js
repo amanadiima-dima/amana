@@ -47,9 +47,19 @@ app.use(
 
 // Private media (ID documents, parcel/delivery photos) is stored without public URLs: every JSON
 // response swaps those references for signed links, so no controller can leak a raw reference.
+// Password hashes are dropped the same way, whatever a controller returns.
+const dropSecrets = (value) => {
+  if (Array.isArray(value)) return value.map(dropSecrets);
+  if (value && Object.getPrototypeOf(value) === Object.prototype) {
+    const out = {};
+    for (const [k, v] of Object.entries(value)) if (k !== 'passwordHash') out[k] = dropSecrets(v);
+    return out;
+  }
+  return value;
+};
 app.use((_req, res, next) => {
   const json = res.json.bind(res);
-  res.json = (body) => json(signMediaRefs(body));
+  res.json = (body) => json(signMediaRefs(dropSecrets(body)));
   next();
 });
 

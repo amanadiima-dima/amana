@@ -3,7 +3,11 @@
  * Run: node prisma/seed.js
  */
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
+
+// Local test password for every seeded account (sign-in = phone + this password + SMS code 123456).
+const SEED_PASSWORD = 'amana1234';
 
 const ROUTES = [
   { origin: 'Paris', destination: 'Algiers' },
@@ -35,12 +39,13 @@ function futureDate(daysFromNow) {
 
 async function main() {
   console.log('🌱 Seeding Amana database...\n');
+  const passwordHash = await bcrypt.hash(SEED_PASSWORD, 10);
 
   // ── Admin ────────────────────────────────────────────────────────────────
   const admin = await prisma.user.upsert({
     where: { phone: '+10000000099' },
-    update: { role: 'ADMIN', isVerified: true },
-    create: { phone: '+10000000099', name: 'admin', role: 'ADMIN', isVerified: true },
+    update: { role: 'ADMIN', isVerified: true, passwordHash },
+    create: { phone: '+10000000099', name: 'admin', role: 'ADMIN', isVerified: true, passwordHash },
   });
   console.log(`✅ Admin created: ${admin.name} (${admin.phone})`);
 
@@ -49,8 +54,9 @@ async function main() {
   for (let i = 1; i <= 5; i++) {
     const user = await prisma.user.upsert({
       where: { phone: `+1000000000${i}` },
-      update: {},
+      update: { passwordHash },
       create: {
+        passwordHash,
         phone: `+1000000000${i}`,
         name: `sender_${i}`,
         role: 'SENDER',
@@ -68,8 +74,9 @@ async function main() {
   for (let i = 1; i <= 5; i++) {
     const user = await prisma.user.upsert({
       where: { phone: `+1000000001${i}` },
-      update: {},
+      update: { passwordHash },
       create: {
+        passwordHash,
         phone: `+1000000001${i}`,
         name: `traveler_${i}`,
         role: 'TRAVELER',
@@ -113,7 +120,7 @@ async function main() {
   console.log('   Admin    : admin                | phone  +10000000099');
   console.log('   Senders  : sender_1 … sender_5  | phones +10000000001–+10000000005');
   console.log('   Travelers: traveler_1 … traveler_5 | phones +10000000011–+10000000015');
-  console.log('   All users have OTP bypass enabled — use code 123456 to log in.\n');
+  console.log(`   Password ${SEED_PASSWORD} for all of them, then SMS code 123456 (OTP bypass).\n`);
 }
 
 main()

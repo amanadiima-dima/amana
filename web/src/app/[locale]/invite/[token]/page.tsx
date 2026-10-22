@@ -30,7 +30,7 @@ export default function InvitePage() {
   const fmtDate = (d?: string) => (d ? new Date(d).toLocaleString(locale, { dateStyle: 'medium', timeStyle: 'short' }) : '');
 
   const pay = async () => {
-    if (!signedIn) return router.push(`/auth?redirect=${encodeURIComponent(`/invite/${token}`)}`);
+    if (!signedIn) return router.push(`/auth?mode=register&redirect=${encodeURIComponent(`/invite/${token}`)}`);
     setBusy(true); setError('');
     try {
       const { data } = await inviteApi.claim(token);

@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter, Link } from '@/i18n/navigation';
 import { parcelApi } from '@/lib/api';
+import VerificationNotice from '@/components/app/VerificationNotice';
 import { Loader2, AlertTriangle, Upload, X, ShieldAlert } from 'lucide-react';
 import Image from 'next/image';
 import AddressAutocomplete from '@/components/ui/AddressAutocomplete';
@@ -21,6 +22,7 @@ export default function NewParcelPage() {
   const [fragile, setFragile] = useState(false);
   const [valueCurrency, setValueCurrency] = useState('');
   const [agreed, setAgreed] = useState(false);
+  const [verified, setVerified] = useState(true);
   const [form, setForm] = useState({
     pickupAddress: '',
     deliveryAddress: '',
@@ -69,6 +71,7 @@ export default function NewParcelPage() {
     <div className="max-w-xl">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('title')}</h1>
       <p className="text-sm text-gray-500 mb-6">{t('subtitle')}</p>
+      <VerificationNotice kind="parcel" onVerifiedChange={setVerified} />
 
       {/* ── Disclaimer ────────────────────────────────────────────────────── */}
       <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6">
@@ -195,7 +198,7 @@ export default function NewParcelPage() {
           </div>
         )}
 
-        <button type="submit" disabled={loading}
+        <button type="submit" disabled={loading || !verified}
           className="w-full flex items-center justify-center gap-2 bg-brand-600 text-white py-3 rounded-xl font-semibold hover:bg-brand-700 transition-colors disabled:opacity-60">
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : t('submit')}
         </button>

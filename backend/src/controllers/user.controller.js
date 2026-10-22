@@ -3,6 +3,7 @@ const prisma = require('../utils/prisma');
 const { AppError } = require('../middlewares/error.middleware');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 const { uploadPrivate, destroyMedia } = require('../utils/cloudinary');
 const { closeAccount, exportUserData } = require('../services/account.service');
 
@@ -19,11 +20,29 @@ const getProfile = async (req, res, next) => {
 const updateProfile = async (req, res, next) => {
   try {
     const { name, bio } = req.body;
+    // Email is an optional sign-in identifier: "" removes it.
+    const email = req.body.email === undefined ? undefined : String(req.body.email).trim().toLowerCase() || null;
+    if (email) {
+      const other = await prisma.user.findUnique({ where: { email } });
+      if (other && other.id !== req.user.id) throw new AppError('This email is already used by another account', 409);
+    }
     const user = await prisma.user.update({
       where: { id: req.user.id },
-      data: { ...(name && { name }), ...(bio !== undefined && { bio }) },
+      data: { ...(name && { name }), ...(bio !== undefined && { bio }), ...(email !== undefined && { email }) },
     });
     res.json({ success: true, user });
+  } catch (err) { next(err); }
+};
+
+// POST /api/users/me/password  body: { currentPassword, newPassword }
+const changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (req.user.passwordHash && !(await bcrypt.compare(String(currentPassword || ''), req.user.passwordHash))) {
+      throw new AppError('Your current password is wrong', 400);
+    }
+    await prisma.user.update({ where: { id: req.user.id }, data: { passwordHash: await bcrypt.hash(newPassword, 10) } });
+    res.json({ success: true });
   } catch (err) { next(err); }
 };
 
@@ -128,4 +147,4 @@ const deleteMyAccount = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { exportMyData, deleteMyAccount, getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile };
+module.exports = { changePassword, exportMyData, deleteMyAccount, getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile };

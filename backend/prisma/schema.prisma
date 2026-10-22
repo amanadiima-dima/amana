@@ -72,6 +72,8 @@ enum PaymentStatus {
 model User {
   id                String    @id @default(cuid())
   phone             String    @unique
+  email             String?   @unique // optional second sign-in identifier (stored lower-case)
+  passwordHash      String?   // bcrypt; null for accounts created before passwords existed (they set one via "forgot password")
   name              String
   photoUrl          String?
   bio               String?

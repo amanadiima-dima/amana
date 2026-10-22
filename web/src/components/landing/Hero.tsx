@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { ArrowRight, Shield, Star } from 'lucide-react';
+import { ArrowRight, Shield, Star, Plane } from 'lucide-react';
 
 export default function Hero() {
   const t = useTranslations('landing.hero');
@@ -23,16 +23,16 @@ export default function Hero() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href="/auth"
+              href="/parcels/search"
               className="flex items-center justify-center gap-2 bg-brand-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-brand-700 transition-all shadow-lg shadow-brand-200 hover:shadow-xl hover:scale-105"
             >
               {t('startSending')} <ArrowRight className="w-5 h-5 rtl:rotate-180" />
             </Link>
             <Link
-              href="/auth"
-              className="flex items-center justify-center gap-2 border-2 border-brand-200 text-brand-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-brand-50 transition-all"
+              href="/trips/new"
+              className="flex items-center justify-center gap-2 bg-amber-400 text-gray-900 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-amber-300 transition-all shadow-lg shadow-amber-100 hover:shadow-xl hover:scale-105"
             >
-              {t('becomeCarrier')}
+              <Plane className="w-5 h-5 rtl:-scale-x-100" /> {t('becomeCarrier')}
             </Link>
           </div>
           <div className="flex items-center gap-6 mt-10 text-sm text-gray-500">
@@ -60,9 +60,9 @@ export default function Hero() {
                 <p className="font-bold">{t('mockupTrip')}</p>
                 <p className="text-sm text-gray-500 mt-1">{t('mockupTripDetails')}</p>
               </div>
-              <button className="w-full bg-brand-600 text-white py-3 rounded-xl font-semibold text-sm">
+              <div aria-hidden className="w-full bg-brand-600 text-white py-3 rounded-xl font-semibold text-sm text-center">
                 {t('mockupCta')}
-              </button>
+              </div>
             </div>
             {/* Floating badge */}
             <div className="absolute -top-4 -end-4 bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-2xl shadow-lg">

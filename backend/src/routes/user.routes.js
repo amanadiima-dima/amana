@@ -1,7 +1,7 @@
 const express = require('express');
 const { body } = require('express-validator');
 const multer = require('multer');
-const { exportMyData, deleteMyAccount, getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile } = require('../controllers/user.controller');
+const { changePassword, exportMyData, deleteMyAccount, getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile } = require('../controllers/user.controller');
 const { AppError } = require('../middlewares/error.middleware');
 const { authenticate } = require('../middlewares/auth.middleware');
 const validate = require('../middlewares/validate.middleware');
@@ -24,9 +24,15 @@ router.get('/me', getProfile);
 router.get('/me/export', exportMyData);
 router.delete('/me', deleteMyAccount);
 router.patch('/me',
-  [body('name').optional().isString().trim(), body('bio').optional().isString()],
+  [body('name').optional().isString().trim(), body('bio').optional().isString(),
+    body('email').optional({ values: 'null' }).custom((v) => v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v))).withMessage('Enter a valid email address')],
   validate,
   updateProfile
+);
+router.post('/me/password',
+  [body('newPassword').isString().isLength({ min: 8, max: 128 }).withMessage('The password must have at least 8 characters')],
+  validate,
+  changePassword
 );
 router.post('/me/fcm-token',
   [body('token').isString()],

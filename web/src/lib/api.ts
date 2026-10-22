@@ -34,16 +34,21 @@ api.interceptors.response.use(
   }
 );
 
+export type RegisterDetails = { name: string; phone: string; email?: string; password: string; acceptTerms: boolean };
 export const authApi = {
-  sendOtp: (phone: string) => api.post('/auth/send-otp', { phone }),
-  verifyOtp: (phone: string, code: string) => api.post('/auth/verify-otp', { phone, code }),
-  completeRegistration: (registrationToken: string, name: string) => api.post('/auth/complete-registration', { registrationToken, name, acceptTerms: true }),
+  register: (d: RegisterDetails) => api.post('/auth/register', d),
+  registerVerify: (d: RegisterDetails & { code: string }) => api.post('/auth/register/verify', d),
+  login: (identifier: string, password: string) => api.post('/auth/login', { identifier, password }),
+  loginVerify: (loginToken: string, code: string) => api.post('/auth/login/verify', { loginToken, code }),
+  forgotPassword: (identifier: string) => api.post('/auth/password/forgot', { identifier }),
+  resetPassword: (identifier: string, code: string, password: string) => api.post('/auth/password/reset', { identifier, code, password }),
   logout: () => api.post('/auth/logout'),
 };
 export const userApi = {
   getIdChallenge: () => api.get('/users/me/id-verification/challenge'),
   getMe: () => api.get('/users/me'),
   updateMe: (data: object) => api.patch('/users/me', data),
+  changePassword: (currentPassword: string, newPassword: string) => api.post('/users/me/password', { currentPassword, newPassword }),
   exportMyData: () => api.get('/users/me/export'),
   deleteMyAccount: () => api.delete('/users/me', { data: { confirm: 'DELETE' } }),
   uploadIdVerification: (formData: FormData) => api.post('/users/me/id-verification', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),

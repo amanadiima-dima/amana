@@ -19,8 +19,8 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-semibold mb-4">{t('product')}</h4>
           <ul className="space-y-2 text-sm">
-            <li><a href="#how-it-works" className="hover:text-white transition-colors">{t('howItWorks')}</a></li>
-            <li><a href="#features" className="hover:text-white transition-colors">{t('features')}</a></li>
+            <li><Link href="/#how-it-works" className="hover:text-white transition-colors">{t('howItWorks')}</Link></li>
+            <li><Link href="/#features" className="hover:text-white transition-colors">{t('features')}</Link></li>
             <li><Link href="/auth" className="hover:text-white transition-colors">{t('getStarted')}</Link></li>
           </ul>
         </div>
@@ -28,8 +28,8 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-semibold mb-4">{t('forUsers')}</h4>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/auth" className="hover:text-white transition-colors">{t('sendParcel')}</Link></li>
-            <li><Link href="/auth" className="hover:text-white transition-colors">{t('becomeTraveler')}</Link></li>
+            <li><Link href="/parcels/search" className="hover:text-white transition-colors">{t('sendParcel')}</Link></li>
+            <li><Link href="/trips/new" className="font-semibold text-amber-400 hover:text-amber-300 transition-colors">{t('becomeTraveler')}</Link></li>
             <li><Link href="/dashboard" className="hover:text-white transition-colors">{t('dashboard')}</Link></li>
           </ul>
         </div>

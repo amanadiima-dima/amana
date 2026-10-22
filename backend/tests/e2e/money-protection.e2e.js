@@ -2,7 +2,8 @@
 const API=process.env.API||'http://localhost:3000/api';
 const prisma=new (require('@prisma/client').PrismaClient)();
 const call=async(m,p,t,b,f)=>{const h={};if(t)h.Authorization='Bearer '+t;let body;if(f)body=f;else if(b){h['Content-Type']='application/json';body=JSON.stringify(b)}const r=await fetch(API+p,{method:m,headers:h,body});return {status:r.status,data:await r.json().catch(()=>({}))}};
-const login=async(phone)=>{await call('POST','/auth/send-otp',null,{phone});const r=await call('POST','/auth/verify-otp',null,{phone,code:'123456'});return r.data.accessToken};
+const { signIn } = require('./_auth');
+const login = async (phone) => (await signIn(phone)).data.accessToken;
 const day=n=>new Date(Date.now()+864e5*n).toISOString();
 let pass=0,fail=0;const T=(id,title,ok,detail='')=>{ok?pass++:fail++;console.log(`${ok?'PASS':'FAIL'} ${id} ${title} ${detail}`)};
 const trip=(t,o={})=>call('POST','/trips',t,{originCity:'Paris',destinationCity:'Rabat',departureAt:day(4),maxWeightKg:10,pricePerKg:4,mode:'PLANE',...o});

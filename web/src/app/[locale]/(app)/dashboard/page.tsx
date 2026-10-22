@@ -34,7 +34,7 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-bold text-gray-900">{t('welcome', { name: user?.name?.split(' ')[0] || '' })}</h1>
         <p className="text-gray-500 mt-1">{t('subtitle')}</p>
         {!user?.isVerified && (
-          <Link href="/profile" className="inline-flex items-center gap-2 mt-3 bg-amber-50 border border-amber-200 text-amber-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-amber-100 transition-colors">
+          <Link href="/profile#verification" className="inline-flex items-center gap-2 mt-3 bg-amber-50 border border-amber-200 text-amber-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-amber-100 transition-colors">
             {t('verifyBanner')} <ArrowRight className="w-4 h-4 rtl:rotate-180" />
           </Link>
         )}

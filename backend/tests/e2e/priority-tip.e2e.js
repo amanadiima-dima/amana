@@ -2,7 +2,8 @@
 const API='http://localhost:3000/api';
 const prisma=new (require('@prisma/client').PrismaClient)();
 const call=async(m,p,t,b,f)=>{const h={};if(t)h.Authorization='Bearer '+t;let body;if(f)body=f;else if(b){h['Content-Type']='application/json';body=JSON.stringify(b)}const r=await fetch(API+p,{method:m,headers:h,body});return {status:r.status,data:await r.json().catch(()=>({}))}};
-const login=async(phone)=>{await call('POST','/auth/send-otp',null,{phone});const r=await call('POST','/auth/verify-otp',null,{phone,code:'123456'});return r.data.accessToken};
+const { signIn } = require('./_auth');
+const login = async (phone) => (await signIn(phone)).data.accessToken;
 const ok=(n,c,x='')=>console.log(c?'PASS':'FAIL',n,x);
 (async()=>{
  const S=await login('+10000000005'),T=await login('+10000000013');

@@ -17,7 +17,7 @@ const listUsers = async (req, res, next) => {
       take: parseInt(limit),
       orderBy: { createdAt: 'desc' },
       select: {
-        id: true, phone: true, name: true, role: true, isVerified: true, isActive: true, rating: true, createdAt: true,
+        id: true, phone: true, email: true, name: true, role: true, isVerified: true, isActive: true, rating: true, createdAt: true,
         deletedAt: true, retainUntil: true, archivedName: true, archivedPhone: true, legalHoldAt: true, legalHoldNote: true,
       },
     });

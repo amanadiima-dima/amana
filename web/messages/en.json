@@ -53,7 +53,8 @@
       "howItWorks": "How it works",
       "features": "Features",
       "reviews": "Reviews",
-      "getStarted": "Get Started"
+      "getStarted": "Get Started",
+      "becomeTraveler": "Become a traveller"
     },
     "hero": {
       "badge": "Trusted by thousands of travelers",
@@ -116,6 +117,19 @@
           "title": "Track & Receive",
           "desc": "Track your parcel in real time. Payment is released to the traveler on delivery."
         }
+      ]
+    },
+    "becomeTraveler": {
+      "badge": "For travellers",
+      "heading": "Travelling soon? Earn money with the free space in your luggage",
+      "description": "Publish your trip in two minutes. Senders near you book the kilos you have left, and you get paid once the parcel is delivered.",
+      "cta": "Publish my trip",
+      "note": "Free to publish. Amana keeps 10% only when a delivery is completed.",
+      "points": [
+        "You set your price per kilo and how much space you offer",
+        "You see every parcel (content, photos, declared value) and choose which ones to accept",
+        "The payment is secured before pickup and released to you on delivery",
+        "Every member verifies their identity, so you know who you deal with"
       ]
     },
     "features": {
@@ -222,39 +236,75 @@
     }
   },
   "auth": {
-    "welcomeTitle": "Welcome to Amana",
-    "welcomeSubtitle": "Enter your phone number to continue",
-    "phoneLabel": "Phone number",
-    "phonePlaceholder": "+213xxxxxxxxx",
-    "phoneHint": "Include country code, e.g. +213 for Algeria",
-    "sendCode": "Send code",
-    "termsNotice": "By continuing, you agree to our <terms>Terms</terms> and <privacy>Privacy Policy</privacy>",
-    "terms": "Terms",
-    "privacyPolicy": "Privacy Policy",
-    "back": "Back",
-    "enterCodeTitle": "Enter the code",
-    "codeSentTo": "We sent a 6-digit code to {phone}",
-    "devModeNotice": "🛠️ Dev mode: use code 123456",
-    "codeLabel": "Verification code",
+    "loginTab": "Sign in",
+    "registerTab": "Create account",
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in with your email or phone number and your password.",
+    "identifierLabel": "Email or phone number",
+    "identifierPlaceholder": "you@example.com or +41…",
+    "passwordLabel": "Password",
+    "forgotLink": "Forgot password?",
+    "loginButton": "Sign in",
+    "firstTimeHint": "Had an account before passwords were introduced? Use \"Forgot password?\" to create one.",
+    "registerTitle": "Create your account",
+    "registerSubtitle": "Send parcels or earn money carrying them.",
     "yourName": "Your name",
     "namePlaceholder": "Ahmed Benali",
-    "verifyContinue": "Verify & Continue",
-    "didntReceive": "Didn't receive the code?",
-    "resend": "Resend",
-    "errors": {
-      "phoneRequired": "Please enter your phone number.",
-      "phoneFormat": "Use international format, e.g. +213xxxxxxxxx",
-      "codeLength": "Enter the 6-digit code.",
-      "nameRequired": "Please enter your name.",
-      "invalidCode": "Invalid or expired code. Please try again.",
-      "sendFailed": "Failed to send OTP. Try again.",
-      "verifyFailed": "Verification failed. Try again.",
-      "termsRequired": "Please confirm you are 18 or older and accept the Terms and Privacy Policy."
-    },
-    "nameStepTitle": "Almost there!",
-    "nameStepSubtitle": "Tell us your name so senders and travelers know who they are dealing with.",
+    "phoneLabel": "Phone number",
+    "phonePlaceholder": "+41 79 123 45 67",
+    "phoneHint": "With the country code. We text a code to this number each time you sign in.",
+    "emailLabel": "Email (optional)",
+    "emailPlaceholder": "you@example.com",
+    "emailHint": "So you can also sign in with your email.",
+    "newPasswordLabel": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "acceptTerms": "I am 18 or older and I accept the <terms>Terms of Use</terms> and the <privacy>Privacy Policy</privacy>.",
     "createAccount": "Create my account",
-    "acceptTerms": "I'm 18 or older and I accept the <terms>Terms of Use</terms> and the <privacy>Privacy Policy</privacy>."
+    "enterCodeTitle": "Enter the code",
+    "codeSentTo": "We sent a 6-digit code by SMS to",
+    "codeSentToAccount": "If an account matches, we sent a 6-digit code by SMS to its phone. Enter it with your new password.",
+    "devModeNotice": "🛠️ Development mode: use code 123456",
+    "codeLabel": "SMS code",
+    "verifyContinue": "Verify and continue",
+    "didntReceive": "Didn't get the code?",
+    "resend": "Send again",
+    "back": "Back",
+    "forgotTitle": "Reset your password",
+    "forgotSubtitle": "Enter the email or phone number of your account. We'll text a code to its phone.",
+    "sendCode": "Send code",
+    "resetTitle": "Choose a new password",
+    "resetButton": "Save password and sign in",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "errors": {
+      "identifierRequired": "Enter your email or phone number.",
+      "passwordRequired": "Enter your password.",
+      "passwordLength": "The password must have at least 8 characters.",
+      "phoneFormat": "Use the international format, e.g. +41791234567",
+      "emailFormat": "Enter a valid email address.",
+      "nameRequired": "Enter your name.",
+      "codeLength": "Enter the 6-digit code.",
+      "invalidCode": "Wrong or expired code. Try again.",
+      "wrongPassword": "Wrong email/phone or password.",
+      "tooMany": "Too many attempts. Wait 15 minutes or reset your password.",
+      "phoneTaken": "This phone number already has an account. Sign in instead.",
+      "emailTaken": "This email is already used by another account.",
+      "termsRequired": "Confirm you are 18 or older and accept the Terms and Privacy Policy.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "verificationNotice": {
+    "titleTrip": "Verify your identity to publish a trip",
+    "titleParcel": "Verify your identity to send a parcel",
+    "text": "For everyone's safety, all travellers and senders verify their identity. It takes about 2 minutes: photos of your ID or passport and a short selfie video.",
+    "cta": "Verify my identity now",
+    "pendingTitle": "Your verification is being reviewed",
+    "pendingTrip": "You can publish your trip as soon as our team approves it. We'll notify you.",
+    "pendingParcel": "You can send your parcel as soon as our team approves it. We'll notify you.",
+    "rejectedTitle": "Your verification was not approved",
+    "rejectedText": "Please send your documents again.",
+    "rejectedReason": "Reason: {note}. Please send your documents again.",
+    "retry": "Send my documents again"
   },
   "dashboard": {
     "welcome": "Welcome back, {name} 👋",
@@ -581,6 +631,19 @@
       "deleting": "Closing…",
       "deleteFailed": "Could not close the account.",
       "cancel": "Cancel"
+    },
+    "email": "Email",
+    "emailHint": "Optional — lets you sign in with your email as well as your phone.",
+    "emailTaken": "This email is already used by another account.",
+    "password": {
+      "title": "Password",
+      "current": "Current password",
+      "new": "New password (at least 8 characters)",
+      "save": "Change password",
+      "changed": "Password changed.",
+      "wrongCurrent": "Your current password is wrong.",
+      "tooShort": "The new password must have at least 8 characters.",
+      "failed": "Could not change the password. Try again."
     }
   },
   "travelerProfile": {

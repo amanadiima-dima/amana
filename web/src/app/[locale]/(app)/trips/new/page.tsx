@@ -9,6 +9,7 @@ import PickupLocationPicker, { type PickupValue } from '@/components/ui/PickupLo
 import { TRANSPORT_MODES } from '@/lib/trip';
 import { CURRENCIES, currencyForCountry, currencyForPhone } from '@/lib/money';
 import { useAuthStore } from '@/store/authStore';
+import VerificationNotice from '@/components/app/VerificationNotice';
 
 export default function NewTripPage() {
   const t = useTranslations('newTrip');
@@ -17,6 +18,7 @@ export default function NewTripPage() {
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [verified, setVerified] = useState(true);
   const [form, setForm] = useState({
     originCity: '', destinationCity: '', departureAt: '',
     maxWeightKg: '', pricePerKg: '', notes: '',
@@ -67,6 +69,7 @@ export default function NewTripPage() {
   return (
     <div className="max-w-xl">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">{t('title')}</h1>
+      <VerificationNotice kind="trip" onVerifiedChange={setVerified} />
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
         {/* Route */}
@@ -169,7 +172,7 @@ export default function NewTripPage() {
 
         {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
 
-        <button type="submit" disabled={loading}
+        <button type="submit" disabled={loading || !verified}
           className="w-full flex items-center justify-center gap-2 bg-brand-600 text-white py-3 rounded-xl font-semibold hover:bg-brand-700 transition-colors disabled:opacity-60">
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : t('submit')}
         </button>

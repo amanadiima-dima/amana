@@ -1,7 +1,8 @@
 // E2E script — run against the LOCAL dev stack (./dev-local.sh, OTP_BYPASS=true, seeded users). See CLAUDE.md > Testing.
 const API = process.env.API || 'http://localhost:3000/api';
 const call = async (m, p, t, b) => { const h = {}; if (t) h.Authorization = 'Bearer ' + t; let body; if (b) { h['Content-Type'] = 'application/json'; body = JSON.stringify(b); } const r = await fetch(API + p, { method: m, headers: h, body }); return { status: r.status, data: await r.json().catch(() => ({})) }; };
-const login = async (phone) => { await call('POST', '/auth/send-otp', null, { phone }); const r = await call('POST', '/auth/verify-otp', null, { phone, code: '123456' }); return r.data.accessToken; };
+const { signIn } = require('./_auth');
+const login = async (phone) => (await signIn(phone)).data.accessToken;
 let pass = 0, fail = 0; const T = (n, c, x = '') => { c ? pass++ : fail++; console.log(c ? 'PASS' : 'FAIL', n, x); };
 const day = (n) => new Date(Date.now() + 864e5 * n).toISOString();
 

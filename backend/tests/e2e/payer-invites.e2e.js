@@ -2,7 +2,8 @@
 const API='http://localhost:3000/api';
 const prisma=new (require('@prisma/client').PrismaClient)();
 const call=async(m,p,t,b,f)=>{const h={};if(t)h.Authorization='Bearer '+t;let body;if(f)body=f;else if(b){h['Content-Type']='application/json';body=JSON.stringify(b)}const r=await fetch(API+p,{method:m,headers:h,body});return {status:r.status,data:await r.json().catch(()=>({}))}};
-const login=async(phone,name)=>{await call('POST','/auth/send-otp',null,{phone});let r=await call('POST','/auth/verify-otp',null,{phone,code:'123456'});if(r.data.needsProfile)r=await call('POST','/auth/complete-registration',null,{registrationToken:r.data.registrationToken,name:name||'Test User',acceptTerms:true});return {token:r.data.accessToken,user:r.data.user}};
+const { signIn } = require('./_auth');
+const login = async (phone, name) => { const r = await signIn(phone, name); return { token: r.data.accessToken, refresh: r.data.refreshToken, user: r.data.user, raw: r }; };
 let pass=0,fail=0;const T=(n,c,x='')=>{c?pass++:fail++;console.log(c?'PASS':'FAIL',n,x)};
 const day=n=>new Date(Date.now()+864e5*n).toISOString();
 const parcel=(t,w=2)=>{const f=new FormData();f.append('pickupAddress','a');f.append('deliveryAddress','b');f.append('weightKg',String(w));f.append('description','invite test');return call('POST','/parcels',t,null,f)};

@@ -53,7 +53,8 @@
       "howItWorks": "Comment ça marche",
       "features": "Fonctionnalités",
       "reviews": "Avis",
-      "getStarted": "Commencer"
+      "getStarted": "Commencer",
+      "becomeTraveler": "Devenir voyageur"
     },
     "hero": {
       "badge": "Adopté par des milliers de voyageurs",
@@ -116,6 +117,19 @@
           "title": "Suivez et recevez",
           "desc": "Suivez votre colis en temps réel. Le paiement est débloqué pour le voyageur à la livraison."
         }
+      ]
+    },
+    "becomeTraveler": {
+      "badge": "Pour les voyageurs",
+      "heading": "Vous partez bientôt ? Gagnez de l'argent avec la place libre dans vos bagages",
+      "description": "Publiez votre trajet en deux minutes. Des expéditeurs près de chez vous réservent les kilos qu'il vous reste, et vous êtes payé une fois le colis livré.",
+      "cta": "Publier mon trajet",
+      "note": "Publication gratuite. Amana prend 10 % uniquement quand une livraison est terminée.",
+      "points": [
+        "Vous fixez votre prix au kilo et la place que vous proposez",
+        "Vous voyez chaque colis (contenu, photos, valeur déclarée) et choisissez ceux que vous acceptez",
+        "Le paiement est sécurisé avant la prise en charge et vous est versé à la livraison",
+        "Chaque membre vérifie son identité : vous savez avec qui vous traitez"
       ]
     },
     "features": {
@@ -222,39 +236,75 @@
     }
   },
   "auth": {
-    "welcomeTitle": "Bienvenue sur Amana",
-    "welcomeSubtitle": "Entrez votre numéro de téléphone pour continuer",
-    "phoneLabel": "Numéro de téléphone",
-    "phonePlaceholder": "+213xxxxxxxxx",
-    "phoneHint": "Indiquez l'indicatif du pays, par ex. +213 pour l'Algérie",
-    "sendCode": "Envoyer le code",
-    "termsNotice": "En continuant, vous acceptez nos <terms>conditions d'utilisation</terms> et notre <privacy>politique de confidentialité</privacy>",
-    "terms": "Conditions d'utilisation",
-    "privacyPolicy": "Politique de confidentialité",
-    "back": "Retour",
-    "enterCodeTitle": "Saisissez le code",
-    "codeSentTo": "Nous avons envoyé un code à 6 chiffres au {phone}",
-    "devModeNotice": "🛠️ Mode développement : utilisez le code 123456",
-    "codeLabel": "Code de vérification",
+    "loginTab": "Se connecter",
+    "registerTab": "Créer un compte",
+    "loginTitle": "Bon retour",
+    "loginSubtitle": "Connectez-vous avec votre e-mail ou numéro de téléphone et votre mot de passe.",
+    "identifierLabel": "E-mail ou numéro de téléphone",
+    "identifierPlaceholder": "vous@exemple.com ou +33…",
+    "passwordLabel": "Mot de passe",
+    "forgotLink": "Mot de passe oublié ?",
+    "loginButton": "Se connecter",
+    "firstTimeHint": "Vous aviez un compte avant l'arrivée des mots de passe ? Utilisez « Mot de passe oublié ? » pour en créer un.",
+    "registerTitle": "Créez votre compte",
+    "registerSubtitle": "Envoyez des colis ou gagnez de l'argent en les transportant.",
     "yourName": "Votre nom",
     "namePlaceholder": "Ahmed Benali",
-    "verifyContinue": "Vérifier et continuer",
-    "didntReceive": "Vous n'avez pas reçu le code ?",
-    "resend": "Renvoyer",
-    "errors": {
-      "phoneRequired": "Veuillez entrer votre numéro de téléphone.",
-      "phoneFormat": "Utilisez le format international, par ex. +213xxxxxxxxx",
-      "codeLength": "Saisissez le code à 6 chiffres.",
-      "nameRequired": "Veuillez entrer votre nom.",
-      "invalidCode": "Code invalide ou expiré. Veuillez réessayer.",
-      "sendFailed": "Échec de l'envoi du code. Réessayez.",
-      "verifyFailed": "Échec de la vérification. Réessayez.",
-      "termsRequired": "Confirmez que vous avez 18 ans ou plus et acceptez les Conditions et la Politique de confidentialité."
-    },
-    "nameStepTitle": "Presque fini !",
-    "nameStepSubtitle": "Dites-nous votre nom pour que expéditeurs et voyageurs sachent à qui ils ont affaire.",
+    "phoneLabel": "Numéro de téléphone",
+    "phonePlaceholder": "+33 6 12 34 56 78",
+    "phoneHint": "Avec l'indicatif du pays. Nous envoyons un code par SMS à ce numéro à chaque connexion.",
+    "emailLabel": "E-mail (facultatif)",
+    "emailPlaceholder": "vous@exemple.com",
+    "emailHint": "Pour pouvoir aussi vous connecter avec votre e-mail.",
+    "newPasswordLabel": "Mot de passe",
+    "passwordPlaceholder": "Au moins 8 caractères",
+    "acceptTerms": "J'ai 18 ans ou plus et j'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>.",
     "createAccount": "Créer mon compte",
-    "acceptTerms": "J'ai 18 ans ou plus et j'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>."
+    "enterCodeTitle": "Saisissez le code",
+    "codeSentTo": "Nous avons envoyé un code à 6 chiffres par SMS au",
+    "codeSentToAccount": "Si un compte correspond, nous avons envoyé un code à 6 chiffres par SMS à son téléphone. Saisissez-le avec votre nouveau mot de passe.",
+    "devModeNotice": "🛠️ Mode développement : utilisez le code 123456",
+    "codeLabel": "Code SMS",
+    "verifyContinue": "Vérifier et continuer",
+    "didntReceive": "Code non reçu ?",
+    "resend": "Renvoyer",
+    "back": "Retour",
+    "forgotTitle": "Réinitialiser votre mot de passe",
+    "forgotSubtitle": "Saisissez l'e-mail ou le numéro de téléphone de votre compte. Nous enverrons un code par SMS à son téléphone.",
+    "sendCode": "Envoyer le code",
+    "resetTitle": "Choisissez un nouveau mot de passe",
+    "resetButton": "Enregistrer et se connecter",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "errors": {
+      "identifierRequired": "Saisissez votre e-mail ou numéro de téléphone.",
+      "passwordRequired": "Saisissez votre mot de passe.",
+      "passwordLength": "Le mot de passe doit contenir au moins 8 caractères.",
+      "phoneFormat": "Utilisez le format international, par ex. +33612345678",
+      "emailFormat": "Saisissez une adresse e-mail valide.",
+      "nameRequired": "Saisissez votre nom.",
+      "codeLength": "Saisissez le code à 6 chiffres.",
+      "invalidCode": "Code incorrect ou expiré. Réessayez.",
+      "wrongPassword": "E-mail/téléphone ou mot de passe incorrect.",
+      "tooMany": "Trop de tentatives. Attendez 15 minutes ou réinitialisez votre mot de passe.",
+      "phoneTaken": "Ce numéro a déjà un compte. Connectez-vous plutôt.",
+      "emailTaken": "Cet e-mail est déjà utilisé par un autre compte.",
+      "termsRequired": "Confirmez que vous avez 18 ans ou plus et acceptez les Conditions et la Politique de confidentialité.",
+      "generic": "Une erreur est survenue. Réessayez."
+    }
+  },
+  "verificationNotice": {
+    "titleTrip": "Vérifiez votre identité pour publier un trajet",
+    "titleParcel": "Vérifiez votre identité pour envoyer un colis",
+    "text": "Pour la sécurité de tous, chaque voyageur et expéditeur vérifie son identité. Cela prend environ 2 minutes : photos de votre pièce d'identité ou passeport et une courte vidéo selfie.",
+    "cta": "Vérifier mon identité maintenant",
+    "pendingTitle": "Votre vérification est en cours d'examen",
+    "pendingTrip": "Vous pourrez publier votre trajet dès que notre équipe l'aura approuvée. Nous vous préviendrons.",
+    "pendingParcel": "Vous pourrez envoyer votre colis dès que notre équipe l'aura approuvée. Nous vous préviendrons.",
+    "rejectedTitle": "Votre vérification n'a pas été approuvée",
+    "rejectedText": "Merci d'envoyer à nouveau vos documents.",
+    "rejectedReason": "Motif : {note}. Merci d'envoyer à nouveau vos documents.",
+    "retry": "Renvoyer mes documents"
   },
   "dashboard": {
     "welcome": "Bon retour, {name} 👋",
@@ -581,6 +631,19 @@
       "deleting": "Fermeture…",
       "deleteFailed": "Impossible de fermer le compte.",
       "cancel": "Annuler"
+    },
+    "email": "E-mail",
+    "emailHint": "Facultatif — permet de vous connecter avec votre e-mail en plus de votre téléphone.",
+    "emailTaken": "Cet e-mail est déjà utilisé par un autre compte.",
+    "password": {
+      "title": "Mot de passe",
+      "current": "Mot de passe actuel",
+      "new": "Nouveau mot de passe (au moins 8 caractères)",
+      "save": "Changer le mot de passe",
+      "changed": "Mot de passe modifié.",
+      "wrongCurrent": "Votre mot de passe actuel est incorrect.",
+      "tooShort": "Le nouveau mot de passe doit contenir au moins 8 caractères.",
+      "failed": "Impossible de changer le mot de passe. Réessayez."
     }
   },
   "travelerProfile": {
