@@ -1,11 +1,12 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Video, Square, RotateCcw, Upload, Loader2 } from 'lucide-react';
+import { Video, Square, RotateCcw, Loader2 } from 'lucide-react';
 
 const MAX_SECONDS = 20;
 
-// Records a short selfie video in the browser (with a file-upload fallback when there is no camera).
+// Records a short selfie video live with the device camera. There is deliberately no file upload:
+// the video must be recorded now, saying the code shown on screen.
 export default function SelfieVideoRecorder({ file, onChange }: { file: File | null; onChange: (f: File | null) => void }) {
   const t = useTranslations('profile');
   const liveRef = useRef<HTMLVideoElement>(null);
@@ -40,7 +41,8 @@ export default function SelfieVideoRecorder({ file, onChange }: { file: File | n
       chunksRef.current = [];
       rec.ondataavailable = (e) => { if (e.data.size) chunksRef.current.push(e.data); };
       rec.onstop = () => {
-        const type = rec.mimeType || 'video/webm';
+        // Drop the codecs parameter ("video/webm;codecs=vp8,opus"): servers can't parse the unquoted comma.
+        const type = (rec.mimeType || 'video/webm').split(';')[0];
         const ext = type.includes('mp4') ? 'mp4' : 'webm';
         onChange(new File(chunksRef.current, `selfie.${ext}`, { type }));
         stopStream();
@@ -95,12 +97,6 @@ export default function SelfieVideoRecorder({ file, onChange }: { file: File | n
           <button type="button" onClick={stop} className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-red-700 transition-colors">
             <Square className="w-4 h-4" /> {t('selfieStop')}
           </button>
-        )}
-        {state === 'idle' && (
-          <label className="flex items-center gap-2 text-sm text-brand-600 font-medium cursor-pointer hover:underline">
-            <Upload className="w-4 h-4" /> {t('selfieUpload')}
-            <input type="file" accept="video/*" capture="user" className="hidden" onChange={(e) => onChange(e.target.files?.[0] ?? null)} />
-          </label>
         )}
       </div>
       {noCamera && <p className="text-xs text-amber-700 bg-amber-50 rounded-lg px-3 py-2 mt-2">{t('selfieNoCamera')}</p>}

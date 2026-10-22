@@ -58,6 +58,10 @@ const getIdChallenge = (req, res) => {
 
 const DOC_TYPES = ['ID_CARD', 'PASSPORT'];
 
+// What browsers record: WebM/Matroska (EBML header) or MP4/MOV (an "ftyp" box at byte 4).
+const looksLikeVideo = (buf) =>
+  !!buf && buf.length > 12 && (buf.readUInt32BE(0) === 0x1a45dfa3 || buf.toString('ascii', 4, 8) === 'ftyp');
+
 // POST /api/users/me/id-verification  (multipart: front, back?, video; fields: documentType, challengeToken, consent)
 const uploadIdVerification = async (req, res, next) => {
   try {
@@ -71,6 +75,7 @@ const uploadIdVerification = async (req, res, next) => {
     if (!front) throw new AppError(documentType === 'PASSPORT' ? 'A photo of the passport photo page is required' : 'A photo of the front of the ID is required', 400);
     if (documentType === 'ID_CARD' && !back) throw new AppError('A photo of the back of the ID is required', 400);
     if (!video) throw new AppError('The selfie video is required', 400);
+    if (!looksLikeVideo(video.buffer)) throw new AppError('The selfie must be a video file', 400);
 
     let challenge;
     try {

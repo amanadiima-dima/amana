@@ -8,11 +8,16 @@ const validate = require('../middlewares/validate.middleware');
 
 const upload = multer({ storage: multer.memoryStorage() });
 // ID documents + selfie video: size-capped and type-checked (photos must be images, the selfie a video).
+// Browsers label recordings "video/webm;codecs=vp8,opus"; the unquoted comma makes the multipart parser
+// fall back to text/plain, so the selfie's real type is checked from its bytes in the controller instead.
+const UNPARSED_TYPES = ['text/plain', 'application/octet-stream'];
 const idUpload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 30 * 1024 * 1024, files: 3 },
   fileFilter: (_req, file, cb) => {
-    const ok = file.fieldname === 'video' ? file.mimetype.startsWith('video/') : file.mimetype.startsWith('image/');
+    const ok = file.fieldname === 'video'
+      ? file.mimetype.startsWith('video/') || UNPARSED_TYPES.includes(file.mimetype)
+      : file.mimetype.startsWith('image/');
     cb(ok ? null : new AppError(file.fieldname === 'video' ? 'The selfie must be a video file' : 'ID photos must be image files', 400), ok);
   },
 });

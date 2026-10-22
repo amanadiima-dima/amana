@@ -17,9 +17,12 @@ const form=({type='ID_CARD',front=true,back=true,video=true,videoMime='video/web
  let r=await up(form({token:ch.data.token,consent:null})); T('no consent rejected',r.status===400,r.data.message);
  r=await up(form({token:ch.data.token,video:false})); T('missing selfie video rejected',r.status===400,r.data.message);
  r=await up(form({token:ch.data.token,videoMime:'image/png'})); T('non-video as selfie rejected',r.status===400,r.data.message);
+ { const f=form({token:ch.data.token,video:false}); f.append('video',new Blob([Buffer.from('just some text, not a video')],{type:'video/webm'}),'v.webm'); r=await up(f); T('a file labelled video but not a video is rejected (bytes checked)',r.status===400,r.data.message); }
+ { const f=form({token:ch.data.token,video:false}); f.append('video',new Blob([PNG],{type:'text/plain'}),'v.webm'); r=await up(f); T('an image sent as the selfie is rejected even with a vague type',r.status===400,r.data.message); }
  r=await up(form({token:ch.data.token,back:false})); T('ID card without back rejected',r.status===400,r.data.message);
  r=await up(form({token:'garbage'})); T('forged challenge rejected',r.status===400,r.data.message);
  r=await up(form({token:chV.data.token})); T("another user's challenge rejected",r.status===400,r.data.message);
+ r=await up(form({token:ch.data.token,videoMime:'video/webm;codecs=vp8,opus'})); T('a browser recording (type "video/webm;codecs=vp8,opus") is accepted',r.status===200&&r.data.verification?.status==='PENDING',r.data.message);
  r=await up(form({token:ch.data.token,type:'PASSPORT',back:false})); T('passport without back accepted → PENDING',r.status===200&&r.data.verification.status==='PENDING',r.data.message);
  const ch2=await call('GET','/users/me/id-verification/challenge',U.token);
  r=await up(form({token:ch2.data.token})); T('resubmitting as ID card with back works',r.status===200);
