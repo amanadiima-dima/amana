@@ -47,7 +47,6 @@ router.post('/verify-otp',
   [
     phoneValidator,
     body('code').isLength({ min: 6, max: 6 }),
-    body('name').optional().isString().trim(),
   ],
   validate,
   verifyOtp

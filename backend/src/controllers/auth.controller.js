@@ -77,7 +77,7 @@ const sendSession = async (res, user) => {
 // POST /api/auth/verify-otp
 const verifyOtp = async (req, res, next) => {
   try {
-    const { phone, code, name } = req.body;
+    const { phone, code } = req.body;
 
     // Dev bypass: accept fixed code "123456"
     if (process.env.NODE_ENV === 'development' && process.env.OTP_BYPASS === 'true') {
@@ -96,15 +96,11 @@ const verifyOtp = async (req, res, next) => {
     const existing = await prisma.user.findUnique({ where: { phone } });
     if (existing) return await sendSession(res, existing);
 
-    const cleanName = String(name || '').trim();
-    if (cleanName.length < 2) {
-      // New number: the code is verified, we only need a name. Short-lived token proves the phone
-      // was verified (a verified OTP can't be checked twice), so the name step can't be skipped or forged.
-      const registrationToken = jwt.sign({ typ: 'register', phone }, process.env.JWT_SECRET, { expiresIn: '15m' });
-      return res.json({ success: true, needsProfile: true, registrationToken });
-    }
-    const created = await prisma.user.create({ data: { phone, name: cleanName.slice(0, 60) } });
-    return await sendSession(res, created);
+    // New number: the code is verified, but the account is only created by complete-registration, which
+    // requires a name and the 18+/Terms acceptance. The short-lived token proves the phone was verified
+    // (a verified OTP can't be checked twice), so that step can't be skipped or forged.
+    const registrationToken = jwt.sign({ typ: 'register', phone }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    return res.json({ success: true, needsProfile: true, registrationToken });
   } catch (err) {
     next(err);
   }

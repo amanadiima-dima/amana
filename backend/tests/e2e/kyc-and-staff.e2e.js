@@ -2,7 +2,7 @@
 const API='http://localhost:3000/api';
 const prisma=new (require('@prisma/client').PrismaClient)();
 const call=async(m,p,t,b,f)=>{const h={};if(t)h.Authorization='Bearer '+t;let body;if(f)body=f;else if(b){h['Content-Type']='application/json';body=JSON.stringify(b)}const r=await fetch(API+p,{method:m,headers:h,body});return {status:r.status,data:await r.json().catch(()=>({}))}};
-const login=async(phone,name)=>{await call('POST','/auth/send-otp',null,{phone});const r=await call('POST','/auth/verify-otp',null,{phone,code:'123456',...(name?{name}:{})});return {token:r.data.accessToken,user:r.data.user}};
+const login=async(phone,name)=>{await call('POST','/auth/send-otp',null,{phone});let r=await call('POST','/auth/verify-otp',null,{phone,code:'123456'});if(r.data.needsProfile)r=await call('POST','/auth/complete-registration',null,{registrationToken:r.data.registrationToken,name:name||'Test User',acceptTerms:true});return {token:r.data.accessToken,user:r.data.user}};
 let pass=0,fail=0;const T=(n,c,x='')=>{c?pass++:fail++;console.log(c?'PASS':'FAIL',n,x)};
 const PNG=Buffer.from('89504e470d0a1a0a0000000d49484452','hex'), WEBM=Buffer.from('1a45dfa3a3428681010000000000001f','hex');
 const rnd=()=>String(Date.now()).slice(-8)+Math.floor(Math.random()*90+10);

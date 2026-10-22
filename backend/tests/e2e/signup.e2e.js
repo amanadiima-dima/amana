@@ -19,7 +19,7 @@ let pass=0,fail=0;const T=(n,c,x='')=>{c?pass++:fail++;console.log(c?'PASS':'FAI
  r=await call('POST','/auth/verify-otp',null,{phone,code:'123456'}); T('same number again: logs in directly (no checkbox, no name)',r.status===200&&!!r.data.accessToken&&!r.data.needsProfile&&r.data.user.name==='Maria Lopez');
  r=await call('POST','/auth/verify-otp',null,{phone,code:'123456',name:'Hacker'}); T('name sent for an existing number is ignored',r.data.user?.name==='Maria Lopez');
  const phone2='+4178'+String(Date.now()).slice(-7);
- r=await call('POST','/auth/verify-otp',null,{phone:phone2,code:'123456',name:'Old Client Name'}); T('old clients (name in the same call) still work',r.status===200&&r.data.user?.name==='Old Client Name');
+ r=await call('POST','/auth/verify-otp',null,{phone:phone2,code:'123456',name:'Skip Terms'}); T('name in verify-otp no longer creates an account (terms/18+ must go through complete-registration)',r.status===200&&r.data.needsProfile===true&&!r.data.accessToken&&(await call('POST','/auth/verify-otp',null,{phone:phone2,code:'123456'})).data.needsProfile===true);
  r=await call('POST','/auth/verify-otp',null,{phone:'+10000000001',code:'123456'}); T('seeded existing user logs in directly',r.status===200&&!!r.data.accessToken);
  console.log(`\n${pass} passed, ${fail} failed`);
 })();
