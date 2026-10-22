@@ -82,6 +82,16 @@ model User {
   stripeAccountId   String?   // Stripe Connect account (for traveler payouts)
   rating            Float     @default(0)
   reviewCount       Int       @default(0)
+  termsAcceptedAt   DateTime? // when they accepted the Terms + Privacy Policy and confirmed they are 18+
+  // Account closed by the user (GDPR erasure): the profile is anonymised at once; what must be kept for
+  // legal claims (ID documents, real name + phone) stays in a restricted archive until `retainUntil`.
+  deletedAt         DateTime?
+  retainUntil       DateTime?
+  archivedName      String?   // real name/phone of a closed account — staff-only, purged at retainUntil
+  archivedPhone     String?
+  // Legal hold set by an admin (incident, police report…): nothing about this user is purged while set.
+  legalHoldAt       DateTime?
+  legalHoldNote     String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -110,6 +120,7 @@ model IdVerification {
   providerRef String?            // provider's session/check id
   status      VerificationStatus @default(PENDING)
   reviewNote  String?            // Admin note on rejection
+  reviewedAt  DateTime?          // when staff approved/rejected it (starts the retention clocks)
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 }

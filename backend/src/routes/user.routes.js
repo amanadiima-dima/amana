@@ -1,7 +1,7 @@
 const express = require('express');
 const { body } = require('express-validator');
 const multer = require('multer');
-const { getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile } = require('../controllers/user.controller');
+const { exportMyData, deleteMyAccount, getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile } = require('../controllers/user.controller');
 const { AppError } = require('../middlewares/error.middleware');
 const { authenticate } = require('../middlewares/auth.middleware');
 const validate = require('../middlewares/validate.middleware');
@@ -21,6 +21,8 @@ const router = express.Router();
 router.use(authenticate);
 
 router.get('/me', getProfile);
+router.get('/me/export', exportMyData);
+router.delete('/me', deleteMyAccount);
 router.patch('/me',
   [body('name').optional().isString().trim(), body('bio').optional().isString()],
   validate,

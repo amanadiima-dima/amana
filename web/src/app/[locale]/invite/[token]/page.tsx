@@ -105,6 +105,9 @@ export default function InvitePage() {
                 {busy ? <Loader2 className="w-5 h-5 animate-spin" /> : (signedIn ? t('reviewAndPay') : t('signInToPay'))}
               </button>
               <button onClick={decline} disabled={busy} className="w-full text-sm text-gray-400 hover:text-red-500 py-2 transition-colors">{t('notForMe')}</button>
+              <p className="text-xs text-gray-400 text-center mt-3">
+                {t.rich('privacyNotice', { privacy: (chunks) => <Link href="/privacy" className="text-brand-600 hover:underline">{chunks}</Link> })}
+              </p>
             </>
           )}
         </div>

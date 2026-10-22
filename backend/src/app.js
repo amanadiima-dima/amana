@@ -16,6 +16,7 @@ const notificationRoutes = require('./routes/notification.routes');
 const adminRoutes = require('./routes/admin.routes');
 const inviteRoutes = require('./routes/invite.routes');
 const { errorHandler } = require('./middlewares/error.middleware');
+const { signMediaRefs } = require('./utils/cloudinary');
 
 const app = express();
 
@@ -43,6 +44,14 @@ app.use(
     setHeaders: (res) => res.set('Cross-Origin-Resource-Policy', 'cross-origin'),
   })
 );
+
+// Private media (ID documents, parcel/delivery photos) is stored without public URLs: every JSON
+// response swaps those references for signed links, so no controller can leak a raw reference.
+app.use((_req, res, next) => {
+  const json = res.json.bind(res);
+  res.json = (body) => json(signMediaRefs(body));
+  next();
+});
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 // 100 req/15min per IP was too tight for real usage: the chat panel alone polls

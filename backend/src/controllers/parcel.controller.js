@@ -1,14 +1,9 @@
-const cloudinary = require('../utils/cloudinary');
+const { uploadPrivate } = require('../utils/cloudinary');
 const prisma = require('../utils/prisma');
 const { AppError } = require('../middlewares/error.middleware');
 
-const uploadPhoto = (buffer) =>
-  new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream({ folder: 'amana/parcels' }, (err, result) => {
-      if (err) reject(err);
-      else resolve(result.secure_url);
-    }).end(buffer);
-  });
+// Private upload: responses carry a signed link, never a public URL (photos can show faces/addresses).
+const uploadPhoto = (buffer) => uploadPrivate(buffer, 'amana/parcels', 'image');
 
 const createParcel = async (req, res, next) => {
   try {

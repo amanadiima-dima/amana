@@ -45,7 +45,8 @@
       "APPROVED": "Approved",
       "DISPUTED": "Under review",
       "PAYMENT_PENDING": "Awaiting payment"
-    }
+    },
+    "close": "Close"
   },
   "landing": {
     "navbar": {
@@ -247,11 +248,13 @@
       "nameRequired": "Please enter your name.",
       "invalidCode": "Invalid or expired code. Please try again.",
       "sendFailed": "Failed to send OTP. Try again.",
-      "verifyFailed": "Verification failed. Try again."
+      "verifyFailed": "Verification failed. Try again.",
+      "termsRequired": "Please confirm you are 18 or older and accept the Terms and Privacy Policy."
     },
     "nameStepTitle": "Almost there!",
     "nameStepSubtitle": "Tell us your name so senders and travelers know who they are dealing with.",
-    "createAccount": "Create my account"
+    "createAccount": "Create my account",
+    "acceptTerms": "I'm 18 or older and I accept the <terms>Terms of Use</terms> and the <privacy>Privacy Policy</privacy>."
   },
   "dashboard": {
     "welcome": "Welcome back, {name} 👋",
@@ -558,12 +561,27 @@
     "selfieRecording": "Recording… {seconds}s",
     "selfieReady": "Video ready ✓",
     "selfieNoCamera": "Couldn't open the camera — upload a short video instead.",
-    "consentLabel": "I agree that Amana uses my ID and selfie video only to verify my identity, and may delete them after the review.",
+    "consentLabel": "I agree that Amana uses my ID and selfie video to verify my identity and for safety. The video is deleted 30 days after the review; the ID photos are kept while my account is open and up to 5 years after my last delivery, in case of a dispute or a legal claim (see the Privacy Policy).",
     "consentRequired": "Please accept the consent to continue.",
     "videoRequired": "Please add the selfie video.",
     "photosRequired": "Please add all required photos.",
     "rejectedReason": "Reason: {note}",
-    "preparing": "Preparing…"
+    "preparing": "Preparing…",
+    "privacy": {
+      "title": "Privacy & your data",
+      "intro": "Download a copy of everything Amana holds about you, or close your account. Read the <privacy>Privacy Policy</privacy> for details.",
+      "exportButton": "Download my data",
+      "exporting": "Preparing…",
+      "exportFailed": "Could not prepare your data. Try again.",
+      "deleteTitle": "Close my account",
+      "deleteIntro": "Your profile is removed right away and other members will see \"Deleted user\". If you have used Amana for deliveries, we keep your ID documents and your name and phone in a restricted archive for 5 years after your last delivery, only for disputes or legal claims, then delete them.",
+      "deleteButton": "Close my account",
+      "deleteUnderstand": "I understand this cannot be undone.",
+      "deleteConfirmButton": "Close it permanently",
+      "deleting": "Closing…",
+      "deleteFailed": "Could not close the account.",
+      "cancel": "Cancel"
+    }
   },
   "travelerProfile": {
     "verified": "Verified",
@@ -641,7 +659,18 @@
     "confirmDeactivate": "Disable {name}? They will not be able to sign in until you re-enable the account.",
     "deleteConfirmPrompt": "This permanently deletes {name} and their trips, parcels, bookings, messages and reviews. It cannot be undone.\n\nType their phone number to confirm: {phone}",
     "deleteDone": "{name} was deleted.",
-    "userActionError": "Could not complete that action."
+    "userActionError": "Could not complete that action.",
+    "closedBadge": "Closed",
+    "closedUntil": "Kept until {date}",
+    "holdBadge": "Legal hold",
+    "holdSet": "Set a legal hold (keep all data)",
+    "holdRemove": "Remove the legal hold",
+    "holdPrompt": "Legal hold for {name}: nothing about this user will be deleted until you remove it. Reason (e.g. incident, police report):",
+    "holdRemoveConfirm": "Remove the legal hold for {name}? Normal retention periods will apply again.",
+    "identityFile": "Identity file",
+    "identityNotice": "Confidential. Open this only for an incident, a dispute or a request from the authorities — every access is recorded in the activity log.",
+    "identityClosed": "Account closed on {date}",
+    "identityNoDocs": "No identity documents on file."
   },
   "notifications": {
     "title": "Notifications",
@@ -678,6 +707,15 @@
     "declinedText": "We've let them know. Nothing was charged.",
     "unavailableTitle": "This request is no longer available",
     "unavailableText": "It may have expired, been paid, or been cancelled.",
-    "errorGeneric": "Something went wrong. Please try again."
+    "errorGeneric": "Something went wrong. Please try again.",
+    "privacyNotice": "You received this because the sender entered your phone number to ask you to pay. We use it only for this request. <privacy>Privacy Policy</privacy>"
+  },
+  "legal": {
+    "privacyTitle": "Privacy Policy",
+    "cookiesTitle": "Cookie Policy",
+    "termsTitle": "Terms of Use",
+    "lastUpdated": "Last updated: {date}",
+    "backHome": "Back to home",
+    "contents": "Contents"
   }
 }

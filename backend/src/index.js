@@ -5,6 +5,7 @@ const app = require('./app');
 const { initSocket } = require('./utils/socket');
 const logger = require('./utils/logger');
 const { expireStaleBookingsSafe } = require('./services/bookingExpiry.service');
+const { runRetentionSafe } = require('./services/account.service');
 
 const PORT = process.env.PORT || 3000;
 
@@ -15,4 +16,6 @@ server.listen(PORT, () => {
   logger.info(`Amana API running on port ${PORT} [${process.env.NODE_ENV}]`);
   expireStaleBookingsSafe();
   setInterval(expireStaleBookingsSafe, 15 * 60 * 1000);
+  runRetentionSafe(); // GDPR retention purge (see account.service.js): on boot, then daily
+  setInterval(runRetentionSafe, 24 * 60 * 60 * 1000);
 });

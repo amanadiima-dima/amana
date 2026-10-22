@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useMoney } from '@/lib/money';
 import { adminApi } from '@/lib/api';
-import { CheckCircle, XCircle, Users, ShieldCheck, AlertTriangle, UserCog, Trash2, Ban, RotateCcw, Search } from 'lucide-react';
+import { CheckCircle, XCircle, Users, ShieldCheck, AlertTriangle, UserCog, Trash2, Ban, RotateCcw, Search, Gavel, FileSearch, X } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 
 export default function AdminPage() {
@@ -25,6 +25,7 @@ export default function AdminPage() {
   const [disputes, setDisputes] = useState<any[]>([]);
   const [note, setNote] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [identity, setIdentity] = useState<any | null>(null);
 
   useEffect(() => {
     adminApi.getPendingVerifications().then(({ data }) => setVerifications(data.verifications || [])).catch(() => {});
@@ -66,14 +67,31 @@ export default function AdminPage() {
   };
   const removeUser = async (u: any) => {
     setUserMsg(null);
-    const typed = window.prompt(t('deleteConfirmPrompt', { name: u.name, phone: u.phone }));
+    const typed = window.prompt(t('deleteConfirmPrompt', { name: u.archivedName || u.name, phone: u.archivedPhone || u.phone }));
     if (typed === null) return;
     try {
       await adminApi.deleteUser(u.id, typed.trim());
-      setUserMsg({ ok: true, text: t('deleteDone', { name: u.name }) });
+      setUserMsg({ ok: true, text: t('deleteDone', { name: u.archivedName || u.name }) });
       await refreshUsers();
       refreshTeam();
     } catch (err: any) { setUserMsg({ ok: false, text: err?.response?.data?.message || t('userActionError') }); }
+  };
+
+  const toggleHold = async (u: any) => {
+    setUserMsg(null);
+    let reason = '';
+    if (!u.legalHoldAt) {
+      const typed = window.prompt(t('holdPrompt', { name: u.archivedName || u.name }));
+      if (typed === null) return;
+      reason = typed;
+    } else if (!window.confirm(t('holdRemoveConfirm', { name: u.archivedName || u.name }))) return;
+    try { await adminApi.setLegalHold(u.id, !u.legalHoldAt, reason); await refreshUsers(); }
+    catch (err: any) { setUserMsg({ ok: false, text: err?.response?.data?.message || t('userActionError') }); }
+  };
+  const openIdentity = async (u: any) => {
+    setUserMsg(null);
+    try { const { data } = await adminApi.getIdentity(u.id); setIdentity(data.identity); }
+    catch (err: any) { setUserMsg({ ok: false, text: err?.response?.data?.message || t('userActionError') }); }
   };
 
   const refreshTeam = () => {
@@ -303,10 +321,16 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {users.filter((u) => `${u.name} ${u.phone}`.toLowerCase().includes(userSearch.trim().toLowerCase())).map((u) => (
-                <tr key={u.id} className={`hover:bg-gray-50 transition-colors ${u.isActive === false ? 'opacity-50' : ''}`}>
-                  <td className="px-4 py-3 font-medium text-gray-900">{u.name}{u.isActive === false && <span className="ms-2 text-[10px] font-semibold bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">{t('inactiveBadge')}</span>}</td>
-                  <td className="px-4 py-3 text-gray-500">{u.phone}</td>
+              {users.filter((u) => `${u.name} ${u.phone} ${u.archivedName || ''} ${u.archivedPhone || ''}`.toLowerCase().includes(userSearch.trim().toLowerCase())).map((u) => (
+                <tr key={u.id} className={`hover:bg-gray-50 transition-colors ${u.isActive === false && !u.legalHoldAt ? 'opacity-50' : ''}`}>
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    {u.archivedName || u.name}
+                    {u.deletedAt
+                      ? <span className="ms-2 text-[10px] font-semibold bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full" title={u.retainUntil ? t('closedUntil', { date: new Date(u.retainUntil).toLocaleDateString(locale) }) : undefined}>{t('closedBadge')}</span>
+                      : u.isActive === false && <span className="ms-2 text-[10px] font-semibold bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">{t('inactiveBadge')}</span>}
+                    {u.legalHoldAt && <span className="ms-2 text-[10px] font-semibold bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full" title={u.legalHoldNote || ''}>{t('holdBadge')}</span>}
+                  </td>
+                  <td className="px-4 py-3 text-gray-500" dir="ltr">{u.archivedPhone || (u.deletedAt ? '—' : u.phone)}</td>
                   <td className="px-4 py-3">
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${u.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>{u.role}</span>
                   </td>
@@ -320,8 +344,13 @@ export default function AdminPage() {
                   <td className="px-4 py-3">
                     {!['ADMIN', 'MODERATOR'].includes(u.role) && u.id !== user?.id ? (
                       <div className="flex items-center gap-2">
-                        <button onClick={() => toggleActive(u)} title={u.isActive === false ? t('reactivate') : t('deactivate')} aria-label={u.isActive === false ? t('reactivate') : t('deactivate')}
-                          className="text-gray-400 hover:text-amber-600 transition-colors">{u.isActive === false ? <RotateCcw className="w-4 h-4" /> : <Ban className="w-4 h-4" />}</button>
+                        {!u.deletedAt && (
+                          <button onClick={() => toggleActive(u)} title={u.isActive === false ? t('reactivate') : t('deactivate')} aria-label={u.isActive === false ? t('reactivate') : t('deactivate')}
+                            className="text-gray-400 hover:text-amber-600 transition-colors">{u.isActive === false ? <RotateCcw className="w-4 h-4" /> : <Ban className="w-4 h-4" />}</button>
+                        )}
+                        <button onClick={() => openIdentity(u)} title={t('identityFile')} aria-label={t('identityFile')} className="text-gray-400 hover:text-brand-600 transition-colors"><FileSearch className="w-4 h-4" /></button>
+                        <button onClick={() => toggleHold(u)} title={u.legalHoldAt ? t('holdRemove') : t('holdSet')} aria-label={u.legalHoldAt ? t('holdRemove') : t('holdSet')}
+                          className={`transition-colors ${u.legalHoldAt ? 'text-purple-600 hover:text-purple-800' : 'text-gray-400 hover:text-purple-600'}`}><Gavel className="w-4 h-4" /></button>
                         <button onClick={() => removeUser(u)} title={t('deleteUser')} aria-label={t('deleteUser')} className="text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     ) : <span className="text-gray-300">—</span>}
@@ -331,6 +360,42 @@ export default function AdminPage() {
             </tbody>
           </table>
         </div>
+        </div>
+      )}
+
+      {identity && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setIdentity(null)}>
+          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <div>
+                <h2 className="font-bold text-gray-900 text-lg">{identity.name}</h2>
+                <p className="text-sm text-gray-500" dir="ltr">{identity.phone}</p>
+              </div>
+              <button onClick={() => setIdentity(null)} aria-label={tCommon('close')} className="text-gray-400 hover:text-gray-700"><X className="w-5 h-5" /></button>
+            </div>
+            <p className="text-xs text-amber-800 bg-amber-50 rounded-lg px-3 py-2 mb-4">{t('identityNotice')}</p>
+            <div className="flex flex-wrap gap-2 text-xs mb-4">
+              {identity.closedAt && <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">{t('identityClosed', { date: new Date(identity.closedAt).toLocaleDateString(locale) })}</span>}
+              {identity.retainUntil && <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">{t('closedUntil', { date: new Date(identity.retainUntil).toLocaleDateString(locale) })}</span>}
+              {identity.legalHoldAt && <span className="bg-purple-100 text-purple-700 px-2.5 py-1 rounded-full">{t('holdBadge')}: {identity.legalHoldNote}</span>}
+            </div>
+            {identity.verification ? (
+              <div className="grid sm:grid-cols-3 gap-3">
+                {[['frontPhoto', t('front')], ['backPhoto', t('back')]].map(([k, label]) => identity.verification[k] && (
+                  <a key={k} href={identity.verification[k]} target="_blank" rel="noreferrer">
+                    <p className="text-xs text-gray-400 mb-1 font-medium">{label}</p>
+                    <img src={identity.verification[k]} alt={label} className="rounded-xl border border-gray-100 object-cover w-full h-32" />
+                  </a>
+                ))}
+                {identity.verification.selfieVideo && (
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1 font-medium">{t('verifVideo')}</p>
+                    <video src={identity.verification.selfieVideo} controls className="rounded-xl border border-gray-100 w-full h-32 bg-black" />
+                  </div>
+                )}
+              </div>
+            ) : <p className="text-sm text-gray-500">{t('identityNoDocs')}</p>}
+          </div>
         </div>
       )}
     </div>

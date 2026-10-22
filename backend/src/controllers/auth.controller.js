@@ -110,7 +110,7 @@ const verifyOtp = async (req, res, next) => {
   }
 };
 
-// POST /api/auth/complete-registration  body: { registrationToken, name }
+// POST /api/auth/complete-registration  body: { registrationToken, name, acceptTerms: true }
 const completeRegistration = async (req, res, next) => {
   try {
     let decoded;
@@ -120,10 +120,11 @@ const completeRegistration = async (req, res, next) => {
       throw new AppError('Your verification expired — please request a new code', 400);
     }
     if (decoded.typ !== 'register' || !decoded.phone) throw new AppError('Invalid registration token', 400);
+    if (req.body.acceptTerms !== true) throw new AppError('You must be 18 or older and accept the Terms and Privacy Policy', 400);
 
     const phone = decoded.phone;
     let user = await prisma.user.findUnique({ where: { phone } });
-    if (!user) user = await prisma.user.create({ data: { phone, name: String(req.body.name).trim().slice(0, 60) } });
+    if (!user) user = await prisma.user.create({ data: { phone, name: String(req.body.name).trim().slice(0, 60), termsAcceptedAt: new Date() } });
     return await sendSession(res, user);
   } catch (err) { next(err); }
 };
@@ -136,7 +137,7 @@ const refreshToken = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
     const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
-    if (!user) throw new AppError('User not found', 404);
+    if (!user || !user.isActive) throw new AppError('User not found or inactive', 401);
 
     const tokens = generateTokens(user.id);
     res.json({ success: true, ...tokens });

@@ -4,6 +4,7 @@ const { signedUrl } = require('../utils/cloudinary');
 const { STUBBED } = require('../utils/stripeStub');
 const { releasePayment, refundPayment } = require('../services/payment.service');
 const { notifyUsers } = require('./../services/notify.service');
+const { ACTIVE_STATUSES, involvedBookings, hardDeleteUser, isOnHold } = require('../services/account.service');
 
 const audit = (actorId, action, targetType, targetId, note) =>
   prisma.auditLog.create({ data: { actorId, action, targetType, targetId, note: note ? String(note).slice(0, 300) : null } }).catch(() => {});
@@ -15,7 +16,10 @@ const listUsers = async (req, res, next) => {
       skip: (page - 1) * limit,
       take: parseInt(limit),
       orderBy: { createdAt: 'desc' },
-      select: { id: true, phone: true, name: true, role: true, isVerified: true, isActive: true, rating: true, createdAt: true },
+      select: {
+        id: true, phone: true, name: true, role: true, isVerified: true, isActive: true, rating: true, createdAt: true,
+        deletedAt: true, retainUntil: true, archivedName: true, archivedPhone: true, legalHoldAt: true, legalHoldNote: true,
+      },
     });
     res.json({ success: true, users });
   } catch (err) { next(err); }
@@ -50,7 +54,7 @@ const reviewVerification = async (req, res, next) => {
 
     const verification = await prisma.idVerification.update({
       where: { id: req.params.id },
-      data: { status, reviewNote },
+      data: { status, reviewNote, reviewedAt: new Date() },
     });
 
     if (status === 'APPROVED') {
@@ -161,7 +165,6 @@ const listActivity = async (_req, res, next) => {
 };
 
 // ── User management (admin only) ─────────────────────────────────────────────
-const ACTIVE_STATUSES = ['PAYMENT_PENDING', 'PENDING', 'ACCEPTED', 'DISPUTED'];
 const guardTarget = async (req) => {
   const user = await prisma.user.findUnique({ where: { id: req.params.id } });
   if (!user) throw new AppError('User not found', 404);
@@ -169,12 +172,12 @@ const guardTarget = async (req) => {
   if (['ADMIN', 'MODERATOR'].includes(user.role)) throw new AppError('Remove their staff access in the Team tab first', 400);
   return user;
 };
-const involvedBookings = (id) => ({ OR: [{ senderId: id }, { payerId: id }, { trip: { travelerId: id } }] });
 
 // PATCH /api/admin/users/:id/active  body: { active: boolean } — reversible: a disabled account can't sign in.
 const setUserActive = async (req, res, next) => {
   try {
     const user = await guardTarget(req);
+    if (user.deletedAt) throw new AppError('This account was closed by its owner', 409);
     const active = req.body.active === true;
     await prisma.user.update({ where: { id: user.id }, data: { isActive: active } });
     await audit(req.user.id, active ? 'USER_REACTIVATED' : 'USER_DEACTIVATED', 'User', user.id, user.phone);
@@ -186,42 +189,53 @@ const setUserActive = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   try {
     const user = await guardTarget(req);
-    if (String(req.body.confirmPhone || '').trim() !== user.phone) throw new AppError('Type the exact phone number to confirm', 400);
+    if (![user.phone, user.archivedPhone].includes(String(req.body.confirmPhone || '').trim())) throw new AppError('Type the exact phone number to confirm', 400);
 
     const active = await prisma.booking.count({ where: { ...involvedBookings(user.id), status: { in: ACTIVE_STATUSES } } });
     if (active > 0) throw new AppError(`This user has ${active} active booking(s) — resolve or cancel them first`, 409);
-    const bookings = await prisma.booking.findMany({ where: involvedBookings(user.id), select: { id: true } });
-    const ids = bookings.map((b) => b.id);
+    if (user.legalHoldAt) throw new AppError('This user is under legal hold — remove the hold first', 409);
     if (!STUBBED) {
-      const real = await prisma.payment.count({ where: { bookingId: { in: ids } } });
+      const real = await prisma.payment.count({ where: { booking: involvedBookings(user.id) } });
       if (real > 0) throw new AppError('This user has real payment records that must be kept — disable the account instead', 409);
     }
-
-    // Ratings of the people they reviewed / were reviewed by must be recomputed afterwards.
-    const reviews = await prisma.review.findMany({ where: { OR: [{ reviewerId: user.id }, { revieweeId: user.id }, { bookingId: { in: ids } }] }, select: { id: true, revieweeId: true } });
-    const affected = [...new Set(reviews.map((r) => r.revieweeId))].filter((x) => x !== user.id);
-
-    await prisma.$transaction([
-      prisma.review.deleteMany({ where: { id: { in: reviews.map((r) => r.id) } } }),
-      prisma.message.deleteMany({ where: { OR: [{ bookingId: { in: ids } }, { senderId: user.id }] } }),
-      prisma.trackingEvent.deleteMany({ where: { bookingId: { in: ids } } }),
-      prisma.payment.deleteMany({ where: { bookingId: { in: ids } } }),
-      prisma.booking.deleteMany({ where: { id: { in: ids } } }),
-      prisma.notification.deleteMany({ where: { userId: user.id } }),
-      prisma.trip.deleteMany({ where: { travelerId: user.id } }),
-      prisma.parcelRequest.deleteMany({ where: { senderId: user.id } }),
-      prisma.idVerification.deleteMany({ where: { userId: user.id } }),
-      prisma.outboundMessage.deleteMany({ where: { toPhone: user.phone } }),
-      prisma.user.delete({ where: { id: user.id } }),
-    ]);
-
-    for (const uid of affected) {
-      const agg = await prisma.review.aggregate({ where: { revieweeId: uid }, _avg: { rating: true }, _count: { _all: true } });
-      await prisma.user.update({ where: { id: uid }, data: { rating: agg._avg.rating || 0, reviewCount: agg._count._all } }).catch(() => {});
-    }
-    await audit(req.user.id, 'USER_DELETED', 'User', user.id, `${user.name} ${user.phone}`);
+    await hardDeleteUser(user);
+    const phone = user.archivedPhone || user.phone;
+    await audit(req.user.id, 'USER_DELETED', 'User', user.id, `${user.archivedName || user.name} …${phone.slice(-4)}`); // no full phone: it was erased
     res.json({ success: true });
   } catch (err) { next(err); }
 };
 
-module.exports = { setUserActive, deleteUser, listStaff, addStaff, removeStaff, listActivity, listDisputes, resolveDispute, listUsers, listPendingVerifications, reviewVerification };
+// PATCH /api/admin/users/:id/legal-hold  body: { hold: boolean, note } — while set, the retention purge keeps
+// everything about this user (e.g. an incident reported to the police).
+const setLegalHold = async (req, res, next) => {
+  try {
+    const user = await guardTarget(req);
+    const hold = req.body.hold === true;
+    const note = String(req.body.note || '').trim().slice(0, 300);
+    if (hold && note.length < 3) throw new AppError('Write the reason for the legal hold', 400);
+    await prisma.user.update({ where: { id: user.id }, data: hold ? { legalHoldAt: new Date(), legalHoldNote: note } : { legalHoldAt: null, legalHoldNote: null } });
+    await audit(req.user.id, hold ? 'LEGAL_HOLD_SET' : 'LEGAL_HOLD_REMOVED', 'User', user.id, hold ? note : null);
+    res.json({ success: true });
+  } catch (err) { next(err); }
+};
+
+// GET /api/admin/users/:id/identity — the retained identity file (real name/phone, ID documents) for an
+// incident or a request from the authorities. Every access is written to the audit log.
+const getUserIdentity = async (req, res, next) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.params.id }, include: { idVerification: true } });
+    if (!user) throw new AppError('User not found', 404);
+    const v = user.idVerification;
+    await audit(req.user.id, 'IDENTITY_VIEWED', 'User', user.id, req.query.reason);
+    res.json({
+      success: true,
+      identity: {
+        name: user.archivedName || user.name, phone: user.archivedPhone || user.phone, closedAt: user.deletedAt, retainUntil: user.retainUntil,
+        legalHoldAt: user.legalHoldAt, legalHoldNote: user.legalHoldNote, onHold: await isOnHold(user),
+        verification: v && { documentType: v.documentType, status: v.status, reviewedAt: v.reviewedAt, frontPhoto: signedUrl(v.frontPhoto), backPhoto: signedUrl(v.backPhoto), selfieVideo: signedUrl(v.selfieVideo) },
+      },
+    });
+  } catch (err) { next(err); }
+};
+
+module.exports = { setLegalHold, getUserIdentity, setUserActive, deleteUser, listStaff, addStaff, removeStaff, listActivity, listDisputes, resolveDispute, listUsers, listPendingVerifications, reviewVerification };

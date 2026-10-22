@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/navigation';
+import { useRouter, Link } from '@/i18n/navigation';
 import { parcelApi } from '@/lib/api';
 import { Loader2, AlertTriangle, Upload, X, ShieldAlert } from 'lucide-react';
 import Image from 'next/image';
@@ -183,7 +183,7 @@ export default function NewParcelPage() {
           <span className="text-xs text-gray-600">
             {t.rich('agreement', {
               b: (chunks) => <strong>{chunks}</strong>,
-              link: (chunks) => <a href="#" className="text-brand-600 underline">{chunks}</a>,
+              link: (chunks) => <Link href="/terms" target="_blank" className="text-brand-600 underline">{chunks}</Link>,
             })}
           </span>
         </label>

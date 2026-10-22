@@ -3,7 +3,8 @@ const prisma = require('../utils/prisma');
 const { AppError } = require('../middlewares/error.middleware');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { uploadPrivate } = require('../utils/cloudinary');
+const { uploadPrivate, destroyMedia } = require('../utils/cloudinary');
+const { closeAccount, exportUserData } = require('../services/account.service');
 
 const getProfile = async (req, res, next) => {
   try {
@@ -66,8 +67,11 @@ const uploadIdVerification = async (req, res, next) => {
 
     const data = {
       documentType, frontPhoto: frontRef, backPhoto: backRef, selfieVideo: videoRef,
-      challengeCode: challenge.code, consentAt: new Date(), status: 'PENDING', reviewNote: null,
+      challengeCode: challenge.code, consentAt: new Date(), status: 'PENDING', reviewNote: null, reviewedAt: null,
     };
+    // A new attempt replaces the previous one: its files are no longer needed.
+    const previous = await prisma.idVerification.findUnique({ where: { userId: req.user.id } });
+    if (previous && !req.user.legalHoldAt) await Promise.all([previous.frontPhoto, previous.backPhoto, previous.selfieVideo].map(destroyMedia));
     const verification = await prisma.idVerification.upsert({
       where: { userId: req.user.id },
       update: data,
@@ -85,7 +89,7 @@ const getPublicProfile = async (req, res, next) => {
       where: { id: req.params.userId },
       select: {
         id: true, name: true, photoUrl: true, bio: true,
-        rating: true, reviewCount: true, isVerified: true, createdAt: true,
+        rating: true, reviewCount: true, isVerified: true, createdAt: true, deletedAt: true,
         reviewsReceived: {
           orderBy: { createdAt: 'desc' },
           take: 20,
@@ -100,9 +104,28 @@ const getPublicProfile = async (req, res, next) => {
         },
       },
     });
-    if (!user) throw new AppError('User not found', 404);
-    res.json({ success: true, user });
+    if (!user || user.deletedAt) throw new AppError('User not found', 404);
+    const { deletedAt, ...profile } = user;
+    res.json({ success: true, user: profile });
   } catch (err) { next(err); }
 };
 
-module.exports = { getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile };
+// GET /api/users/me/export — a copy of all personal data we hold (GDPR access / portability).
+const exportMyData = async (req, res, next) => {
+  try {
+    const data = await exportUserData(req.user.id);
+    res.set('Content-Disposition', `attachment; filename="amana-data-${new Date().toISOString().slice(0, 10)}.json"`);
+    res.json(data);
+  } catch (err) { next(err); }
+};
+
+// DELETE /api/users/me  body: { confirm: "DELETE" } — the user closes their own account (GDPR erasure).
+const deleteMyAccount = async (req, res, next) => {
+  try {
+    if (req.body.confirm !== 'DELETE') throw new AppError('Confirmation missing', 400);
+    const result = await closeAccount(req.user.id);
+    res.json({ success: true, ...result });
+  } catch (err) { next(err); }
+};
+
+module.exports = { exportMyData, deleteMyAccount, getProfile, updateProfile, getIdChallenge, uploadIdVerification, getPublicProfile };

@@ -2,7 +2,7 @@
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/navigation';
+import { useRouter, Link } from '@/i18n/navigation';
 import { Package, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 
@@ -19,6 +19,7 @@ function AuthForm() {
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [registrationToken, setRegistrationToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -72,6 +73,7 @@ function AuthForm() {
     e.preventDefault();
     setError('');
     if (name.trim().length < 2) return setError(t('errors.nameRequired'));
+    if (!acceptTerms) return setError(t('errors.termsRequired'));
     setLoading(true);
     try {
       await completeRegistration(registrationToken, name.trim());
@@ -129,8 +131,8 @@ function AuthForm() {
 
               <p className="text-center text-sm text-gray-400 mt-6">
                 {t.rich('termsNotice', {
-                  terms: (chunks) => <a href="#" className="text-brand-600 hover:underline">{chunks}</a>,
-                  privacy: (chunks) => <a href="#" className="text-brand-600 hover:underline">{chunks}</a>,
+                  terms: (chunks) => <Link href="/terms" target="_blank" className="text-brand-600 hover:underline">{chunks}</Link>,
+                  privacy: (chunks) => <Link href="/privacy" target="_blank" className="text-brand-600 hover:underline">{chunks}</Link>,
                 })}
               </p>
             </>
@@ -213,6 +215,16 @@ function AuthForm() {
                     autoFocus
                   />
                 </div>
+
+                <label className="flex items-start gap-3 cursor-pointer select-none">
+                  <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-0.5 w-4 h-4 accent-brand-600 shrink-0" />
+                  <span className="text-sm text-gray-600">
+                    {t.rich('acceptTerms', {
+                      terms: (chunks) => <Link href="/terms" target="_blank" className="text-brand-600 hover:underline">{chunks}</Link>,
+                      privacy: (chunks) => <Link href="/privacy" target="_blank" className="text-brand-600 hover:underline">{chunks}</Link>,
+                    })}
+                  </span>
+                </label>
 
                 {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
 

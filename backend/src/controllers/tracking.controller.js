@@ -1,4 +1,4 @@
-const cloudinary = require('../utils/cloudinary');
+const { uploadPrivate, signMediaRefs } = require('../utils/cloudinary');
 const prisma = require('../utils/prisma');
 const { AppError } = require('../middlewares/error.middleware');
 const { getIo } = require('../utils/socket');
@@ -11,13 +11,8 @@ const codeAttempts = new Map();
 const MAX_CODE_ATTEMPTS = 5;
 const LOCK_MS = 15 * 60 * 1000;
 
-const uploadPhoto = (buffer) =>
-  new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream({ folder: 'amana/tracking' }, (err, result) => {
-      if (err) reject(err);
-      else resolve(result.secure_url);
-    }).end(buffer);
-  });
+// Private upload: responses carry a signed link, never a public URL (photos can show faces/addresses).
+const uploadPhoto = (buffer) => uploadPrivate(buffer, 'amana/tracking', 'image');
 
 const addTrackingEvent = async (req, res, next) => {
   try {
@@ -91,7 +86,7 @@ const addTrackingEvent = async (req, res, next) => {
     }
 
     // Real-time push to booking room
-    getIo().to(`booking:${bookingId}`).emit('tracking:update', event);
+    getIo().to(`booking:${bookingId}`).emit('tracking:update', signMediaRefs(event));
 
     // Push notification to sender
     if (booking.parcelRequest.sender.fcmToken) {

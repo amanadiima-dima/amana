@@ -45,7 +45,8 @@
       "APPROVED": "Aprobado",
       "DISPUTED": "En revisión",
       "PAYMENT_PENDING": "Esperando pago"
-    }
+    },
+    "close": "Cerrar"
   },
   "landing": {
     "navbar": {
@@ -247,11 +248,13 @@
       "nameRequired": "Introduce tu nombre.",
       "invalidCode": "Código incorrecto o caducado. Inténtalo de nuevo.",
       "sendFailed": "No se pudo enviar el código. Inténtalo de nuevo.",
-      "verifyFailed": "No se pudo verificar. Inténtalo de nuevo."
+      "verifyFailed": "No se pudo verificar. Inténtalo de nuevo.",
+      "termsRequired": "Confirma que tienes 18 años o más y aceptas los Términos y la Política de privacidad."
     },
     "nameStepTitle": "¡Ya casi!",
     "nameStepSubtitle": "Dinos tu nombre para que remitentes y viajeros sepan con quién tratan.",
-    "createAccount": "Crear mi cuenta"
+    "createAccount": "Crear mi cuenta",
+    "acceptTerms": "Tengo 18 años o más y acepto los <terms>Términos de uso</terms> y la <privacy>Política de privacidad</privacy>."
   },
   "dashboard": {
     "welcome": "Hola de nuevo, {name} 👋",
@@ -558,12 +561,27 @@
     "selfieRecording": "Grabando… {seconds}s",
     "selfieReady": "Vídeo listo ✓",
     "selfieNoCamera": "No se pudo abrir la cámara — sube un vídeo corto en su lugar.",
-    "consentLabel": "Acepto que Amana use mi documento y mi vídeo selfie solo para verificar mi identidad, y que pueda borrarlos tras la revisión.",
+    "consentLabel": "Acepto que Amana use mi documento y mi vídeo selfie para verificar mi identidad y por seguridad. El vídeo se borra 30 días después de la revisión; las fotos del documento se guardan mientras mi cuenta esté abierta y hasta 5 años después de mi última entrega, por si hay una disputa o una reclamación legal (ver la Política de privacidad).",
     "consentRequired": "Acepta el consentimiento para continuar.",
     "videoRequired": "Añade el vídeo selfie.",
     "photosRequired": "Añade todas las fotos necesarias.",
     "rejectedReason": "Motivo: {note}",
-    "preparing": "Preparando…"
+    "preparing": "Preparando…",
+    "privacy": {
+      "title": "Privacidad y tus datos",
+      "intro": "Descarga una copia de todo lo que Amana guarda sobre ti, o cierra tu cuenta. Más detalles en la <privacy>Política de privacidad</privacy>.",
+      "exportButton": "Descargar mis datos",
+      "exporting": "Preparando…",
+      "exportFailed": "No se pudieron preparar tus datos. Inténtalo de nuevo.",
+      "deleteTitle": "Cerrar mi cuenta",
+      "deleteIntro": "Tu perfil se elimina al momento y los demás verán «Usuario eliminado». Si has usado Amana para envíos, guardamos tus documentos de identidad, tu nombre y tu teléfono en un archivo restringido durante 5 años desde tu última entrega, solo para disputas o reclamaciones legales, y después los borramos.",
+      "deleteButton": "Cerrar mi cuenta",
+      "deleteUnderstand": "Entiendo que no se puede deshacer.",
+      "deleteConfirmButton": "Cerrarla definitivamente",
+      "deleting": "Cerrando…",
+      "deleteFailed": "No se pudo cerrar la cuenta.",
+      "cancel": "Cancelar"
+    }
   },
   "travelerProfile": {
     "verified": "Verificado",
@@ -641,7 +659,18 @@
     "confirmDeactivate": "¿Desactivar a {name}? No podrá iniciar sesión hasta que reactives la cuenta.",
     "deleteConfirmPrompt": "Esto borra definitivamente a {name} y sus viajes, paquetes, reservas, mensajes y reseñas. No se puede deshacer.\n\nEscribe su teléfono para confirmar: {phone}",
     "deleteDone": "{name} fue borrado.",
-    "userActionError": "No se pudo completar la acción."
+    "userActionError": "No se pudo completar la acción.",
+    "closedBadge": "Cerrada",
+    "closedUntil": "Se guarda hasta {date}",
+    "holdBadge": "Bloqueo legal",
+    "holdSet": "Activar bloqueo legal (conservar todo)",
+    "holdRemove": "Quitar el bloqueo legal",
+    "holdPrompt": "Bloqueo legal para {name}: no se borrará nada de este usuario hasta que lo quites. Motivo (p. ej. incidente, denuncia a la policía):",
+    "holdRemoveConfirm": "¿Quitar el bloqueo legal de {name}? Volverán a aplicarse los plazos normales de conservación.",
+    "identityFile": "Ficha de identidad",
+    "identityNotice": "Confidencial. Ábrela solo por un incidente, una disputa o una petición de las autoridades — cada acceso queda registrado en la actividad.",
+    "identityClosed": "Cuenta cerrada el {date}",
+    "identityNoDocs": "No hay documentos de identidad guardados."
   },
   "notifications": {
     "title": "Notificaciones",
@@ -678,6 +707,15 @@
     "declinedText": "Se lo hemos comunicado. No se ha cobrado nada.",
     "unavailableTitle": "Esta solicitud ya no está disponible",
     "unavailableText": "Puede haber caducado, haberse pagado o haberse cancelado.",
-    "errorGeneric": "Algo salió mal. Inténtalo de nuevo."
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
+    "privacyNotice": "Recibes esto porque el remitente introdujo tu número para pedirte que pagues. Solo lo usamos para esta solicitud. <privacy>Política de privacidad</privacy>"
+  },
+  "legal": {
+    "privacyTitle": "Política de privacidad",
+    "cookiesTitle": "Política de cookies",
+    "termsTitle": "Condiciones de uso",
+    "lastUpdated": "Última actualización: {date}",
+    "backHome": "Volver al inicio",
+    "contents": "Índice"
   }
 }

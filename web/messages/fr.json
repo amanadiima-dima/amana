@@ -45,7 +45,8 @@
       "APPROVED": "Approuvé",
       "DISPUTED": "En cours d'examen",
       "PAYMENT_PENDING": "En attente de paiement"
-    }
+    },
+    "close": "Fermer"
   },
   "landing": {
     "navbar": {
@@ -247,11 +248,13 @@
       "nameRequired": "Veuillez entrer votre nom.",
       "invalidCode": "Code invalide ou expiré. Veuillez réessayer.",
       "sendFailed": "Échec de l'envoi du code. Réessayez.",
-      "verifyFailed": "Échec de la vérification. Réessayez."
+      "verifyFailed": "Échec de la vérification. Réessayez.",
+      "termsRequired": "Confirmez que vous avez 18 ans ou plus et acceptez les Conditions et la Politique de confidentialité."
     },
     "nameStepTitle": "Presque fini !",
     "nameStepSubtitle": "Dites-nous votre nom pour que expéditeurs et voyageurs sachent à qui ils ont affaire.",
-    "createAccount": "Créer mon compte"
+    "createAccount": "Créer mon compte",
+    "acceptTerms": "J'ai 18 ans ou plus et j'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>."
   },
   "dashboard": {
     "welcome": "Bon retour, {name} 👋",
@@ -558,12 +561,27 @@
     "selfieRecording": "Enregistrement… {seconds}s",
     "selfieReady": "Vidéo prête ✓",
     "selfieNoCamera": "Impossible d'ouvrir la caméra — envoyez plutôt une courte vidéo.",
-    "consentLabel": "J'accepte qu'Amana utilise ma pièce d'identité et ma vidéo selfie uniquement pour vérifier mon identité, et puisse les supprimer après examen.",
+    "consentLabel": "J'accepte qu'Amana utilise ma pièce d'identité et ma vidéo selfie pour vérifier mon identité et pour la sécurité. La vidéo est supprimée 30 jours après la vérification ; les photos de la pièce sont conservées tant que mon compte est ouvert et jusqu'à 5 ans après ma dernière livraison, en cas de litige ou d'action en justice (voir la Politique de confidentialité).",
     "consentRequired": "Veuillez accepter le consentement pour continuer.",
     "videoRequired": "Veuillez ajouter la vidéo selfie.",
     "photosRequired": "Veuillez ajouter toutes les photos requises.",
     "rejectedReason": "Motif : {note}",
-    "preparing": "Préparation…"
+    "preparing": "Préparation…",
+    "privacy": {
+      "title": "Confidentialité et données",
+      "intro": "Téléchargez une copie de tout ce qu'Amana conserve sur vous, ou fermez votre compte. Détails dans la <privacy>Politique de confidentialité</privacy>.",
+      "exportButton": "Télécharger mes données",
+      "exporting": "Préparation…",
+      "exportFailed": "Impossible de préparer vos données. Réessayez.",
+      "deleteTitle": "Fermer mon compte",
+      "deleteIntro": "Votre profil est supprimé immédiatement et les autres membres verront « Utilisateur supprimé ». Si vous avez utilisé Amana pour des livraisons, nous conservons vos pièces d'identité, votre nom et votre téléphone dans une archive restreinte pendant 5 ans après votre dernière livraison, uniquement pour les litiges ou actions en justice, puis nous les supprimons.",
+      "deleteButton": "Fermer mon compte",
+      "deleteUnderstand": "Je comprends que cette action est irréversible.",
+      "deleteConfirmButton": "Fermer définitivement",
+      "deleting": "Fermeture…",
+      "deleteFailed": "Impossible de fermer le compte.",
+      "cancel": "Annuler"
+    }
   },
   "travelerProfile": {
     "verified": "Vérifié",
@@ -641,7 +659,18 @@
     "confirmDeactivate": "Désactiver {name} ? Cette personne ne pourra plus se connecter tant que vous ne réactivez pas le compte.",
     "deleteConfirmPrompt": "Cela supprime définitivement {name} ainsi que ses trajets, colis, réservations, messages et avis. Action irréversible.\n\nSaisissez son numéro de téléphone pour confirmer : {phone}",
     "deleteDone": "{name} a été supprimé.",
-    "userActionError": "Impossible d'effectuer cette action."
+    "userActionError": "Impossible d'effectuer cette action.",
+    "closedBadge": "Fermé",
+    "closedUntil": "Conservé jusqu'au {date}",
+    "holdBadge": "Gel juridique",
+    "holdSet": "Activer un gel juridique (tout conserver)",
+    "holdRemove": "Lever le gel juridique",
+    "holdPrompt": "Gel juridique pour {name} : rien ne sera supprimé tant qu'il est actif. Motif (ex. incident, plainte à la police) :",
+    "holdRemoveConfirm": "Lever le gel juridique pour {name} ? Les durées de conservation normales s’appliqueront de nouveau.",
+    "identityFile": "Dossier d'identité",
+    "identityNotice": "Confidentiel. À ouvrir uniquement pour un incident, un litige ou une demande des autorités — chaque accès est enregistré dans le journal d'activité.",
+    "identityClosed": "Compte fermé le {date}",
+    "identityNoDocs": "Aucune pièce d'identité au dossier."
   },
   "notifications": {
     "title": "Notifications",
@@ -678,6 +707,15 @@
     "declinedText": "Nous l'avons prévenu. Rien n'a été débité.",
     "unavailableTitle": "Cette demande n'est plus disponible",
     "unavailableText": "Elle a peut-être expiré, été payée ou annulée.",
-    "errorGeneric": "Une erreur est survenue. Veuillez réessayer."
+    "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+    "privacyNotice": "Vous recevez ceci car l'expéditeur a saisi votre numéro pour vous demander de payer. Nous l'utilisons uniquement pour cette demande. <privacy>Politique de confidentialité</privacy>"
+  },
+  "legal": {
+    "privacyTitle": "Politique de confidentialité",
+    "cookiesTitle": "Politique relative aux cookies",
+    "termsTitle": "Conditions d'utilisation",
+    "lastUpdated": "Dernière mise à jour : {date}",
+    "backHome": "Retour à l'accueil",
+    "contents": "Sommaire"
   }
 }

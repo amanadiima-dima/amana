@@ -37,13 +37,15 @@ api.interceptors.response.use(
 export const authApi = {
   sendOtp: (phone: string) => api.post('/auth/send-otp', { phone }),
   verifyOtp: (phone: string, code: string) => api.post('/auth/verify-otp', { phone, code }),
-  completeRegistration: (registrationToken: string, name: string) => api.post('/auth/complete-registration', { registrationToken, name }),
+  completeRegistration: (registrationToken: string, name: string) => api.post('/auth/complete-registration', { registrationToken, name, acceptTerms: true }),
   logout: () => api.post('/auth/logout'),
 };
 export const userApi = {
   getIdChallenge: () => api.get('/users/me/id-verification/challenge'),
   getMe: () => api.get('/users/me'),
   updateMe: (data: object) => api.patch('/users/me', data),
+  exportMyData: () => api.get('/users/me/export'),
+  deleteMyAccount: () => api.delete('/users/me', { data: { confirm: 'DELETE' } }),
   uploadIdVerification: (formData: FormData) => api.post('/users/me/id-verification', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 };
 export const tripApi = {
@@ -104,6 +106,8 @@ export const adminApi = {
   getDisputes: () => api.get('/admin/disputes'),
   setUserActive: (id: string, active: boolean) => api.patch(`/admin/users/${id}/active`, { active }),
   deleteUser: (id: string, confirmPhone: string) => api.delete(`/admin/users/${id}`, { data: { confirmPhone } }),
+  setLegalHold: (id: string, hold: boolean, note?: string) => api.patch(`/admin/users/${id}/legal-hold`, { hold, note }),
+  getIdentity: (id: string) => api.get(`/admin/users/${id}/identity`),
   getStaff: () => api.get('/admin/staff'),
   addStaff: (phone: string) => api.post('/admin/staff', { phone }),
   removeStaff: (userId: string) => api.delete(`/admin/staff/${userId}`),

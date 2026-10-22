@@ -3,8 +3,90 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAuthStore } from '@/store/authStore';
 import { userApi } from '@/lib/api';
+import { Link, useRouter } from '@/i18n/navigation';
 import SelfieVideoRecorder from '@/components/ui/SelfieVideoRecorder';
-import { Loader2, Save, ShieldCheck, ShieldAlert, Upload, CheckCircle2, Clock } from 'lucide-react';
+import { Loader2, Save, ShieldCheck, ShieldAlert, Upload, CheckCircle2, Clock, Download, Trash2, Lock } from 'lucide-react';
+
+function PrivacySection() {
+  const t = useTranslations('profile.privacy');
+  const router = useRouter();
+  const { logout } = useAuthStore();
+  const [exporting, setExporting] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [understood, setUnderstood] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState('');
+
+  const download = async () => {
+    setExporting(true); setError('');
+    try {
+      const { data } = await userApi.exportMyData();
+      const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+      const a = document.createElement('a');
+      a.href = url; a.download = `amana-data-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+      URL.revokeObjectURL(url);
+    } catch { setError(t('exportFailed')); }
+    finally { setExporting(false); }
+  };
+
+  const closeAccount = async () => {
+    setDeleting(true); setError('');
+    try {
+      await userApi.deleteMyAccount();
+      await logout();
+      router.push('/');
+    } catch (err: any) {
+      setError(err?.response?.data?.message || t('deleteFailed'));
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
+      <div>
+        <div className="flex items-center gap-2 mb-1">
+          <Lock className="w-5 h-5 text-brand-600" />
+          <h2 className="font-semibold text-gray-900">{t('title')}</h2>
+        </div>
+        <p className="text-sm text-gray-500">
+          {t.rich('intro', { privacy: (chunks) => <Link href="/privacy" className="text-brand-600 hover:underline">{chunks}</Link> })}
+        </p>
+      </div>
+
+      <button onClick={download} disabled={exporting}
+        className="flex items-center justify-center gap-2 border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50 transition-colors disabled:opacity-60">
+        {exporting ? <><Loader2 className="w-4 h-4 animate-spin" /> {t('exporting')}</> : <><Download className="w-4 h-4" /> {t('exportButton')}</>}
+      </button>
+
+      <div className="border-t border-gray-100 pt-4">
+        <p className="text-sm font-semibold text-gray-900 mb-1">{t('deleteTitle')}</p>
+        <p className="text-xs text-gray-500 mb-3">{t('deleteIntro')}</p>
+        {!confirming ? (
+          <button onClick={() => { setConfirming(true); setUnderstood(false); }}
+            className="flex items-center gap-2 text-red-600 border border-red-200 px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-red-50 transition-colors">
+            <Trash2 className="w-4 h-4" /> {t('deleteButton')}
+          </button>
+        ) : (
+          <div className="bg-red-50 rounded-xl p-4 space-y-3">
+            <label className="flex items-start gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked={understood} onChange={(e) => setUnderstood(e.target.checked)} className="mt-0.5 w-4 h-4 accent-red-600 shrink-0" />
+              <span className="text-sm text-red-800">{t('deleteUnderstand')}</span>
+            </label>
+            <div className="flex gap-2">
+              <button onClick={closeAccount} disabled={!understood || deleting}
+                className="flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-red-700 transition-colors disabled:opacity-50">
+                {deleting ? <><Loader2 className="w-4 h-4 animate-spin" /> {t('deleting')}</> : t('deleteConfirmButton')}
+              </button>
+              <button onClick={() => setConfirming(false)} disabled={deleting} className="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-white transition-colors">{t('cancel')}</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
+    </div>
+  );
+}
 
 function IdVerificationSection() {
   const t = useTranslations('profile');
@@ -223,6 +305,8 @@ export default function ProfilePage() {
 
       {/* ID Verification */}
       <IdVerificationSection />
+
+      <PrivacySection />
     </div>
   );
 }
