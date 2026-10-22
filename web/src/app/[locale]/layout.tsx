@@ -26,7 +26,7 @@ export async function generateMetadata({
     title: t('title'),
     description: t('description'),
     manifest: '/manifest.webmanifest',
-    icons: { icon: [{ url: '/favicon.png', sizes: '64x64', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/apple-touch-icon.png' },
+    icons: { icon: [{ url: '/favicon.png?v=2', sizes: '64x64', type: 'image/png' }, { url: '/icon-192.png?v=2', sizes: '192x192', type: 'image/png' }], apple: '/apple-touch-icon.png?v=2' },
     appleWebApp: { capable: true, title: 'Amana', statusBarStyle: 'default' },
     openGraph: {
       title: 'Amana',
