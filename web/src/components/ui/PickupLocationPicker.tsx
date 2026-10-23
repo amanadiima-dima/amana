@@ -1,7 +1,7 @@
 'use client';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { MapPin, Loader2 } from 'lucide-react';
 
 function PickupMapLoading() {
@@ -29,15 +29,39 @@ interface NominatimResult {
 
 // Fallback map centre (Paris) when no pin is set yet.
 const DEFAULT_CENTER = { lat: 48.8566, lng: 2.3522 };
+// Search box around the departure city (~35 km), so "airport" finds that city's airport.
+const NEAR_LAT = 0.3;
+const NEAR_LNG = 0.45;
 
 export default function PickupLocationPicker({
   value,
   onChange,
+  nearCity,
 }: {
   value: PickupValue;
   onChange: (v: PickupValue) => void;
+  /** The trip's departure city: suggestions are looked up around it first. */
+  nearCity?: string;
 }) {
   const t = useTranslations('pickup');
+  const locale = useLocale();
+  const [near, setNear] = useState<{ lat: number; lng: number } | null>(null);
+
+  // Locate the departure city (debounced while it is being typed).
+  useEffect(() => {
+    const city = nearCity?.trim();
+    if (!city || city.length < 2) { setNear(null); return; }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(city)}`);
+        const [hit] = (await res.json()) as NominatimResult[];
+        setNear(hit ? { lat: parseFloat(hit.lat), lng: parseFloat(hit.lon) } : null);
+      } catch {
+        setNear(null);
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [nearCity]);
   const [query, setQuery] = useState(value.address);
   const [options, setOptions] = useState<NominatimResult[]>([]);
   const [open, setOpen] = useState(false);
@@ -54,11 +78,19 @@ export default function PickupLocationPicker({
     debounce.current = setTimeout(async () => {
       setLoading(true);
       try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&q=${encodeURIComponent(q)}`,
-          { headers: { 'Accept-Language': 'en' } }
-        );
-        const data = (await res.json()) as NominatimResult[];
+        const lookup = async (extra: string) => {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&accept-language=${locale}&q=${encodeURIComponent(q)}${extra}`
+          );
+          return (await res.json()) as NominatimResult[];
+        };
+        // Around the departure city first; anywhere if nothing matches there.
+        let data: NominatimResult[] = [];
+        if (near) {
+          const box = [near.lng - NEAR_LNG, near.lat + NEAR_LAT, near.lng + NEAR_LNG, near.lat - NEAR_LAT].join(',');
+          data = await lookup(`&viewbox=${box}&bounded=1`);
+        }
+        if (!data.length) data = await lookup('');
         setOptions(data);
         setOpen(data.length > 0);
       } catch {
@@ -74,8 +106,7 @@ export default function PickupLocationPicker({
       onChange({ address: value.address, lat, lng }); // move pin immediately
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
-          { headers: { 'Accept-Language': 'en' } }
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=${locale}&lat=${lat}&lon=${lng}`
         );
         const data = await res.json();
         if (data?.display_name) {
@@ -86,7 +117,7 @@ export default function PickupLocationPicker({
         /* keep the coords, no address */
       }
     },
-    [onChange, value.address]
+    [onChange, value.address, locale]
   );
 
   const pick = (o: NominatimResult) => {
@@ -99,6 +130,7 @@ export default function PickupLocationPicker({
   };
 
   const hasPin = value.lat != null && value.lng != null;
+  const center = hasPin ? { lat: value.lat as number, lng: value.lng as number } : near || DEFAULT_CENTER;
 
   return (
     <div className="relative">
@@ -112,7 +144,7 @@ export default function PickupLocationPicker({
             search(e.target.value);
           }}
           onFocus={() => options.length > 0 && setOpen(true)}
-          placeholder={t('placeholder')}
+          placeholder={near && nearCity ? t('placeholderNear', { city: nearCity.split(',')[0] }) : t('placeholder')}
           autoComplete="off"
           className="w-full border border-gray-200 rounded-xl ps-9 pe-9 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
@@ -120,7 +152,7 @@ export default function PickupLocationPicker({
           <Loader2 className="absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
         )}
         {open && options.length > 0 && (
-          <ul className="absolute z-[1000] top-full start-0 end-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-auto">
+          <ul className="absolute z-[1100] top-full start-0 end-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-auto">
             {options.map((o) => (
               <li key={o.place_id}>
                 <button
@@ -139,8 +171,8 @@ export default function PickupLocationPicker({
 
       <div className="mt-2 h-56 rounded-xl overflow-hidden border border-gray-200">
         <PickupMap
-          lat={hasPin ? (value.lat as number) : DEFAULT_CENTER.lat}
-          lng={hasPin ? (value.lng as number) : DEFAULT_CENTER.lng}
+          lat={center.lat}
+          lng={center.lng}
           onPick={reverse}
         />
       </div>

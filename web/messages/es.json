@@ -692,6 +692,7 @@
   },
   "pickup": {
     "placeholder": "Busca una dirección de recogida o coloca un pin en el mapa",
+    "placeholderNear": "Ej.: aeropuerto, estación, dirección… cerca de {city}",
     "loadingMap": "Cargando mapa…",
     "adjustHint": "arrastra el pin o haz clic en el mapa para ajustar",
     "setHint": "Haz clic en el mapa o busca arriba para definir el punto de recogida"

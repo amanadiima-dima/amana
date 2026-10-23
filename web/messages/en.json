@@ -692,6 +692,7 @@
   },
   "pickup": {
     "placeholder": "Search a pickup address, or drop a pin on the map",
+    "placeholderNear": "E.g. airport, train station, address… near {city}",
     "loadingMap": "Loading map…",
     "adjustHint": "drag the pin or click the map to adjust",
     "setHint": "Click the map or search above to set the pickup point"

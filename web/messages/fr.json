@@ -692,6 +692,7 @@
   },
   "pickup": {
     "placeholder": "Recherchez une adresse de récupération, ou placez un repère sur la carte",
+    "placeholderNear": "Ex. : aéroport, gare, adresse… près de {city}",
     "loadingMap": "Chargement de la carte…",
     "adjustHint": "faites glisser le repère ou cliquez sur la carte pour ajuster",
     "setHint": "Cliquez sur la carte ou recherchez ci-dessus pour définir le point de récupération"

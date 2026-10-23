@@ -27,6 +27,7 @@ export default function NewTripPage() {
   const [currency, setCurrency] = useState<string>('EUR');
   const [currencyTouched, setCurrencyTouched] = useState(false);
   const [pickup, setPickup] = useState<PickupValue>({ address: '', lat: null, lng: null });
+  const [originCountry, setOriginCountry] = useState(''); // from the picked suggestion, to locate the right city
 
   // Default currency = the sender's/departure country's, unless the traveler picked one.
   useEffect(() => {
@@ -78,8 +79,9 @@ export default function NewTripPage() {
             <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">{t('from')}</label>
             <CityAutocomplete
               value={form.originCity}
-              onChange={(v) => set('originCity', v)}
+              onChange={(v) => { set('originCity', v); setOriginCountry(''); }}
               onSelectOption={({ country }) => {
+                setOriginCountry(country);
                 const c = currencyForCountry(country);
                 if (c && !currencyTouched) setCurrency(c);
               }}
@@ -125,7 +127,7 @@ export default function NewTripPage() {
         {/* Pickup place */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('pickupLabel')}</label>
-          <PickupLocationPicker value={pickup} onChange={setPickup} />
+          <PickupLocationPicker value={pickup} onChange={setPickup} nearCity={originCountry ? `${form.originCity}, ${originCountry}` : form.originCity} />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
