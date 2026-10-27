@@ -368,8 +368,6 @@
     "photosLabel": "صور الغرض",
     "photosLimit": "(حتى 3 صور)",
     "photosCta": "اضغط لرفع الصور",
-    "pickupAddress": "عنوان الاستلام",
-    "pickupPlaceholder": "الشارع، المدينة التي يستلم منها المسافر",
     "deliveryAddress": "عنوان التسليم",
     "deliveryPlaceholder": "الشارع، المدينة التي يقيم فيها المستلم",
     "weight": "الوزن (كغ)",

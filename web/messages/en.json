@@ -368,8 +368,6 @@
     "photosLabel": "Item photos",
     "photosLimit": "(up to 3)",
     "photosCta": "Click to upload photos",
-    "pickupAddress": "Pickup address",
-    "pickupPlaceholder": "Street, city where traveler picks it up",
     "deliveryAddress": "Delivery address",
     "deliveryPlaceholder": "Street, city where recipient lives",
     "weight": "Weight (kg)",

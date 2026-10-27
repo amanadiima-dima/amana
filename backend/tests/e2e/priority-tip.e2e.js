@@ -13,6 +13,8 @@ const ok=(n,c,x='')=>console.log(c?'PASS':'FAIL',n,x);
  let r=await call('POST','/bookings',S,{tripId:tr.data.trip.id,parcelRequestId:pc.data.parcel.id,priorityTip:-5}); ok('negative tip rejected',r.status===400);
  r=await call('POST','/bookings',S,{tripId:tr.data.trip.id,parcelRequestId:pc.data.parcel.id,priorityTip:100}); ok('booking with tip created',r.status===201&&r.data.booking.priorityTip===100);
  const id=r.data.booking.id;
+ const nt=await prisma.notification.findFirst({where:{userId:(await prisma.trip.findUnique({where:{id:tr.data.trip.id}})).travelerId,data:{path:['bookingId'],equals:id}}}); ok('traveler gets an in-app notification for the new request',!!nt&&nt.data.type==='BOOKING_REQUEST');
+ const np=new FormData();np.append('deliveryAddress','b');np.append('weightKg','1');np.append('description','no pickup address'); r=await call('POST','/parcels',S,null,np); ok('parcel without pickup address accepted',r.status===201);
  const tb=await call('GET',`/trips/${tr.data.trip.id}/bookings`,T); ok('traveler sees the tip on the request',tb.data.bookings[0].priorityTip===100);
  await call('PATCH',`/bookings/${id}/respond`,T,{action:'accept'}); await call('POST','/payments/intent',S,{bookingId:id});
  const pay=await prisma.payment.findUnique({where:{bookingId:id}});

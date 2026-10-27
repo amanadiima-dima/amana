@@ -17,7 +17,7 @@ const createParcel = async (req, res, next) => {
     const parcel = await prisma.parcelRequest.create({
       data: {
         senderId: req.user.id,
-        pickupAddress,
+        pickupAddress: pickupAddress || '',
         deliveryAddress,
         weightKg: parseFloat(weightKg),
         description,

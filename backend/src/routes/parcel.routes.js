@@ -13,7 +13,7 @@ router.post('/',
   requireVerified,
   upload.array('photos', 5),
   [
-    body('pickupAddress').isString().trim(),
+    body('pickupAddress').optional().isString().trim(), // the traveler sets the pickup place on the trip
     body('deliveryAddress').isString().trim(),
     body('weightKg').isFloat({ min: 0.1, max: 2000 }),
     body('estimatedValue').optional({ checkFalsy: true }).isFloat({ min: 0 }),

@@ -368,8 +368,6 @@
     "photosLabel": "Fotos del artículo",
     "photosLimit": "(hasta 3)",
     "photosCta": "Haz clic para subir fotos",
-    "pickupAddress": "Dirección de recogida",
-    "pickupPlaceholder": "Calle, ciudad donde el viajero lo recoge",
     "deliveryAddress": "Dirección de entrega",
     "deliveryPlaceholder": "Calle, ciudad donde vive el destinatario",
     "weight": "Peso (kg)",

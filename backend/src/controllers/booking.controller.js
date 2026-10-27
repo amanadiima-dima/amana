@@ -101,7 +101,8 @@ const createBooking = async (req, res, next) => {
       if (payer) {
         await notifyUsers([payer.id], `${senderName} asks you to pay for a parcel`, `${route}: please review and pay before the deadline so the traveler can accept.`, { bookingId: booking.id, type: 'PAYMENT_REQUEST' });
       }
-    } else if (booking.trip.traveler.fcmToken) {
+    } else {
+      await notifyUsers([trip.travelerId], 'New parcel request 📦', `${route}: ${publicName(req.user.name)} wants you to carry a ${parcel.weightKg} kg parcel. Please accept or decline.`, { bookingId: booking.id, type: 'BOOKING_REQUEST' });
       await sendPushNotification(
         booking.trip.traveler.fcmToken,
         'New parcel request',

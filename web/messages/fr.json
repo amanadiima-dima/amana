@@ -368,8 +368,6 @@
     "photosLabel": "Photos de l'objet",
     "photosLimit": "(3 maximum)",
     "photosCta": "Cliquez pour ajouter des photos",
-    "pickupAddress": "Adresse de récupération",
-    "pickupPlaceholder": "Rue, ville où le voyageur récupère le colis",
     "deliveryAddress": "Adresse de livraison",
     "deliveryPlaceholder": "Rue, ville où habite le destinataire",
     "weight": "Poids (kg)",

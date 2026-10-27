@@ -24,7 +24,6 @@ export default function NewParcelPage() {
   const [agreed, setAgreed] = useState(false);
   const [verified, setVerified] = useState(true);
   const [form, setForm] = useState({
-    pickupAddress: '',
     deliveryAddress: '',
     weightKg: '',
     description: '',
@@ -128,15 +127,6 @@ export default function NewParcelPage() {
         </div>
 
         {/* Addresses */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('pickupAddress')}</label>
-          <AddressAutocomplete
-            value={form.pickupAddress}
-            onChange={(v) => set('pickupAddress', v)}
-            placeholder={t('pickupPlaceholder')}
-            required
-          />
-        </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">{t('deliveryAddress')}</label>
           <AddressAutocomplete

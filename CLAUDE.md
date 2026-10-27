@@ -25,7 +25,7 @@ export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use 20     # system no
   The CLI also reads `backend/.env` even when `DATABASE_URL` is set in the shell — to target another DB, run it from a folder with no `.env`.
 
 ## Testing
-- `cd backend && npm run test:e2e` runs `tests/e2e/*.e2e.js` against the local stack: **286 checks** (chat/privacy, money protection, currency, recipient-pays, invitations, KYC + staff roles, sign-up, nearby search, expiry, admin user management, GDPR export/closure/legal hold/retention). Keep it green; add a script per feature. Scripts sign in through `tests/e2e/_auth.js` (`signIn(phone, name)`: logs in, or registers, or resets to the test password).
+- `cd backend && npm run test:e2e` runs `tests/e2e/*.e2e.js` against the local stack: **288 checks** (chat/privacy, money protection, currency, recipient-pays, invitations, KYC + staff roles, sign-up, nearby search, expiry, admin user management, GDPR export/closure/legal hold/retention). Keep it green; add a script per feature. Scripts sign in through `tests/e2e/_auth.js` (`signIn(phone, name)`: logs in, or registers, or resets to the test password).
 - Web: `cd web && npx tsc --noEmit && npm run build`. **i18n parity** (all 4 catalogs must have identical keys):
   `node -e "const fs=require('fs');const L=(o,p='')=>Object.entries(o).flatMap(([k,v])=>v&&typeof v==='object'&&!Array.isArray(v)?L(v,p+k+'.'):[p+k]);const s=['en','fr','es','ar'].map(l=>L(JSON.parse(fs.readFileSync('messages/'+l+'.json'))));console.log(s.map(x=>x.length))"` (run in `web/`).
 - The browser pane can't use the camera (selfie recording is untested on a real device).
