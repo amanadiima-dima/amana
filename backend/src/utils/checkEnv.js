@@ -32,7 +32,10 @@ const checkEnv = () => {
   for (const k of ['CORS_ORIGIN', 'WEB_URL']) {
     if (v(k) && !/^https:\/\/[^\s/]+$/.test(v(k).split(',')[0].trim())) problems.push(`${k} must look like https://your-web-domain (https, no trailing slash)`);
   }
-  if (process.env.PAYMENTS_MODE !== 'stripe') warnings.push('PAYMENTS_MODE is not "stripe": payments are SIMULATED (no real money moves).');
+  const testPhones = v('TEST_PHONES').split(',').map((p) => p.trim()).filter(Boolean);
+  if (testPhones.some((p) => !/^\+[1-9]\d{7,14}$/.test(p))) problems.push('TEST_PHONES must be phone numbers like +447700900101, separated by commas');
+  if (testPhones.length) warnings.push(`TEST_PHONES: ${testPhones.length} test account(s) sign in with code 123456 (no SMS).`);
+    if (process.env.PAYMENTS_MODE !== 'stripe') warnings.push('PAYMENTS_MODE is not "stripe": payments are SIMULATED (no real money moves).');
 
   warnings.forEach((w) => logger.warn(w));
   if (problems.length) {

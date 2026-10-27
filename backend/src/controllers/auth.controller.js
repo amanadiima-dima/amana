@@ -22,11 +22,14 @@ const generateTokens = (userId) => {
 };
 
 const devBypass = () => process.env.NODE_ENV === 'development' && process.env.OTP_BYPASS === 'true';
+// Beta test accounts (owner's choice, 2026-10-27): phones listed in TEST_PHONES get no SMS and use code 123456,
+// also in production. Their password is still required. Use fictional numbers (e.g. +447700900xxx).
+const isTestPhone = (phone) => (process.env.TEST_PHONES || '').split(',').map((p) => p.trim()).filter(Boolean).includes(phone);
 
 // Sends a one-time code to the phone (Twilio Verify): SMS, or WhatsApp for countries where SMS is restricted.
 const sendCode = async (phone) => {
-  if (devBypass()) {
-    logger.info(`[DEV] OTP bypass enabled — use code 123456 for ${phone}`);
+  if (devBypass() || isTestPhone(phone)) {
+    logger.info(`[TEST] no SMS sent — use code 123456 for ${phone}`);
     return 'dev';
   }
   try {
@@ -43,8 +46,8 @@ const sendCode = async (phone) => {
 };
 
 const checkCode = async (phone, code) => {
-  if (devBypass()) {
-    if (code !== '123456') throw new AppError('Invalid code (dev bypass: use 123456)', 400);
+  if (devBypass() || isTestPhone(phone)) {
+    if (code !== '123456') throw new AppError('Invalid or expired code', 400);
     return;
   }
   const check = await twilioClient.verify.v2.services(process.env.TWILIO_VERIFY_SERVICE_SID).verificationChecks.create({ to: phone, code });
