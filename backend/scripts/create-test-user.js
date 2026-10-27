@@ -13,7 +13,10 @@ const { PrismaClient } = require('@prisma/client');
     console.error('Usage: node scripts/create-test-user.js +<country code and number> "<first name>" "<last name>"');
     process.exit(1);
   }
-  const password = crypto.randomBytes(6).toString('base64url'); // 8 characters
+  // Easy to read out and type on a phone: lower-case, no look-alikes (0/o, 1/l/i), e.g. "amana-k7m4-x9p2".
+  const abc = 'abcdefghjkmnpqrstuvwxyz23456789';
+  const chunk = () => Array.from({ length: 4 }, () => abc[crypto.randomInt(abc.length)]).join('');
+  const password = `amana-${chunk()}-${chunk()}`;
   const data = { name, lastName, passwordHash: await bcrypt.hash(password, 10), isVerified: true, isActive: true, termsAcceptedAt: new Date() };
   const prisma = new PrismaClient();
   try {
