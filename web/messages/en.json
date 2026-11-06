@@ -315,6 +315,7 @@
     "createParcel": "+ Create a parcel",
     "estimatedCost": "Estimated cost:",
     "feeIncluded": "(platform fee included)",
+    "parcelTooHeavy": "This trip has {available} kg left and your parcel weighs {weight} kg. Choose a lighter parcel or another trip.",
     "requestBooking": "Request Booking →",
     "selectParcelError": "Please select a parcel first.",
     "bookingErrorGeneric": "Failed to create booking.",

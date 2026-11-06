@@ -315,6 +315,7 @@
     "createParcel": "+ Crear un paquete",
     "estimatedCost": "Coste estimado:",
     "feeIncluded": "(comisión de la plataforma incluida)",
+    "parcelTooHeavy": "A este viaje le quedan {available} kg y tu paquete pesa {weight} kg. Elige un paquete más ligero u otro viaje.",
     "requestBooking": "Solicitar reserva →",
     "selectParcelError": "Selecciona primero un paquete.",
     "bookingErrorGeneric": "No se pudo crear la reserva.",

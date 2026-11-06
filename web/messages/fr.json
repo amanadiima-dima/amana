@@ -315,6 +315,7 @@
     "createParcel": "+ Créer un colis",
     "estimatedCost": "Coût estimé :",
     "feeIncluded": "(frais de plateforme inclus)",
+    "parcelTooHeavy": "Il reste {available} kg sur ce trajet et votre colis pèse {weight} kg. Choisissez un colis plus léger ou un autre trajet.",
     "requestBooking": "Demander la réservation →",
     "selectParcelError": "Veuillez d'abord sélectionner un colis.",
     "bookingErrorGeneric": "Échec de la création de la réservation.",

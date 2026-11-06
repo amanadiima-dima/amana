@@ -65,7 +65,7 @@ const createBooking = async (req, res, next) => {
 
     // Check weight availability: sum the weight of parcels already on this trip
     const activeBookings = await prisma.booking.findMany({
-      where: { tripId, status: { in: ['ACCEPTED', 'PENDING', 'PAYMENT_PENDING'] } },
+      where: { tripId, status: { in: [...ACTIVE, 'COMPLETED'] } }, // same as availableWeightKg in getTrip
       select: { parcelRequest: { select: { weightKg: true } } },
     });
     const usedWeight = activeBookings.reduce((sum, b) => sum + (b.parcelRequest?.weightKg || 0), 0);

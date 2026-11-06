@@ -123,7 +123,7 @@ const getTrip = async (req, res, next) => {
       include: {
         traveler: { select: { id: true, name: true, photoUrl: true, rating: true, reviewCount: true, isVerified: true } },
         bookings: {
-          where: { status: { in: ['ACCEPTED', 'COMPLETED'] } },
+          where: { status: { in: ['PAYMENT_PENDING', 'PENDING', 'ACCEPTED', 'DISPUTED', 'COMPLETED'] } }, // same as the check in createBooking
           select: { parcelRequest: { select: { weightKg: true } } },
         },
       },

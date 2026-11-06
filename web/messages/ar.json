@@ -315,6 +315,7 @@
     "createParcel": "+ إنشاء طرد",
     "estimatedCost": "التكلفة المقدَّرة:",
     "feeIncluded": "(تشمل رسوم المنصة)",
+    "parcelTooHeavy": "تبقّى في هذه الرحلة {available} كغ ووزن طردك {weight} كغ. اختر طردًا أخف أو رحلة أخرى.",
     "requestBooking": "طلب الحجز ←",
     "selectParcelError": "الرجاء اختيار طرد أولًا.",
     "bookingErrorGeneric": "تعذّر إنشاء الحجز.",

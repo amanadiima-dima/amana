@@ -7,7 +7,7 @@ import { useMoney } from '@/lib/money';
 import { Link, useRouter } from '@/i18n/navigation';
 import { tripApi, parcelApi, bookingApi } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
-import { ArrowLeft, Star, Shield, Loader2, Package, CheckCircle, XCircle, Clock, Users, MapPin } from 'lucide-react';
+import { ArrowLeft, Star, Shield, Loader2, Package, CheckCircle, XCircle, Clock, Users, MapPin, AlertTriangle } from 'lucide-react';
 import { modeMeta, formatDuration } from '@/lib/trip';
 
 // ── Booking management panel (traveler's own trip) ────────────────────────────
@@ -194,6 +194,10 @@ export default function TripDetailPage() {
     }).catch(() => router.push('/parcels/search'))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const spaceLeft = trip ? (trip.availableWeightKg ?? trip.maxWeightKg) : 0;
+  const chosenParcel = myParcels.find((x: any) => x.id === selectedParcel);
+  const parcelTooHeavy = !!chosenParcel && chosenParcel.weightKg > spaceLeft;
 
   const handleBook = async () => {
     if (!selectedParcel) return setError(t('selectParcelError'));
@@ -397,7 +401,7 @@ export default function TripDetailPage() {
                 {myParcels.map((p: any) => (
                   <label key={p.id} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${selectedParcel === p.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:bg-gray-50'}`}>
                     <input type="radio" name="parcel" value={p.id} checked={selectedParcel === p.id}
-                      onChange={() => setSelectedParcel(p.id)} className="accent-brand-600" />
+                      onChange={() => { setSelectedParcel(p.id); setError(''); }} className="accent-brand-600" />
                     <div>
                       <p className="font-medium text-sm text-gray-900">{p.description}</p>
                       <p className="text-xs text-gray-500">⚖️ {p.weightKg}kg · 📍 {p.deliveryAddress}</p>
@@ -406,8 +410,15 @@ export default function TripDetailPage() {
                 ))}
               </div>
 
-              {selectedParcel && (() => {
-                const p = myParcels.find((x: any) => x.id === selectedParcel);
+              {parcelTooHeavy && (
+                <p role="alert" className="flex items-start gap-2 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4">
+                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                  {t('parcelTooHeavy', { available: spaceLeft, weight: chosenParcel.weightKg })}
+                </p>
+              )}
+
+              {selectedParcel && !parcelTooHeavy && (() => {
+                const p = chosenParcel;
                 const cost = p ? money(p.weightKg * trip.pricePerKg + (parseFloat(tip) || 0), trip.currency, true) : null;
                 return cost ? (
                   <div className="bg-gray-50 rounded-xl p-3 mb-4 text-sm text-gray-600">
@@ -446,7 +457,7 @@ export default function TripDetailPage() {
 
               {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg mb-3">{error}</p>}
 
-              <button onClick={handleBook} disabled={booking || !selectedParcel}
+              <button onClick={handleBook} disabled={booking || !selectedParcel || parcelTooHeavy}
                 className="w-full flex items-center justify-center gap-2 bg-brand-600 text-white py-3 rounded-xl font-semibold hover:bg-brand-700 transition-colors disabled:opacity-60">
                 {booking ? <Loader2 className="w-5 h-5 animate-spin" /> : t('requestBooking')}
               </button>
