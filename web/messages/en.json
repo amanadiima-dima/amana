@@ -186,7 +186,7 @@
     "phoneHint": "With the country code. We text a code to this number each time you sign in.",
     "emailLabel": "Email (optional)",
     "emailPlaceholder": "you@example.com",
-    "emailHint": "So you can also sign in with your email.",
+    "emailHint": "So we can email you about your parcels. You can also sign in with it.",
     "birthDateLabel": "Date of birth",
     "birthDay": "Day",
     "birthMonth": "Month",
@@ -569,7 +569,7 @@
       "cancel": "Cancel"
     },
     "email": "Email",
-    "emailHint": "Optional — lets you sign in with your email as well as your phone.",
+    "emailHint": "Optional — we email you about your parcels and requests, and you can sign in with it.",
     "emailTaken": "This email is already used by another account.",
     "password": {
       "title": "Password",

@@ -2,6 +2,7 @@ const prisma = require('../utils/prisma');
 const { AppError } = require('../middlewares/error.middleware');
 const { getIo } = require('../utils/socket');
 const { sendPushNotification } = require('../services/notification.service');
+const { emailUsers } = require('../services/email.service');
 
 // Load the booking and make sure req.user is the sender or the traveler on it.
 const loadParticipantBooking = async (bookingId, userId) => {
@@ -81,6 +82,8 @@ const sendMessage = async (req, res, next) => {
           data: { bookingId: id, type: 'MESSAGE' },
         },
       });
+      // The email never carries the chat text; it only says there is something to read.
+      emailUsers([r.id], `New message from ${message.sender.name}`, 'Open Amana to read it and answer.', { bookingId: id, type: 'MESSAGE' });
       if (r.fcmToken) {
         await sendPushNotification(r.fcmToken, `New message from ${message.sender.name}`, body.slice(0, 120), { bookingId: id, type: 'MESSAGE' });
       }

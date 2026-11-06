@@ -297,8 +297,8 @@ model Notification {
 model OutboundMessage {
   id        String   @id @default(cuid())
   toPhone   String
-  channel   String   // WHATSAPP | SMS | STUB
-  kind      String   // e.g. PAYER_INVITE
+  channel   String   // WHATSAPP | SMS | EMAIL | STUB | EMAIL_STUB
+  kind      String   // e.g. PAYER_INVITE, or the notification type for emails
   body      String
   status    String   // SENT | FAILED
   error     String?

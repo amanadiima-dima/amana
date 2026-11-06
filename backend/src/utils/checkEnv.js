@@ -32,6 +32,7 @@ const checkEnv = () => {
   for (const k of ['CORS_ORIGIN', 'WEB_URL']) {
     if (v(k) && !/^https:\/\/[^\s/]+$/.test(v(k).split(',')[0].trim())) problems.push(`${k} must look like https://your-web-domain (https, no trailing slash)`);
   }
+  if (!/^re_[A-Za-z0-9_-]+$/.test(v('RESEND_API_KEY'))) warnings.push('RESEND_API_KEY is missing or malformed: notification emails are NOT being sent.');
   const testPhones = v('TEST_PHONES').split(',').map((p) => p.trim()).filter(Boolean);
   if (testPhones.some((p) => !/^\+[1-9]\d{7,14}$/.test(p))) problems.push('TEST_PHONES must be phone numbers like +447700900101, separated by commas');
   if (testPhones.length) warnings.push(`TEST_PHONES: ${testPhones.length} test account(s) sign in with code 123456 (no SMS).`);

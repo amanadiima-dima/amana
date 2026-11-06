@@ -186,7 +186,7 @@
     "phoneHint": "Avec l'indicatif du pays. Nous envoyons un code par SMS à ce numéro à chaque connexion.",
     "emailLabel": "E-mail (facultatif)",
     "emailPlaceholder": "vous@exemple.com",
-    "emailHint": "Pour pouvoir aussi vous connecter avec votre e-mail.",
+    "emailHint": "Pour recevoir par e-mail les nouvelles de vos colis. Vous pourrez aussi vous connecter avec.",
     "birthDateLabel": "Date de naissance",
     "birthDay": "Jour",
     "birthMonth": "Mois",
@@ -569,7 +569,7 @@
       "cancel": "Annuler"
     },
     "email": "E-mail",
-    "emailHint": "Facultatif — permet de vous connecter avec votre e-mail en plus de votre téléphone.",
+    "emailHint": "Facultatif — nous vous écrivons au sujet de vos colis et demandes, et vous pouvez vous connecter avec.",
     "emailTaken": "Cet e-mail est déjà utilisé par un autre compte.",
     "password": {
       "title": "Mot de passe",

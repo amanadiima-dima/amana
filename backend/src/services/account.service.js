@@ -11,7 +11,7 @@ const RETENTION = {
   rejectedDocsDays: 30,         // documents of a rejected verification
   legalClaimsYears: 5,          // ID documents + identity of a closed account, chats and photos of finished bookings
   notificationsDays: 365,
-  outboundMessagesDays: 365,    // record of invitations sent by WhatsApp/SMS
+  outboundMessagesDays: 365,    // record of invitations (WhatsApp/SMS) and emails sent
   auditLogYears: 5,
 };
 const years = (n) => n * 365 * DAY;
